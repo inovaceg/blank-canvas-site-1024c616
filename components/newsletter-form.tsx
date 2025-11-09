@@ -10,9 +10,10 @@ import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
 
 const newsletterSchema = z.object({
-  name: z.string().min(2, "Nome deve ter no mínimo 2 caracteres"),
+  name: z.string().min(2, "Nome completo deve ter no mínimo 2 caracteres"),
   email: z.string().email("E-mail inválido"),
-  whatsapp: z.string().optional(),
+  whatsapp: z.string().min(10, "WhatsApp deve ter no mínimo 10 caracteres (incluindo DDD)"),
+  city: z.string().min(2, "Cidade deve ter no mínimo 2 caracteres"),
 })
 
 type NewsletterFormData = z.infer<typeof newsletterSchema>
@@ -53,14 +54,14 @@ export function NewsletterForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
-        <Input placeholder="Seu nome" {...register("name")} aria-invalid={!!errors.name} className="bg-white text-foreground" />
+        <Input placeholder="Seu nome completo *" {...register("name")} aria-invalid={!!errors.name} className="bg-white text-foreground" />
         {errors.name && <p className="text-sm text-red-200">{errors.name.message}</p>}
       </div>
 
       <div className="space-y-2">
         <Input
           type="email"
-          placeholder="seu@email.com"
+          placeholder="Seu e-mail *"
           {...register("email")}
           aria-invalid={!!errors.email}
           className="bg-white text-foreground"
@@ -69,7 +70,13 @@ export function NewsletterForm() {
       </div>
 
       <div className="space-y-2">
-        <Input placeholder="WhatsApp (opcional)" {...register("whatsapp")} className="bg-white text-foreground" />
+        <Input placeholder="Seu WhatsApp (DDD + número) *" {...register("whatsapp")} aria-invalid={!!errors.whatsapp} className="bg-white text-foreground" />
+        {errors.whatsapp && <p className="text-sm text-red-200">{errors.whatsapp.message}</p>}
+      </div>
+
+      <div className="space-y-2">
+        <Input placeholder="Sua cidade *" {...register("city")} aria-invalid={!!errors.city} className="bg-white text-foreground" />
+        {errors.city && <p className="text-sm text-red-200">{errors.city.message}</p>}
       </div>
 
       <Button type="submit" className="w-full" disabled={isSubmitting}>

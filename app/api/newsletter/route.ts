@@ -10,7 +10,8 @@ export async function POST(request: Request) {
       {
         name: data.name,
         email: data.email,
-        whatsapp: data.whatsapp || null,
+        whatsapp: data.whatsapp, // Agora é obrigatório
+        city: data.city, // Novo campo
       },
     ])
 

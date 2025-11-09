@@ -7,8 +7,9 @@ import { Search } from "lucide-react"
 interface NewsletterSubscriber {
   id: number
   email: string
-  name?: string
-  whatsapp?: string
+  name: string // Agora é obrigatório
+  whatsapp: string // Agora é obrigatório
+  city: string // Novo campo
   created_at: string
 }
 
@@ -31,8 +32,9 @@ export default function AdminNewsletterPage() {
   const filteredSubscribers = subscribers.filter(
     (sub) =>
       sub.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      sub.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      sub.whatsapp?.includes(searchTerm),
+      sub.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      sub.whatsapp.includes(searchTerm) ||
+      sub.city.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
   if (loading) {
@@ -54,7 +56,7 @@ export default function AdminNewsletterPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Filtrar e-mails, nomes ou WhatsApp..."
+              placeholder="Filtrar e-mails, nomes, WhatsApp ou cidades..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff8800]"
@@ -75,6 +77,9 @@ export default function AdminNewsletterPage() {
                   WhatsApp
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Cidade
+                </th> {/* Novo cabeçalho */}
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Data de Inscrição
                 </th>
               </tr>
@@ -82,9 +87,10 @@ export default function AdminNewsletterPage() {
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredSubscribers.map((subscriber) => (
                 <tr key={subscriber.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{subscriber.name || "N/A"}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{subscriber.name}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{subscriber.email}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{subscriber.whatsapp || "N/A"}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{subscriber.whatsapp}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{subscriber.city}</td> {/* Nova célula */}
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {new Date(subscriber.created_at).toLocaleString("pt-BR")}
                   </td>
