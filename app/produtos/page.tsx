@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { createClient } from "@/lib/supabase/server"
 import { Package } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image" // Ensure Image is imported
 
 export default async function ProductsPage() {
   const supabase = await createClient()
@@ -49,9 +50,10 @@ export default async function ProductsPage() {
                   <Card key={product.id} className="overflow-hidden group">
                     <div className="aspect-square relative overflow-hidden bg-muted">
                       {product.image_url ? (
-                        <img
-                          src={product.image_url || "/placeholder.svg"}
+                        <Image // Changed from <img> to <Image>
+                          src={product.image_url}
                           alt={product.name}
+                          fill
                           className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
                         />
                       ) : (

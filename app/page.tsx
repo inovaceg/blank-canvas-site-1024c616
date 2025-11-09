@@ -2,12 +2,40 @@ import { Button } from "@/components/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
-import { ArrowRight, Award, Heart, Leaf, ShoppingBag } from "lucide-react"
+import { ArrowRight, Award, Heart, Leaf, ShoppingBag, Package } from "lucide-react"
 import Link from "next/link"
 import { ContactForm } from "@/components/contact-form"
 import { NewsletterForm } from "@/components/newsletter-form"
+import { createClient } from "@/lib/supabase/server"
+import Image from "next/image"
+import { Badge } from "@/components/ui/badge"
 
-export default function HomePage() {
+interface Product {
+  id: string
+  name: string
+  category: string
+  description: string
+  ingredients?: string
+  weight?: string
+  price?: number
+  image_url?: string
+  is_featured?: boolean
+  created_at: string
+}
+
+export default async function HomePage() {
+  const supabase = await createClient()
+
+  const { data: featuredProducts, error } = await supabase
+    .from("products")
+    .select("*")
+    .eq("is_featured", true)
+    .order("created_at", { ascending: false })
+
+  if (error) {
+    console.error("Error fetching featured products:", error)
+  }
+
   return (
     <div className="min-h-screen">
       <SiteHeader />
@@ -15,10 +43,12 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="relative min-h-[600px] flex items-center">
         <div className="absolute inset-0 z-0">
-          <img
+          <Image
             src="/artisanal-banana-candy-bananadas-on-wooden-table.jpg"
             alt="Bananadas artesanais"
+            fill
             className="object-cover w-full h-full"
+            priority
           />
           <div className="absolute inset-0 bg-black/50" />
         </div>
@@ -129,41 +159,49 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                name: "Bananada Tradicional",
-                description:
-                  "Nossa bananada clássica, feita com bananas selecionadas e açúcar. Sabor autêntico e textura perfeita.",
-                image: "/traditional-banana-candy-bananada.jpg",
-              },
-              {
-                name: "Goma de Amido Sortida",
-                description:
-                  "Mix de gomas de amido em diversos sabores: morango, laranja, limão e uva. Deliciosas e naturais.",
-                image: "/assorted-fruit-starch-gummies-colorful.jpg",
-              },
-              {
-                name: "Bananada com Coco",
-                description: "A combinação perfeita de banana e coco ralado. Uma explosão de sabores tropicais.",
-                image: "/banana-candy-with-coconut-tropical.jpg",
-              },
-            ].map((product, index) => (
-              <Card key={index} className="overflow-hidden">
-                <div className="aspect-square relative overflow-hidden">
-                  <img
-                    src={product.image || "/placeholder.svg"}
-                    alt={product.name}
-                    className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-                <CardHeader>
-                  <CardTitle>{product.name}</CardTitle>
-                  <CardDescription>{product.description}</CardDescription>
-                </CardHeader>
-              </Card>
-            ))}
-          </div>
+          {featuredProducts && featuredProducts.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {featuredProducts.map((product) => (
+                <Card key={product.id} className="overflow-hidden">
+                  <div className="aspect-square relative overflow-hidden bg-muted">
+                    {product.image_url ? (
+                      <Image
+                        src={product.image_url}
+                        alt={product.name}
+                        fill
+                        className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Package className="size-16 text-muted-foreground/30" />
+                      </div>
+                    )}
+                    {product.is_featured && (
+                      <div className="absolute top-4 right-4">
+                        <Badge className="bg-primary text-primary-foreground">Destaque</Badge>
+                      </div>
+                    )}
+                  </div>
+                  <CardHeader>
+                    <CardTitle>{product.name}</CardTitle>
+                    <CardDescription>{product.description}</CardDescription>
+                  </CardHeader>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16">
+              <div className="inline-flex items-center justify-center size-16 rounded-full bg-muted mb-6">
+                <Package className="size-8 text-muted-foreground" />
+              </div>
+              <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
+                Nenhum produto em destaque no momento
+              </h2>
+              <p className="text-muted-foreground mb-6">
+                Em breve teremos novos produtos em destaque para você.
+              </p>
+            </div>
+          )}
 
           <div className="text-center mt-12">
             <Button asChild size="lg">
