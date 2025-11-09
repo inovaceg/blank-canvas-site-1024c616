@@ -9,10 +9,10 @@ interface ContactMessage {
   id: number
   name: string
   email: string
-  subject: string
+  phone: string // Adicionado phone, que existe na tabela contact_forms
   message: string
   created_at: string
-  is_read: boolean
+  // is_read: boolean // Removido, pois não existe na tabela contact_forms
 }
 
 export default function AdminMessagesPage() {
@@ -26,26 +26,29 @@ export default function AdminMessagesPage() {
   }, [])
 
   const fetchMessages = async () => {
-    const { data } = await supabase.from("contact_messages").select("*").order("created_at", { ascending: false })
+    // Alterado de contact_messages para contact_forms
+    const { data } = await supabase.from("contact_forms").select("*").order("created_at", { ascending: false })
     setMessages(data || [])
     setLoading(false)
   }
 
-  const toggleRead = async (id: number, currentStatus: boolean) => {
-    const { error } = await supabase.from("contact_messages").update({ is_read: !currentStatus }).eq("id", id)
+  // Função toggleRead removida, pois a coluna is_read não existe na tabela contact_forms
+  // const toggleRead = async (id: number, currentStatus: boolean) => {
+  //   const { error } = await supabase.from("contact_messages").update({ is_read: !currentStatus }).eq("id", id)
 
-    if (error) {
-      toast.error("Erro ao atualizar status")
-    } else {
-      fetchMessages()
-      toast.success("Status atualizado")
-    }
-  }
+  //   if (error) {
+  //     toast.error("Erro ao atualizar status")
+  //   } else {
+  //     fetchMessages()
+  //     toast.success("Status atualizado")
+  //   }
+  // }
 
   const deleteMessage = async (id: number) => {
     if (!confirm("Deseja realmente excluir esta mensagem?")) return
 
-    const { error } = await supabase.from("contact_messages").delete().eq("id", id)
+    // Alterado de contact_messages para contact_forms
+    const { error } = await supabase.from("contact_forms").delete().eq("id", id)
 
     if (error) {
       toast.error("Erro ao excluir mensagem")
@@ -59,7 +62,7 @@ export default function AdminMessagesPage() {
     (msg) =>
       msg.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       msg.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      msg.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      // msg.subject.toLowerCase().includes(searchTerm.toLowerCase()) || // Removido
       msg.message.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
@@ -82,7 +85,7 @@ export default function AdminMessagesPage() {
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Filtrar por nome, e-mail, assunto ou mensagem..."
+              placeholder="Filtrar por nome, e-mail ou mensagem..." // Texto do placeholder atualizado
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff8800]"
@@ -95,16 +98,19 @@ export default function AdminMessagesPage() {
           <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
-                </th>
+                </th> */} {/* Removido */}
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nome</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   E-mail
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Telefone
+                </th> {/* Adicionado */}
+                {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Assunto
-                </th>
+                </th> */} {/* Removido */}
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Ações
@@ -114,7 +120,7 @@ export default function AdminMessagesPage() {
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredMessages.map((message) => (
                 <tr key={message.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  {/* <td className="px-6 py-4 whitespace-nowrap">
                     <button
                       onClick={() => toggleRead(message.id, message.is_read)}
                       className={`px-3 py-1 rounded-full text-xs font-medium ${
@@ -123,10 +129,11 @@ export default function AdminMessagesPage() {
                     >
                       {message.is_read ? "Lida" : "Nova"}
                     </button>
-                  </td>
+                  </td> */} {/* Removido */}
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{message.name}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{message.email}</td>
-                  <td className="px-6 py-4 text-sm text-[#4a4a4a]">{message.subject}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{message.phone}</td> {/* Adicionado */}
+                  {/* <td className="px-6 py-4 text-sm text-[#4a4a4a]">{message.subject}</td> */} {/* Removido */}
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {new Date(message.created_at).toLocaleString("pt-BR")}
                   </td>

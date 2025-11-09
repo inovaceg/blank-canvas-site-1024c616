@@ -6,12 +6,12 @@ export async function POST(request: Request) {
     const data = await request.json()
     const supabase = await createClient()
 
-    const { error } = await supabase.from("contact_messages").insert([
+    const { error } = await supabase.from("contact_forms").insert([ // Alterado de contact_messages para contact_forms
       {
         name: data.name,
         email: data.email,
         phone: data.phone,
-        subject: data.subject,
+        // subject: data.subject, // Removido, pois não existe na tabela contact_forms
         message: data.message,
       },
     ])
