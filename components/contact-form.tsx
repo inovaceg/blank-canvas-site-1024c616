@@ -15,7 +15,7 @@ const contactSchema = z.object({
   name: z.string().min(2, "Nome deve ter no mínimo 2 caracteres"),
   email: z.string().email("E-mail inválido"),
   phone: z.string().min(10, "Telefone inválido"),
-  subject: z.string().min(3, "Assunto deve ter no mínimo 3 caracteres"),
+  // subject: z.string().min(3, "Assunto deve ter no mínimo 3 caracteres"), // Removido
   message: z.string().min(10, "Mensagem deve ter no mínimo 10 caracteres"),
 })
 
@@ -82,7 +82,8 @@ export function ContactForm() {
         </div>
       </div>
 
-      <div className="space-y-2">
+      {/* Campo de Assunto removido */}
+      {/* <div className="space-y-2">
         <Label htmlFor="subject">Assunto</Label>
         <Input
           id="subject"
@@ -91,7 +92,7 @@ export function ContactForm() {
           aria-invalid={!!errors.subject}
         />
         {errors.subject && <p className="text-sm text-destructive">{errors.subject.message}</p>}
-      </div>
+      </div> */}
 
       <div className="space-y-2">
         <Label htmlFor="message">Mensagem</Label>
