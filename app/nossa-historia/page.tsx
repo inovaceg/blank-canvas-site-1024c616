@@ -12,13 +12,13 @@ export default function OurHistoryPage() {
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-secondary py-16 lg:py-24">
+        <section className="bg-primary py-16 lg:py-24 text-primary-foreground">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl">
-              <h1 className="font-serif text-4xl lg:text-6xl font-bold text-foreground mb-6 text-balance">
+              <h1 className="font-serif text-4xl lg:text-6xl font-bold mb-6 text-balance">
                 Nossa História
               </h1>
-              <p className="text-lg text-muted-foreground text-pretty">
+              <p className="text-lg text-pretty">
                 Uma jornada de mais de duas décadas dedicada à produção de doces artesanais de qualidade superior.
               </p>
             </div>

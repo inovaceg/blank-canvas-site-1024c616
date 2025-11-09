@@ -12,13 +12,13 @@ export default function QualityPage() {
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-secondary py-16 lg:py-24">
+        <section className="bg-primary py-16 lg:py-24 text-primary-foreground">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl">
-              <h1 className="font-serif text-4xl lg:text-6xl font-bold text-foreground mb-6 text-balance">
+              <h1 className="font-serif text-4xl lg:text-6xl font-bold mb-6 text-balance">
                 Compromisso com a Qualidade
               </h1>
-              <p className="text-lg text-muted-foreground text-pretty">
+              <p className="text-lg text-pretty">
                 Nosso processo produtivo garante produtos seguros, saborosos e de qualidade superior em cada lote.
               </p>
             </div>

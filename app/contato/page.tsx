@@ -11,13 +11,13 @@ export default function ContactPage() {
 
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="bg-secondary py-16 lg:py-24">
+        <section className="bg-primary py-16 lg:py-24 text-primary-foreground">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl">
-              <h1 className="font-serif text-4xl lg:text-6xl font-bold text-foreground mb-6 text-balance">
+              <h1 className="font-serif text-4xl lg:text-6xl font-bold mb-6 text-balance">
                 Entre em Contato
               </h1>
-              <p className="text-lg text-muted-foreground text-pretty">
+              <p className="text-lg text-pretty">
                 Estamos prontos para atender você. Envie sua mensagem ou utilize um de nossos canais de contato.
               </p>
             </div>
