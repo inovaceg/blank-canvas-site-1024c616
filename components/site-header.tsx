@@ -1,11 +1,13 @@
 "use client"
 import { Button } from "@/components/button"
 import Link from "next/link"
-import { Phone, Mail, Menu, X } from "lucide-react"
+import { Phone, Mail, Menu, X, ShoppingCart } from "lucide-react" // Adicionado ShoppingCart
 import { useState } from "react"
+import { useCart } from "@/components/cart-provider" // Importar useCart
 
 export function SiteHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const { getTotalItems } = useCart() // Usar o hook do carrinho para obter o total de itens
 
   return (
     <header className="sticky top-0 z-50">
@@ -71,19 +73,42 @@ export function SiteHeader() {
               >
                 Contato
               </Link>
-              {/* Removido o botão "Solicitar Orçamento" */}
               <Button asChild size="sm" variant="outline" className="rounded-full bg-transparent">
                 <Link href="/admin/login">Login</Link>
               </Button>
+              {/* Ícone do Carrinho */}
+              <Button asChild size="icon-sm" variant="ghost" className="relative">
+                <Link href="/carrinho">
+                  <ShoppingCart className="size-5" />
+                  {getTotalItems() > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full size-4 flex items-center justify-center text-xs font-bold">
+                      {getTotalItems()}
+                    </span>
+                  )}
+                </Link>
+              </Button>
             </nav>
 
-            <button
-              className="md:hidden p-2 rounded-lg hover:bg-accent"
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              aria-label="Toggle menu"
-            >
-              {mobileMenuOpen ? <X className="size-6" /> : <Menu className="size-6" />}
-            </button>
+            <div className="flex items-center md:hidden gap-2">
+              {/* Ícone do Carrinho para Mobile */}
+              <Button asChild size="icon-sm" variant="ghost" className="relative">
+                <Link href="/carrinho">
+                  <ShoppingCart className="size-5" />
+                  {getTotalItems() > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full size-4 flex items-center justify-center text-xs font-bold">
+                      {getTotalItems()}
+                    </span>
+                  )}
+                </Link>
+              </Button>
+              <button
+                className="p-2 rounded-lg hover:bg-accent"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label="Toggle menu"
+              >
+                {mobileMenuOpen ? <X className="size-6" /> : <Menu className="size-6" />}
+              </button>
+            </div>
           </div>
 
           {mobileMenuOpen && (
@@ -123,7 +148,6 @@ export function SiteHeader() {
               >
                 Contato
               </Link>
-              {/* Removido o botão "Solicitar Orçamento" */}
               <Button
                 asChild
                 size="sm"
