@@ -50,7 +50,16 @@ export function RegisterForm() {
       })
 
       if (error) {
-        toast.error(`Erro ao cadastrar: ${error.message}`)
+        console.error("Supabase signUp error:", error); // Log do erro completo
+        let errorMessage = "Erro ao cadastrar. Por favor, tente novamente.";
+        if (error.message.includes("User already registered")) {
+          errorMessage = "Este e-mail já está cadastrado. Por favor, faça login ou use outro e-mail.";
+        } else if (error.message.includes("Password should be at least 6 characters")) {
+          errorMessage = "A senha deve ter no mínimo 6 caracteres.";
+        } else if (error.message.includes("Email link not sent")) {
+          errorMessage = "Erro ao enviar e-mail de confirmação. Verifique seu e-mail e tente novamente.";
+        }
+        toast.error(errorMessage);
         return
       }
 
