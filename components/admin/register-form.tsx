@@ -58,6 +58,8 @@ export function RegisterForm() {
           errorMessage = "A senha deve ter no mínimo 6 caracteres.";
         } else if (error.message.includes("Email link not sent")) {
           errorMessage = "Erro ao enviar e-mail de confirmação. Verifique seu e-mail e tente novamente.";
+        } else if (error.message) { // Fallback para exibir a mensagem de erro exata do Supabase
+          errorMessage = `Erro: ${error.message}`;
         }
         toast.error(errorMessage);
         return
