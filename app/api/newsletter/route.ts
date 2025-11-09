@@ -6,7 +6,7 @@ export async function POST(request: Request) {
     const data = await request.json()
     const supabase = await createClient()
 
-    const { error } = await supabase.from("newsletter").insert([
+    const { error } = await supabase.from("newsletter_subscribers").insert([
       {
         name: data.name,
         email: data.email,
