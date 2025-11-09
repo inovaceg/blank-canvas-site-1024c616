@@ -9,11 +9,6 @@ export async function middleware(request: NextRequest) {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
-  // TEMPORARY LOGS: Check if environment variables are being read
-  console.log("Middleware Supabase URL:", supabaseUrl ? "Loaded" : "NOT LOADED")
-  console.log("Middleware Supabase Anon Key:", supabaseAnonKey ? "Loaded" : "NOT LOADED")
-  // END TEMPORARY LOGS
-
   // If Supabase is not configured, allow access (user needs to set up integration first)
   if (!supabaseUrl || !supabaseAnonKey) {
     // Only protect admin routes by redirecting to login
