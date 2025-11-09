@@ -11,18 +11,21 @@ export function SiteHeader() {
     <header className="sticky top-0 z-50">
       <div className="bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex h-10 items-center justify-between text-sm">
-            <div className="flex items-center gap-6">
-              <a href="tel:+553498484644" className="flex items-center gap-2 hover:underline">
-                <Phone className="size-4" />
-                <span className="hidden sm:inline">(34) 98484-4644</span>
+          <div className="flex h-auto sm:h-10 flex-col sm:flex-row items-start sm:items-center justify-between gap-1 sm:gap-0 py-2 sm:py-0 text-xs sm:text-sm">
+            <div className="flex items-center gap-3 sm:gap-6 flex-wrap">
+              <a href="tel:+553498484644" className="flex items-center gap-1.5 sm:gap-2 hover:underline">
+                <Phone className="size-3 sm:size-4 flex-shrink-0" />
+                <span>(34) 98484-4644</span>
               </a>
-              <a href="mailto:contato@docessaofidelis.com.br" className="flex items-center gap-2 hover:underline">
-                <Mail className="size-4" />
-                <span className="hidden sm:inline">contato@docessaofidelis.com.br</span>
+              <a
+                href="mailto:contato@docessaofidelis.com.br"
+                className="flex items-center gap-1.5 sm:gap-2 hover:underline"
+              >
+                <Mail className="size-3 sm:size-4 flex-shrink-0" />
+                <span className="break-all">contato@docessaofidelis.com.br</span>
               </a>
             </div>
-            <div className="font-medium">Tradição desde 2000</div>
+            <div className="font-medium text-xs sm:text-sm">Tradição desde 2000</div>
           </div>
         </div>
       </div>
