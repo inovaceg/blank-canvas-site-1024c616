@@ -6,7 +6,7 @@ import { Search, Eye, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 
 interface QuoteRequest {
-  id: number
+  id: string // Corrigido para string (UUID)
   company_name: string
   contact_name: string
   email: string
@@ -34,7 +34,7 @@ export default function AdminQuotesPage() {
     setLoading(false)
   }
 
-  const deleteQuote = async (id: number) => {
+  const deleteQuote = async (id: string) => { // Corrigido para string
     if (!confirm("Deseja realmente excluir esta solicitação?")) return
 
     const { error } = await supabase.from("quote_requests").delete().eq("id", id)
