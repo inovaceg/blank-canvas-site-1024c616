@@ -55,7 +55,6 @@ export default async function HomePage() {
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-20">
           <div className="max-w-3xl space-y-6 text-center mx-auto">
-            {/* Removido o badge "Tradição desde 2000" */}
             <h1 className="font-serif text-4xl lg:text-6xl font-bold text-white text-balance">
               Sabor Autêntico que Atravessa Gerações
             </h1>
@@ -95,50 +94,54 @@ export default async function HomePage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card>
+            <Card className="bg-green-50">
               <CardHeader>
                 <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                   <Leaf className="size-6 text-primary" />
                 </div>
                 <CardTitle>Ingredientes Naturais</CardTitle>
                 <CardDescription>
-                  Utilizamos apenas ingredientes naturais e de alta qualidade em todas as nossas receitas
+                  Utilizamos apenas ingredientes frescos e naturais, cuidadosamente selecionados para garantir o sabor
+                  autêntico e a qualidade superior em cada doce. Sem aditivos artificiais.
                 </CardDescription>
               </CardHeader>
             </Card>
 
-            <Card>
+            <Card className="bg-red-50">
               <CardHeader>
                 <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                   <Heart className="size-6 text-primary" />
                 </div>
                 <CardTitle>Receitas Tradicionais</CardTitle>
                 <CardDescription>
-                  Mantemos viva a tradição da culinária artesanal com receitas passadas de geração em geração
+                  Nossas receitas são passadas de geração em geração, preservando o modo artesanal de preparo que
+                  confere um sabor caseiro e inesquecível, cheio de carinho e história.
                 </CardDescription>
               </CardHeader>
             </Card>
 
-            <Card>
+            <Card className="bg-yellow-50">
               <CardHeader>
                 <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                   <Award className="size-6 text-primary" />
                 </div>
                 <CardTitle>Mais de 20 Anos</CardTitle>
                 <CardDescription>
-                  Desde 2000, conquistando clientes com produtos de qualidade superior e sabor incomparável
+                  Com mais de duas décadas de experiência, somos referência na produção de doces artesanais,
+                  conquistando a confiança e o paladar de nossos clientes com excelência e dedicação.
                 </CardDescription>
               </CardHeader>
             </Card>
 
-            <Card>
+            <Card className="bg-blue-50">
               <CardHeader>
                 <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                   <ShoppingBag className="size-6 text-primary" />
                 </div>
                 <CardTitle>Variedade</CardTitle>
                 <CardDescription>
-                  Oferecemos bananadas e gomas de amido em diversos sabores e embalagens para todos os gostos
+                  Oferecemos uma ampla gama de bananadas e gomas de amido, com diferentes sabores e embalagens,
+                  perfeitas para todas as ocasiões e para agradar a todos os gostos.
                 </CardDescription>
               </CardHeader>
             </Card>
