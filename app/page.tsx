@@ -94,7 +94,7 @@ export default async function HomePage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="bg-primary/10"> {/* Alterado para bg-primary/10 */}
+            <Card className="bg-primary"> {/* Alterado para bg-primary */}
               <CardHeader>
                 <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                   <Leaf className="size-6 text-primary" />
@@ -107,7 +107,7 @@ export default async function HomePage() {
               </CardHeader>
             </Card>
 
-            <Card className="bg-primary/10"> {/* Alterado para bg-primary/10 */}
+            <Card className="bg-primary"> {/* Alterado para bg-primary */}
               <CardHeader>
                 <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                   <Heart className="size-6 text-primary" />
@@ -120,7 +120,7 @@ export default async function HomePage() {
               </CardHeader>
             </Card>
 
-            <Card className="bg-primary/10"> {/* Alterado para bg-primary/10 */}
+            <Card className="bg-primary"> {/* Alterado para bg-primary */}
               <CardHeader>
                 <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                   <Award className="size-6 text-primary" />
@@ -133,7 +133,7 @@ export default async function HomePage() {
               </CardHeader>
             </Card>
 
-            <Card className="bg-primary/10"> {/* Alterado para bg-primary/10 */}
+            <Card className="bg-primary"> {/* Alterado para bg-primary */}
               <CardHeader>
                 <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                   <ShoppingBag className="size-6 text-primary" />
