@@ -53,7 +53,7 @@ export function NewsletterForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
-        <Input placeholder="Seu nome" {...register("name")} aria-invalid={!!errors.name} className="bg-white" />
+        <Input placeholder="Seu nome" {...register("name")} aria-invalid={!!errors.name} className="bg-white text-foreground" />
         {errors.name && <p className="text-sm text-red-200">{errors.name.message}</p>}
       </div>
 
@@ -63,13 +63,13 @@ export function NewsletterForm() {
           placeholder="seu@email.com"
           {...register("email")}
           aria-invalid={!!errors.email}
-          className="bg-white"
+          className="bg-white text-foreground"
         />
         {errors.email && <p className="text-sm text-red-200">{errors.email.message}</p>}
       </div>
 
       <div className="space-y-2">
-        <Input placeholder="WhatsApp (opcional)" {...register("whatsapp")} className="bg-white" />
+        <Input placeholder="WhatsApp (opcional)" {...register("whatsapp")} className="bg-white text-foreground" />
       </div>
 
       <Button type="submit" className="w-full" disabled={isSubmitting}>
