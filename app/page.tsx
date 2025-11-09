@@ -4,6 +4,8 @@ import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { ArrowRight, Award, Heart, Leaf, ShoppingBag } from "lucide-react"
 import Link from "next/link"
+import { ContactForm } from "@/components/contact-form"
+import { NewsletterForm } from "@/components/newsletter-form"
 
 export default function HomePage() {
   return (
@@ -170,6 +172,42 @@ export default function HomePage() {
                 <ArrowRight />
               </Link>
             </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section className="py-20 lg:py-32">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 items-start">
+            {/* Contact Form */}
+            <div>
+              <div className="space-y-4 mb-8">
+                <h2 className="font-serif text-3xl lg:text-5xl font-bold text-foreground">Entre em Contato</h2>
+                <p className="text-lg text-muted-foreground">
+                  Tem alguma dúvida ou quer fazer um pedido? Envie uma mensagem e entraremos em contato em breve.
+                </p>
+              </div>
+              <ContactForm />
+            </div>
+
+            {/* Newsletter */}
+            <div className="lg:sticky lg:top-24">
+              <Card className="bg-primary text-primary-foreground border-0">
+                <CardContent className="p-8 lg:p-12">
+                  <div className="space-y-6">
+                    <div className="space-y-2">
+                      <h3 className="font-serif text-2xl lg:text-3xl font-bold">Receba Nossas Novidades</h3>
+                      <p className="text-primary-foreground/90">
+                        Cadastre-se em nossa newsletter e fique por dentro de promoções, novos produtos e receitas
+                        exclusivas!
+                      </p>
+                    </div>
+                    <NewsletterForm />
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </section>
