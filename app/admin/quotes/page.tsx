@@ -6,14 +6,16 @@ import { Search, Eye, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 
 interface QuoteRequest {
-  id: string // Corrigido para string (UUID)
+  id: string
   company_name: string
   contact_name: string
   email: string
   phone: string
-  products_interest: string
-  quantity: string
-  delivery_location: string
+  address?: string // Adicionado, pois existe no DB
+  city?: string    // Adicionado, pois existe no DB
+  state?: string   // Adicionado, pois existe no DB
+  product_interest?: string // Corrigido para singular, como no DB
+  quantity?: string
   message?: string
   created_at: string
 }
@@ -29,12 +31,18 @@ export default function AdminQuotesPage() {
   }, [])
 
   const fetchQuotes = async () => {
-    const { data } = await supabase.from("quote_requests").select("*").order("created_at", { ascending: false })
+    const { data, error } = await supabase.from("quote_requests").select("*").order("created_at", { ascending: false })
+    
+    if (error) {
+      console.error("Error fetching quote requests:", error);
+      toast.error("Erro ao carregar solicitações de orçamento.");
+    }
+    
     setQuotes(data || [])
     setLoading(false)
   }
 
-  const deleteQuote = async (id: string) => { // Corrigido para string
+  const deleteQuote = async (id: string) => {
     if (!confirm("Deseja realmente excluir esta solicitação?")) return
 
     const { error } = await supabase.from("quote_requests").delete().eq("id", id)
@@ -52,7 +60,7 @@ export default function AdminQuotesPage() {
       quote.company_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       quote.contact_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       quote.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      quote.products_interest.toLowerCase().includes(searchTerm.toLowerCase()),
+      (quote.product_interest && quote.product_interest.toLowerCase().includes(searchTerm.toLowerCase())), // Usar product_interest
   )
 
   if (loading) {
@@ -117,7 +125,7 @@ export default function AdminQuotesPage() {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{quote.contact_name}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{quote.email}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{quote.phone}</td>
-                  <td className="px-6 py-4 text-sm text-[#4a4a4a]">{quote.products_interest}</td>
+                  <td className="px-6 py-4 text-sm text-[#4a4a4a]">{quote.product_interest || "-"}</td> {/* Usar product_interest */}
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {new Date(quote.created_at).toLocaleString("pt-BR")}
                   </td>
@@ -126,7 +134,7 @@ export default function AdminQuotesPage() {
                       <button
                         onClick={() =>
                           alert(
-                            `Empresa: ${quote.company_name}\nContato: ${quote.contact_name}\nQuantidade: ${quote.quantity}\nLocal de Entrega: ${quote.delivery_location}\n\nMensagem:\n${quote.message || "Nenhuma mensagem adicional"}`,
+                            `Empresa: ${quote.company_name}\nContato: ${quote.contact_name}\nTelefone: ${quote.phone}\nE-mail: ${quote.email}\nProdutos de Interesse: ${quote.product_interest || "-"}\nQuantidade: ${quote.quantity || "-"}\nEndereço: ${quote.address || "-"}, ${quote.city || "-"} - ${quote.state || "-"}\n\nMensagem:\n${quote.message || "Nenhuma mensagem adicional"}`,
                           )
                         }
                         className="text-gray-600 hover:text-[#ff8800]"
