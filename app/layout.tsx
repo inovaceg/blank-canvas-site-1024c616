@@ -4,6 +4,7 @@ import { Playfair_Display, Inter } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { Toaster } from "sonner"
 import "./globals.css"
+import { CartProvider } from "@/components/cart-provider" // Importar CartProvider
 
 const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-serif" })
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
@@ -39,7 +40,9 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
-        {children}
+        <CartProvider> {/* Envolvendo a aplicação com CartProvider */}
+          {children}
+        </CartProvider>
         <Toaster position="top-center" />
         <Analytics />
       </body>

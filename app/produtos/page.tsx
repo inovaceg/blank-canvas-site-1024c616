@@ -1,24 +1,63 @@
+"use client" // Adicionado para usar hooks de React
+
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { Button } from "@/components/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { createClient } from "@/lib/supabase/server"
-import { Package } from "lucide-react"
+import { createClient } from "@/lib/supabase/client" // Alterado para client-side Supabase
+import { Package, ShoppingCart } from "lucide-react" // Adicionado ShoppingCart
 import Link from "next/link"
-import Image from "next/image" // Ensure Image is imported
+import Image from "next/image"
+import { useState, useEffect } from "react" // Adicionado useState e useEffect
+import { useCart } from "@/components/cart-provider" // Importar useCart
 
-export default async function ProductsPage() {
-  const supabase = await createClient()
+interface Product {
+  id: string
+  name: string
+  category: string
+  description: string
+  ingredients?: string
+  weight?: string
+  price?: number // Mantido como opcional, mas não será exibido
+  image_url?: string
+  is_featured?: boolean
+  created_at: string
+}
 
-  // Fetch products from database
-  const { data: products, error } = await supabase
-    .from("products")
-    .select("*")
-    .order("created_at", { ascending: false })
+export default function ProductsPage() { // Alterado para componente de cliente
+  const [products, setProducts] = useState<Product[]>([])
+  const [loading, setLoading] = useState(true)
+  const supabase = createClient()
+  const { addItem } = useCart() // Usar o hook do carrinho
 
-  if (error) {
-    console.error("Error fetching products:", error)
+  useEffect(() => {
+    fetchProducts()
+  }, [])
+
+  const fetchProducts = async () => {
+    const { data, error } = await supabase
+      .from("products")
+      .select("*")
+      .order("created_at", { ascending: false })
+
+    if (error) {
+      console.error("Error fetching products:", error)
+    }
+    setProducts(data || [])
+    setLoading(false)
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <SiteHeader />
+        <main className="flex-1 flex items-center justify-center">
+          <p>Carregando produtos...</p>
+        </main>
+        <SiteFooter />
+      </div>
+    )
   }
 
   return (
@@ -50,7 +89,7 @@ export default async function ProductsPage() {
                   <Card key={product.id} className="overflow-hidden group">
                     <div className="aspect-square relative overflow-hidden bg-muted">
                       {product.image_url ? (
-                        <Image // Changed from <img> to <Image>
+                        <Image
                           src={product.image_url}
                           alt={product.name}
                           fill
@@ -85,8 +124,17 @@ export default async function ProductsPage() {
                             <p className="text-sm text-muted-foreground">{product.weight}</p>
                           </div>
                         )}
-                        {/* Removido o botão "Solicitar Orçamento" e o preço */}
-                        {/* Aqui será adicionado o botão 'Adicionar ao Carrinho' na próxima fase */}
+                        <Button
+                          className="w-full mt-4"
+                          onClick={() => addItem({
+                            id: product.id,
+                            name: product.name,
+                            image_url: product.image_url,
+                            weight: product.weight,
+                          })}
+                        >
+                          <ShoppingCart className="size-4 mr-2" /> Adicionar ao Carrinho
+                        </Button>
                       </div>
                     </CardContent>
                   </Card>
@@ -123,7 +171,6 @@ export default async function ProductsPage() {
                 personalizado.
               </p>
               <div className="flex flex-wrap gap-4 justify-center">
-                {/* Removido o botão "Solicitar Orçamento" */}
                 <Button asChild variant="outline" size="lg">
                   <Link href="/contato">Fale Conosco</Link>
                 </Button>
