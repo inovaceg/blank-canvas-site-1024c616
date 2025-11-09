@@ -84,7 +84,7 @@ export default async function HomePage() {
       {/* Features Section */}
       <section className="py-20 lg:py-32">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-secondary rounded-xl p-8 text-center space-y-4 mb-16"> {/* Adicionado bg-secondary, rounded-xl e p-8 */}
+          <div className="bg-secondary rounded-xl p-8 text-center space-y-4 mb-16">
             <h2 className="font-serif text-3xl lg:text-5xl font-bold text-foreground">
               Por Que Escolher Nossos Produtos?
             </h2>
@@ -94,7 +94,7 @@ export default async function HomePage() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="bg-orange-50"> {/* Alterado para bg-orange-50 */}
+            <Card className="bg-primary/10"> {/* Alterado para bg-primary/10 */}
               <CardHeader>
                 <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                   <Leaf className="size-6 text-primary" />
@@ -107,7 +107,7 @@ export default async function HomePage() {
               </CardHeader>
             </Card>
 
-            <Card className="bg-orange-50"> {/* Alterado para bg-orange-50 */}
+            <Card className="bg-primary/10"> {/* Alterado para bg-primary/10 */}
               <CardHeader>
                 <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                   <Heart className="size-6 text-primary" />
@@ -120,7 +120,7 @@ export default async function HomePage() {
               </CardHeader>
             </Card>
 
-            <Card className="bg-orange-50"> {/* Alterado para bg-orange-50 */}
+            <Card className="bg-primary/10"> {/* Alterado para bg-primary/10 */}
               <CardHeader>
                 <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                   <Award className="size-6 text-primary" />
@@ -133,7 +133,7 @@ export default async function HomePage() {
               </CardHeader>
             </Card>
 
-            <Card className="bg-orange-50"> {/* Alterado para bg-orange-50 */}
+            <Card className="bg-primary/10"> {/* Alterado para bg-primary/10 */}
               <CardHeader>
                 <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                   <ShoppingBag className="size-6 text-primary" />
