@@ -6,24 +6,30 @@ export async function POST(request: Request) {
     const data = await request.json()
     const supabase = await createClient()
 
-    const { error } = await supabase.from("contact_forms").insert([ // Alterado de contact_messages para contact_forms
+    // Inserir na tabela quote_requests
+    const { error } = await supabase.from("quote_requests").insert([
       {
-        name: data.name,
+        company_name: data.company_name,
+        contact_name: data.contact_name,
         email: data.email,
         phone: data.phone,
-        // subject: data.subject, // Removido, pois não existe na tabela contact_forms
+        address: data.address,
+        city: data.city,
+        state: data.state,
+        product_interest: data.product_interest,
+        quantity: data.quantity,
         message: data.message,
       },
     ])
 
     if (error) {
-      console.error("Error saving contact message:", error)
-      return NextResponse.json({ error: "Erro ao salvar mensagem" }, { status: 500 })
+      console.error("Error saving quote request:", error)
+      return NextResponse.json({ error: "Erro ao salvar solicitação de orçamento" }, { status: 500 })
     }
 
     return NextResponse.json({ success: true })
   } catch (error) {
-    console.error("Error in contact API:", error)
+    console.error("Error in quote request API:", error)
     return NextResponse.json({ error: "Erro ao processar solicitação" }, { status: 500 })
   }
 }
