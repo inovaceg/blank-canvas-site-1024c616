@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { Search } from "lucide-react"
+import { toast } from "sonner" // Importar toast para exibir erros de fetch
 
 interface NewsletterSubscriber {
   id: number
@@ -24,7 +25,14 @@ export default function AdminNewsletterPage() {
   }, [])
 
   const fetchSubscribers = async () => {
-    const { data } = await supabase.from("newsletter_subscribers").select("*").order("created_at", { ascending: false })
+    const { data, error } = await supabase.from("newsletter_subscribers").select("*").order("created_at", { ascending: false })
+    
+    if (error) {
+      console.error("Error fetching newsletter subscribers:", error);
+      toast.error("Erro ao carregar inscrições da newsletter."); // Exibir toast em caso de erro
+    }
+    
+    console.log("Fetched newsletter data:", data); // Adicionado para depuração
     setSubscribers(data || [])
     setLoading(false)
   }
@@ -78,7 +86,7 @@ export default function AdminNewsletterPage() {
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Cidade
-                </th> {/* Novo cabeçalho */}
+                </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Data de Inscrição
                 </th>
@@ -90,7 +98,7 @@ export default function AdminNewsletterPage() {
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{subscriber.name}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{subscriber.email}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{subscriber.whatsapp}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{subscriber.city}</td> {/* Nova célula */}
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{subscriber.city}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {new Date(subscriber.created_at).toLocaleString("pt-BR")}
                   </td>
