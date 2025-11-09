@@ -1,20 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server"
-import { createServerClient } from "@supabase/ssr"
+import { createClient as createSupabaseServerClient } from "@/lib/supabase/server" // Import the server client
 
 export async function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname === "/admin/login") {
-    return NextResponse.next()
-  }
-
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-
-  // If Supabase is not configured, allow access (user needs to set up integration first)
-  if (!supabaseUrl || !supabaseAnonKey) {
-    // Only protect admin routes by redirecting to login
-    if (request.nextUrl.pathname.startsWith("/admin") && request.nextUrl.pathname !== "/admin/login") {
-      return NextResponse.redirect(new URL("/admin/login", request.url))
-    }
+  // Permite acesso às páginas de login e registro sem autenticação
+  if (request.nextUrl.pathname === "/admin/login" || request.nextUrl.pathname === "/admin/register") {
     return NextResponse.next()
   }
 
@@ -24,26 +13,15 @@ export async function middleware(request: NextRequest) {
     },
   })
 
-  const supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
-    cookies: {
-      getAll() {
-        return request.cookies.getAll()
-      },
-      setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
-        response = NextResponse.next({
-          request,
-        })
-        cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options))
-      },
-    },
-  })
+  // Usa a função centralizada para criar o cliente Supabase no servidor
+  const supabase = await createSupabaseServerClient()
 
   const {
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (request.nextUrl.pathname.startsWith("/admin") && !user && request.nextUrl.pathname !== "/admin/login") {
+  // Redireciona para a página de login se o usuário não estiver autenticado e tentar acessar uma rota admin
+  if (request.nextUrl.pathname.startsWith("/admin") && !user) {
     return NextResponse.redirect(new URL("/admin/login", request.url))
   }
 
