@@ -2,7 +2,7 @@ import { Button } from "@/components/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
-import { ArrowRight, Award, Heart, Leaf, ShoppingBag, Package } from "lucide-react"
+import { ArrowRight, Award, Heart, Leaf, ShoppingBag, Package, MessageSquareText } from "lucide-react"
 import Link from "next/link"
 import { ContactForm } from "@/components/contact-form"
 import { NewsletterForm } from "@/components/newsletter-form"
@@ -56,15 +56,15 @@ export default async function HomePage() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-20">
           <div className="max-w-3xl space-y-6 text-center mx-auto">
             <h1 className="font-serif text-4xl lg:text-6xl font-bold text-white text-balance">
-              Sabor Autêntico que Atravessa Gerações
+              Doces São Fidélis: Sabor Autêntico que Atravessa Gerações
             </h1>
             <p className="text-lg text-white/90 text-pretty">
-              Bananadas e gomas de amido produzidas artesanalmente com a tradição e o carinho de uma empresa familiar
+              Produzindo bananadas e gomas de amido desde 2000 com a tradição artesanal.
             </p>
             <div className="flex flex-wrap gap-4 justify-center">
               <Button asChild size="lg" className="rounded-full">
                 <Link href="/produtos">
-                  Veja nosso catálogo
+                  Veja Nosso Catálogo
                   <ArrowRight />
                 </Link>
               </Button>
@@ -74,32 +74,52 @@ export default async function HomePage() {
                 size="lg"
                 className="rounded-full border-white text-white hover:bg-white/10 bg-transparent"
               >
-                <Link href="/contato">Entre em contato</Link>
+                <Link href="/contato">Entre em Contato</Link>
+              </Button>
+              <Button asChild size="lg" className="rounded-full bg-accent text-accent-foreground hover:bg-accent/90">
+                <Link href="#newsletter-section">Cadastre-se para receber novidades</Link>
               </Button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Features Section */}
+      {/* Sobre Nós Section */}
       <section className="py-20 lg:py-32">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-secondary rounded-xl p-8 text-center space-y-4 mb-16">
+          <div className="max-w-4xl mx-auto text-center space-y-6">
+            <h2 className="font-serif text-3xl lg:text-5xl font-bold text-foreground">Nossa História e Missão</h2>
+            <p className="text-lg text-muted-foreground text-pretty">
+              A Doces São Fidélis nasceu em 2000, com o sonho de Roberto Porto de criar doces autênticos e deliciosos. A
+              nossa missão é produzir bananadas e gomas de amido de qualidade excepcional, respeitando as tradições
+              familiares e o sabor único do Brasil.
+            </p>
+            <Button asChild variant="link" className="text-primary hover:underline">
+              <Link href="/nossa-historia">Saiba mais sobre nossa jornada <ArrowRight className="size-4" /></Link>
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Benefícios e Qualidade Section (Antiga Features Section) */}
+      <section className="py-20 lg:py-32 bg-secondary">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center space-y-4 mb-16">
             <h2 className="font-serif text-3xl lg:text-5xl font-bold text-foreground">
-              Por Que Escolher Nossos Produtos?
+              A Qualidade é o Nosso Maior Compromisso
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Qualidade, tradição e sabor em cada mordida
+              Usamos apenas ingredientes naturais, processos artesanais e controle rigoroso em cada etapa da produção.
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="bg-primary"> {/* Alterado para bg-primary */}
+            <Card className="bg-white">
               <CardHeader>
                 <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                   <Leaf className="size-6 text-primary" />
                 </div>
-                <CardTitle>Ingredientes Naturais</CardTitle>
+                <CardTitle>Ingredientes Selecionados</CardTitle>
                 <CardDescription>
                   Utilizamos apenas ingredientes frescos e naturais, cuidadosamente selecionados para garantir o sabor
                   autêntico e a qualidade superior em cada doce. Sem aditivos artificiais.
@@ -107,12 +127,12 @@ export default async function HomePage() {
               </CardHeader>
             </Card>
 
-            <Card className="bg-primary"> {/* Alterado para bg-primary */}
+            <Card className="bg-white">
               <CardHeader>
                 <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                   <Heart className="size-6 text-primary" />
                 </div>
-                <CardTitle>Receitas Tradicionais</CardTitle>
+                <CardTitle>Processo Artesanal</CardTitle>
                 <CardDescription>
                   Nossas receitas são passadas de geração em geração, preservando o modo artesanal de preparo que
                   confere um sabor caseiro e inesquecível, cheio de carinho e história.
@@ -120,12 +140,12 @@ export default async function HomePage() {
               </CardHeader>
             </Card>
 
-            <Card className="bg-primary"> {/* Alterado para bg-primary */}
+            <Card className="bg-white">
               <CardHeader>
                 <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                   <Award className="size-6 text-primary" />
                 </div>
-                <CardTitle>Mais de 20 Anos</CardTitle>
+                <CardTitle>Compromisso com a Excelência</CardTitle>
                 <CardDescription>
                   Com mais de duas décadas de experiência, somos referência na produção de doces artesanais,
                   conquistando a confiança e o paladar de nossos clientes com excelência e dedicação.
@@ -133,12 +153,12 @@ export default async function HomePage() {
               </CardHeader>
             </Card>
 
-            <Card className="bg-primary"> {/* Alterado para bg-primary */}
+            <Card className="bg-white">
               <CardHeader>
                 <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                   <ShoppingBag className="size-6 text-primary" />
                 </div>
-                <CardTitle>Variedade</CardTitle>
+                <CardTitle>Variedade de Produtos</CardTitle>
                 <CardDescription>
                   Oferecemos uma ampla gama de bananadas e gomas de amido, com diferentes sabores e embalagens,
                   perfeitas para todas as ocasiões e para agradar a todos os gostos.
@@ -149,13 +169,13 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Featured Products Section */}
-      <section className="py-20 lg:py-32 bg-secondary">
+      {/* Destaque de Produtos Section */}
+      <section className="py-20 lg:py-32">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4 mb-16">
-            <h2 className="font-serif text-3xl lg:text-5xl font-bold text-foreground">Nossos Produtos em Destaque</h2>
+            <h2 className="font-serif text-3xl lg:text-5xl font-bold text-foreground">Nosso Catálogo de Produtos</h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Conheça alguns dos nossos produtos mais populares
+              Conheça a nossa seleção de bananadas e gomas de amido, feitas com o carinho da tradição.
             </p>
           </div>
 
@@ -214,6 +234,72 @@ export default async function HomePage() {
         </div>
       </section>
 
+      {/* Depoimentos Section */}
+      <section className="py-20 lg:py-32 bg-secondary">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center space-y-4 mb-16">
+            <h2 className="font-serif text-3xl lg:text-5xl font-bold text-foreground">O Que Nossos Clientes Dizem</h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              A satisfação dos nossos clientes é a nossa maior recompensa.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <Card className="bg-white">
+              <CardContent className="p-6 space-y-4">
+                <MessageSquareText className="size-8 text-primary" />
+                <p className="text-muted-foreground italic">
+                  "As bananadas da Doces São Fidélis são incríveis! O sabor é único e traz toda a tradição que amamos."
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="size-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-medium">
+                    MS
+                  </div>
+                  <div>
+                    <p className="font-semibold text-foreground">Maria Silva</p>
+                    <p className="text-sm text-muted-foreground">Cliente Satisfeita</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="bg-white">
+              <CardContent className="p-6 space-y-4">
+                <MessageSquareText className="size-8 text-primary" />
+                <p className="text-muted-foreground italic">
+                  "As gomas de amido são deliciosas e perfeitas para qualquer hora do dia. Qualidade impecável!"
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="size-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-medium">
+                    JP
+                  </div>
+                  <div>
+                    <p className="font-semibold text-foreground">João Pedro</p>
+                    <p className="text-sm text-muted-foreground">Comprador Frequente</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="bg-white">
+              <CardContent className="p-6 space-y-4">
+                <MessageSquareText className="size-8 text-primary" />
+                <p className="text-muted-foreground italic">
+                  "Recomendo a todos! Os doces são feitos com muito carinho e o sabor é de infância."
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="size-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-medium">
+                    AF
+                  </div>
+                  <div>
+                    <p className="font-semibold text-foreground">Ana Ferreira</p>
+                    <p className="text-sm text-muted-foreground">Fã dos Doces</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Contact Section */}
       <section className="py-20 lg:py-32">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -230,7 +316,7 @@ export default async function HomePage() {
             </div>
 
             {/* Newsletter */}
-            <div className="lg:sticky lg:top-24">
+            <div className="lg:sticky lg:top-24" id="newsletter-section">
               <Card className="bg-primary text-primary-foreground border-0">
                 <CardContent className="p-8 lg:p-12">
                   <div className="space-y-6">
@@ -281,7 +367,7 @@ export default async function HomePage() {
                     variant="ghost"
                     className="text-primary-foreground hover:bg-primary-foreground/10"
                   >
-                    <Link href="/contato">Fale Conosco</Link>
+                    <Link href="/produtos">Ver Todos os Produtos</Link>
                   </Button>
                 </div>
               </div>
