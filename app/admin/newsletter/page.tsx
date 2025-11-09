@@ -25,7 +25,11 @@ export default function AdminNewsletterPage() {
   }, [])
 
   const fetchSubscribers = async () => {
-    const { data, error } = await supabase.from("newsletter_subscribers").select("*").order("created_at", { ascending: false })
+    // Alterado para selecionar explicitamente as colunas
+    const { data, error } = await supabase
+      .from("newsletter_subscribers")
+      .select("id, name, email, whatsapp, city, created_at") // Seleção explícita das colunas
+      .order("created_at", { ascending: false })
     
     if (error) {
       console.error("Error fetching newsletter subscribers:", error);
