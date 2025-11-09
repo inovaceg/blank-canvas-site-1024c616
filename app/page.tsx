@@ -55,10 +55,7 @@ export default async function HomePage() {
 
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-20">
           <div className="max-w-3xl space-y-6 text-center mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-primary-foreground text-sm font-medium">
-              <Award className="size-4" />
-              Tradição desde 2000
-            </div>
+            {/* Removido o badge "Tradição desde 2000" */}
             <h1 className="font-serif text-4xl lg:text-6xl font-bold text-white text-balance">
               Sabor Autêntico que Atravessa Gerações
             </h1>
