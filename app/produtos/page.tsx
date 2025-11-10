@@ -104,25 +104,27 @@ export default function ProductsPage() {
               <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {products.map((product) => (
                   <Card key={product.id} className="overflow-hidden group">
-                    <div className="aspect-square relative overflow-hidden bg-muted">
-                      {product.image_url ? (
-                        <Image
-                          src={product.image_url}
-                          alt={product.name}
-                          fill
-                          className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Package className="size-16 text-muted-foreground/30" />
-                        </div>
-                      )}
-                      {product.is_featured && (
-                        <div className="absolute top-4 right-4">
-                          <Badge className="bg-primary text-primary-foreground">Destaque</Badge>
-                        </div>
-                      )}
-                    </div>
+                    <Link href={`/produtos/${product.id}`} className="block"> {/* Link para a página de detalhes */}
+                      <div className="aspect-square relative overflow-hidden bg-muted">
+                        {product.image_url ? (
+                          <Image
+                            src={product.image_url}
+                            alt={product.name}
+                            fill
+                            className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Package className="size-16 text-muted-foreground/30" />
+                          </div>
+                        )}
+                        {product.is_featured && (
+                          <div className="absolute top-4 right-4">
+                            <Badge className="bg-primary text-primary-foreground">Destaque</Badge>
+                          </div>
+                        )}
+                      </div>
+                    </Link>
                     <CardHeader>
                       <CardTitle className="text-xl">{product.name}</CardTitle>
                       <CardDescription className="line-clamp-3">{product.description}</CardDescription>
