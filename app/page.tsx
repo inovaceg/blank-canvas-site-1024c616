@@ -40,6 +40,7 @@ export default async function HomePage() {
   if (productsError) {
     console.error("Error fetching featured products:", productsError)
   }
+  console.log("Featured Products fetched for homepage:", featuredProducts); // Adicionado para depuração
 
   // Fetch banner URL from settings table
   const { data: bannerSetting, error: bannerError } = await supabase
