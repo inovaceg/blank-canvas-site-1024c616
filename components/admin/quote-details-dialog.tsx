@@ -37,7 +37,7 @@ export function QuoteDetailsDialog({ open, onOpenChange, quote }: QuoteDetailsDi
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl flex flex-col"> {/* Removido max-h-[90vh] */}
         <DialogHeader>
-          <DialogTitle>Detalhes da Soliceração de Orçamento</DialogTitle>
+          <DialogTitle>Detalhes da Solicitação de Orçamento</DialogTitle>
           <DialogDescription>
             Informações completas da solicitação enviada por {quote.contact_name}.
           </DialogDescription>
