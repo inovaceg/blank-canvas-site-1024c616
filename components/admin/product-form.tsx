@@ -35,6 +35,7 @@ const productSchema = z.object({
   units_per_package: z.number().int().min(1, "Unidades por embalagem deve ser no mínimo 1").optional().nullable(),
   image_url: z.string().optional().or(z.literal("")),
   is_active: z.boolean(),
+  is_featured: z.boolean(), // Adicionado: Campo para destaque
   display_order: z.number().int().min(0, "Ordem de exibição deve ser 0 ou maior").optional().nullable(),
 })
 
@@ -76,6 +77,7 @@ export function ProductForm({ product }: ProductFormProps) {
     defaultValues: product ? {
       ...product,
       is_active: product.is_active ?? true,
+      is_featured: product.is_featured ?? false, // Valor padrão para destaque
       display_order: product.display_order ?? null, // Manter como null se não definido para permitir a lógica de "próxima ordem"
     } : {
       category: "",
@@ -83,6 +85,7 @@ export function ProductForm({ product }: ProductFormProps) {
       price: null,
       description: "",
       is_active: true,
+      is_featured: false, // Valor padrão para novo produto
       display_order: null, // Valor padrão para novo produto, será preenchido se vazio
     },
   })
@@ -241,6 +244,7 @@ export function ProductForm({ product }: ProductFormProps) {
         price: data.price === null ? null : data.price,
         units_per_package: data.units_per_package === null ? null : data.units_per_package,
         is_active: data.is_active,
+        is_featured: data.is_featured, // Incluir o campo is_featured
         display_order: finalDisplayOrder,
       }
 
@@ -424,7 +428,7 @@ export function ProductForm({ product }: ProductFormProps) {
           {errors.price && <p className="text-sm text-red-600">{errors.price.message}</p>}
         </div>
 
-        {/* Novo campo: Ativo/Inativo */}
+        {/* Campo: Produto Ativo */}
         <div className="flex items-center justify-between space-x-2 pt-4">
           <Label htmlFor="is_active">Produto Ativo</Label>
           <Controller
@@ -442,7 +446,25 @@ export function ProductForm({ product }: ProductFormProps) {
         </div>
         {errors.is_active && <p className="text-sm text-red-600">{errors.is_active.message}</p>}
 
-        {/* Novo campo: Ordem de Exibição */}
+        {/* NOVO CAMPO: Produto em Destaque */}
+        <div className="flex items-center justify-between space-x-2 pt-4">
+          <Label htmlFor="is_featured">Produto em Destaque na Página Inicial</Label>
+          <Controller
+            name="is_featured"
+            control={control}
+            render={({ field }) => (
+              <Switch
+                id="is_featured"
+                checked={field.value}
+                onCheckedChange={field.onChange}
+                disabled={isSubmitting}
+              />
+            )}
+          />
+        </div>
+        {errors.is_featured && <p className="text-sm text-red-600">{errors.is_featured.message}</p>}
+
+        {/* Campo: Ordem de Exibição */}
         <div className="space-y-2">
           <Label htmlFor="display_order">Ordem de Exibição (0 para padrão)</Label>
           <Input
