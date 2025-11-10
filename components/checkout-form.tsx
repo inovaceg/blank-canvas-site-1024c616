@@ -7,20 +7,20 @@ import * as z from "zod"
 import { Button } from "@/components/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group" // Importar RadioGroup
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
-import { useCart } from "@/components/cart-provider" // Importar useCart
+import { useCart } from "@/components/cart-provider"
 
 // Esquema de validação para o formulário de checkout
 const checkoutSchema = z.object({
   documentType: z.enum(["cpf", "cnpj"], { message: "Selecione o tipo de documento" }),
   documentNumber: z.string().min(11, "Documento inválido").max(18, "Documento inválido"),
-  companyName: z.string().min(2, "Nome da empresa deve ter no mínimo 2 caracteres").optional(), // Tornar opcional aqui
+  companyName: z.string().min(2, "Nome da empresa deve ter no mínimo 2 caracteres").optional(),
   fullName: z.string().min(3, "Nome completo deve ter no mínimo 3 caracteres"),
-  email: z.string().email("E-mail inválido"), // Adicionado campo de e-mail
-  phone: z.string().min(10, "Telefone/WhatsApp inválido"),
-  cep: z.string().min(8, "CEP inválido").max(9, "CEP inválido"), // 8 dígitos + hífen
+  email: z.string().email("E-mail inválido"),
+  phone: z.string().min(14, "Telefone/WhatsApp inválido (ex: 22-9-8888-8888)").max(14, "Telefone/WhatsApp inválido (ex: 22-9-8888-8888)"), // Atualizado para 14 caracteres
+  cep: z.string().min(8, "CEP inválido").max(9, "CEP inválido"),
   address: z.string().min(3, "Endereço inválido"),
   number: z.string().min(1, "Número é obrigatório"),
   complement: z.string().optional(),
@@ -59,7 +59,7 @@ export function CheckoutForm() {
   } = useForm<CheckoutFormData>({
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
-      documentType: "cpf", // Valor padrão
+      documentType: "cpf",
     },
   })
 
@@ -128,8 +128,8 @@ export function CheckoutForm() {
       }
 
       toast.success("Solicitação de orçamento enviada com sucesso! Entraremos em contato em breve.")
-      clearCart() // Limpa o carrinho após a finalização
-      reset() // Limpa o formulário
+      clearCart()
+      reset()
       // Redirecionar para uma página de confirmação ou home
     } catch (error: any) {
       console.error("Erro ao finalizar pedido:", error);
@@ -171,7 +171,7 @@ export function CheckoutForm() {
         {errors.documentNumber && <p className="text-sm text-destructive">{errors.documentNumber.message}</p>}
       </div>
 
-      {watchedDocumentType === "cnpj" && ( // Campo de nome da empresa aparece apenas para CNPJ
+      {watchedDocumentType === "cnpj" && (
         <div className="space-y-2">
           <Label htmlFor="companyName">Nome da Empresa *</Label>
           <Input id="companyName" placeholder="Nome da sua empresa" {...register("companyName")} aria-invalid={!!errors.companyName} />
@@ -199,7 +199,7 @@ export function CheckoutForm() {
 
       <div className="space-y-2">
         <Label htmlFor="phone">Telefone / WhatsApp *</Label>
-        <Input id="phone" placeholder="(XX) XXXXX-XXXX" {...register("phone")} aria-invalid={!!errors.phone} />
+        <Input id="phone" placeholder="XX-X-XXXX-XXXX" {...register("phone")} aria-invalid={!!errors.phone} maxLength={14} /> {/* Atualizado placeholder e maxLength */}
         {errors.phone && <p className="text-sm text-destructive">{errors.phone.message}</p>}
       </div>
 

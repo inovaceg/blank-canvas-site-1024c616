@@ -12,7 +12,7 @@ import { Loader2 } from "lucide-react"
 const newsletterSchema = z.object({
   name: z.string().min(2, "Nome completo deve ter no mínimo 2 caracteres"),
   email: z.string().email("E-mail inválido"),
-  whatsapp: z.string().min(10, "WhatsApp deve ter no mínimo 10 caracteres (incluindo DDD)"),
+  whatsapp: z.string().min(14, "WhatsApp inválido (ex: 22-9-8888-8888)").max(14, "WhatsApp inválido (ex: 22-9-8888-8888)"), // Atualizado para 14 caracteres
   city: z.string().min(2, "Cidade deve ter no mínimo 2 caracteres"),
 })
 
@@ -70,7 +70,7 @@ export function NewsletterForm() {
       </div>
 
       <div className="space-y-2">
-        <Input placeholder="Seu WhatsApp (DDD + número) *" {...register("whatsapp")} aria-invalid={!!errors.whatsapp} className="bg-white text-foreground" />
+        <Input placeholder="Seu WhatsApp (XX-X-XXXX-XXXX) *" {...register("whatsapp")} aria-invalid={!!errors.whatsapp} className="bg-white text-foreground" maxLength={14} /> {/* Atualizado placeholder e maxLength */}
         {errors.whatsapp && <p className="text-sm text-red-200">{errors.whatsapp.message}</p>}
       </div>
 
