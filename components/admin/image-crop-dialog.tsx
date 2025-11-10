@@ -46,15 +46,15 @@ export function ImageCropDialog({ open, onOpenChange, imageUrl, onCropComplete, 
     const ctx = canvas.getContext("2d")
     if (!ctx) return
 
+    // Get the actual *displayed* dimensions of the canvas element
+    const displayWidth = canvas.offsetWidth;
+    const displayHeight = canvas.offsetHeight;
+
     // Internal resolution of the canvas for output
     const outputWidth = 1920; // Target width for desktop banner
     const outputHeight = aspectRatio ? outputWidth / aspectRatio : outputWidth;
 
-    // Assumed display width of the canvas element in the dialog for interaction
-    const assumedDisplayWidth = 800;
-    const assumedDisplayHeight = aspectRatio ? assumedDisplayWidth / aspectRatio : assumedDisplayWidth;
-
-    // Set the actual pixel dimensions of the canvas
+    // Set the actual pixel dimensions of the canvas for drawing
     canvas.width = outputWidth;
     canvas.height = outputHeight;
 
@@ -62,13 +62,17 @@ export function ImageCropDialog({ open, onOpenChange, imageUrl, onCropComplete, 
     ctx.fillRect(0, 0, outputWidth, outputHeight);
 
     ctx.save();
-    // Scale position from display coordinates to output canvas coordinates
-    const scaleX = outputWidth / assumedDisplayWidth;
-    const scaleY = outputHeight / assumedDisplayHeight;
+    // Calculate the center of the internal canvas
+    const centerX = outputWidth / 2;
+    const centerY = outputHeight / 2;
+
+    // Scale factor from *display* pixels (where position.x/y come from) to *internal* canvas pixels
+    const scaleFactorX = outputWidth / displayWidth;
+    const scaleFactorY = outputHeight / displayHeight;
 
     ctx.translate(
-      outputWidth / 2 + position.x * scaleX,
-      outputHeight / 2 + position.y * scaleY
+      centerX + position.x * scaleFactorX,
+      centerY + position.y * scaleFactorY
     );
     ctx.rotate((rotation * Math.PI) / 180);
 
@@ -88,14 +92,17 @@ export function ImageCropDialog({ open, onOpenChange, imageUrl, onCropComplete, 
 
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
     setIsDragging(true)
-    setDragStart({ x: e.clientX - position.x, y: e.clientY - position.y })
+    // Calculate drag start relative to the canvas's current display position
+    const rect = e.currentTarget.getBoundingClientRect();
+    setDragStart({ x: e.clientX - rect.left - position.x, y: e.clientY - rect.top - position.y });
   }
 
   const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!isDragging) return
+    const rect = e.currentTarget.getBoundingClientRect();
     setPosition({
-      x: e.clientX - dragStart.x,
-      y: e.clientY - dragStart.y,
+      x: e.clientX - rect.left - dragStart.x,
+      y: e.clientY - rect.top - dragStart.y,
     })
   }
 
@@ -120,7 +127,7 @@ export function ImageCropDialog({ open, onOpenChange, imageUrl, onCropComplete, 
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl">
+      <DialogContent className="max-w-full sm:max-w-lg md:max-w-xl lg:max-w-4xl"> {/* Make dialog responsive */}
         <DialogHeader>
           <DialogTitle>Ajustar Imagem</DialogTitle>
         </DialogHeader>
@@ -129,8 +136,8 @@ export function ImageCropDialog({ open, onOpenChange, imageUrl, onCropComplete, 
           <div className="flex justify-center bg-gray-100 rounded-lg p-4">
             <canvas
               ref={canvasRef}
-              className="max-w-full h-auto cursor-move border border-gray-300 rounded"
-              style={{ maxWidth: "800px", height: "auto" }} // Explicitly limit display size for interaction
+              className="w-full h-auto cursor-move border border-gray-300 rounded" // Use w-full and remove fixed maxWidth
+              // Removed inline style maxWidth: "800px", height: "auto"
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}
