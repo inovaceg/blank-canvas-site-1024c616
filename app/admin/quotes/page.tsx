@@ -6,6 +6,7 @@ import { Search, Eye, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 import { QuoteDetailsDialog } from "@/components/admin/quote-details-dialog" // Importar o novo diálogo
 import { ScrollArea } from "@/components/ui/scroll-area" // Importar ScrollArea para a tabela
+import { formatPhoneNumber } from "@/lib/utils" // Importar a função de formatação
 
 interface QuoteRequest {
   id: string
@@ -136,7 +137,7 @@ export default function AdminQuotesPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{quote.contact_name}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{quote.email}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{quote.phone}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{formatPhoneNumber(quote.phone)}</td> {/* Aplicando a formatação aqui */}
                     <td className="px-6 py-4 text-sm text-[#4a4a4a]">{quote.product_interest || "-"}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                       {new Date(quote.created_at).toLocaleString("pt-BR")}
