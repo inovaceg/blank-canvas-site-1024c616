@@ -35,9 +35,10 @@ export function RichTextEditor({ value, onChange, placeholder, className }: Rich
     editorProps: {
       attributes: {
         class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-xl focus:outline-none max-w-none',
-        'data-placeholder': placeholder,
+        'data-placeholder': placeholder || '', // Corrigido para garantir que seja sempre uma string
       },
     },
+    immediatelyRender: false, // Adicionado para evitar erros de hidratação no SSR
   })
 
   if (!editor) {
