@@ -98,8 +98,10 @@ export default async function HomePage() {
             <div className="flex flex-wrap gap-3 justify-center"> {/* Reduced gap for mobile */}
               <Button asChild size="default" className="rounded-full"> {/* Adjusted button size for mobile */}
                 <Link href="/produtos">
-                  Veja Nosso Catálogo
-                  <ArrowRight />
+                  <span>
+                    Veja Nosso Catálogo
+                    <ArrowRight />
+                  </span>
                 </Link>
               </Button>
               <Button
@@ -129,7 +131,11 @@ export default async function HomePage() {
               familiares e o sabor único do Brasil.
             </p>
             <Button asChild variant="link" className="text-primary hover:underline">
-              <Link href="/nossa-historia">Saiba mais sobre nossa jornada <ArrowRight className="size-4" /></Link>
+              <Link href="/nossa-historia">
+                <span>
+                  Saiba mais sobre nossa jornada <ArrowRight className="size-4" />
+                </span>
+              </Link>
             </Button>
           </div>
         </div>
@@ -262,8 +268,10 @@ export default async function HomePage() {
           <div className="text-center mt-12">
             <Button asChild size="lg">
               <Link href="/produtos">
-                Ver Todos os Produtos
-                <ArrowRight />
+                <span>
+                  Ver Todos os Produtos
+                  <ArrowRight />
+                </span>
               </Link>
             </Button>
           </div>
