@@ -12,8 +12,10 @@ export default function NewProductPage() {
           href="/admin/products"
           className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-[#ff8800] mb-6"
         >
-          <ArrowLeft className="size-4" />
-          Voltar para produtos
+          <span>
+            <ArrowLeft className="size-4" />
+            Voltar para produtos
+          </span>
         </Link>
 
         <div className="bg-white rounded-lg shadow-sm p-6">
