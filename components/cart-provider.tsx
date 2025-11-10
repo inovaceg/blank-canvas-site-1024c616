@@ -77,7 +77,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const clearCart = useCallback(() => {
     setCartItems([])
-    toast.info("Orçamento limpo.")
+    // toast.info("Orçamento limpo.") // Removido para evitar toasts duplicados
   }, [])
 
   const getTotalItems = useCallback(() => {
