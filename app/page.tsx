@@ -60,8 +60,8 @@ export default async function HomePage() {
       <SiteHeader />
 
       {/* Hero Section */}
-      <section className="relative h-[calc(100vh-4rem)] max-h-[700px] flex items-center justify-center text-center overflow-hidden">
-        <div className="absolute inset-0 z-0">
+      <section className="relative flex items-center justify-center text-center overflow-hidden min-h-[400px] lg:min-h-[500px]">
+        <div className="absolute inset-0 z-0 aspect-video">
           <Image
             src={bannerImageUrl}
             alt="Doces São Fidélis"
