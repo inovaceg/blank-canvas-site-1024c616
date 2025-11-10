@@ -170,8 +170,10 @@ export default function ProductDetailPage() {
               href="/produtos"
               className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-[#ff8800] mb-6"
             >
-              <ArrowLeft className="size-4" />
-              Voltar para o Catálogo
+              <span>
+                <ArrowLeft className="size-4" />
+                Voltar para o Catálogo
+              </span>
             </Link>
 
             <Card className="grid md:grid-cols-2 gap-8 p-6">
@@ -249,7 +251,9 @@ export default function ProductDetailPage() {
                     </Button>
                   </div>
                   <Button className="flex-1" size="lg" onClick={handleAddToCart}>
-                    <ShoppingCart className="size-5 mr-2" /> Adicionar ao Orçamento
+                    <span>
+                      <ShoppingCart className="size-5 mr-2" /> Adicionar ao Orçamento
+                    </span>
                   </Button>
                 </div>
               </div>
@@ -320,7 +324,9 @@ export default function ProductDetailPage() {
                           className="w-full mt-3 text-xs h-8"
                           onClick={() => handleAddRelatedToCart(relatedProduct, relatedQuantities[relatedProduct.id])}
                         >
-                          <ShoppingCart className="size-3 mr-1" /> Adicionar ao Orçamento
+                          <span>
+                            <ShoppingCart className="size-3 mr-1" /> Adicionar ao Orçamento
+                          </span>
                         </Button>
                       </CardContent>
                     </Card>

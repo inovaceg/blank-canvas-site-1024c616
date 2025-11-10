@@ -188,7 +188,9 @@ export default function ProductsPage() {
                             units_per_package: product.units_per_package, // Passa o novo campo
                           }, quantities[product.id])} // Passa a quantidade selecionada
                         >
-                          <ShoppingCart className="size-4 mr-2" /> Adicionar ao Orçamento
+                          <span>
+                            <ShoppingCart className="size-4 mr-2" /> Adicionar ao Orçamento
+                          </span>
                         </Button>
                       </div>
                     </CardContent>
@@ -207,7 +209,7 @@ export default function ProductsPage() {
                   Em breve teremos novos produtos para você. Entre em contato para mais informações.
                 </p>
                 <Button asChild>
-                  <Link href="/contato">Fale Conosco</Link>
+                  <Link href="/contato"><span>Fale Conosco</span></Link>
                 </Button>
               </div>
             )}
@@ -227,7 +229,7 @@ export default function ProductsPage() {
               </p>
               <div className="flex flex-wrap gap-4 justify-center">
                 <Button asChild variant="outline" size="lg">
-                  <Link href="/contato">Fale Conosco</Link>
+                  <Link href="/contato"><span>Fale Conosco</span></Link>
                 </Button>
               </div>
             </div>

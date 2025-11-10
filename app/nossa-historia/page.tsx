@@ -193,11 +193,11 @@ export default function OurHistoryPage() {
               </p>
               <div className="flex flex-wrap gap-4 justify-center">
                 <Button asChild size="lg">
-                  <Link href="/produtos">Ver Produtos</Link>
+                  <Link href="/produtos"><span>Ver Produtos</span></Link>
                 </Button>
                 {/* O botão "Fale Conosco" já existe e não é um "Solicitar Orçamento", então o mantemos. */}
                 <Button asChild variant="outline" size="lg">
-                  <Link href="/contato">Fale Conosco</Link>
+                  <Link href="/contato"><span>Fale Conosco</span></Link>
                 </Button>
               </div>
             </div>
