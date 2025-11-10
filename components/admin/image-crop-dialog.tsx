@@ -46,25 +46,38 @@ export function ImageCropDialog({ open, onOpenChange, imageUrl, onCropComplete, 
     const ctx = canvas.getContext("2d")
     if (!ctx) return
 
-    const canvasWidth = 800 // Largura máxima para o canvas no diálogo
-    const canvasHeight = aspectRatio ? canvasWidth / aspectRatio : canvasWidth // Calcula a altura com base na proporção ou padrão quadrado
+    // Internal resolution of the canvas for output
+    const outputWidth = 1920; // Target width for desktop banner
+    const outputHeight = aspectRatio ? outputWidth / aspectRatio : outputWidth;
 
-    canvas.width = canvasWidth
-    canvas.height = canvasHeight
+    // Assumed display width of the canvas element in the dialog for interaction
+    const assumedDisplayWidth = 800;
+    const assumedDisplayHeight = aspectRatio ? assumedDisplayWidth / aspectRatio : assumedDisplayWidth;
 
-    ctx.fillStyle = "#f3f4f6"
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight)
+    // Set the actual pixel dimensions of the canvas
+    canvas.width = outputWidth;
+    canvas.height = outputHeight;
 
-    ctx.save()
-    ctx.translate(canvasWidth / 2 + position.x, canvasHeight / 2 + position.y) // Ajusta a translação para a nova altura
-    ctx.rotate((rotation * Math.PI) / 180)
+    ctx.fillStyle = "#f3f4f6";
+    ctx.fillRect(0, 0, outputWidth, outputHeight);
 
-    const scale = zoom / 100
-    const scaledWidth = image.width * scale
-    const scaledHeight = image.height * scale
+    ctx.save();
+    // Scale position from display coordinates to output canvas coordinates
+    const scaleX = outputWidth / assumedDisplayWidth;
+    const scaleY = outputHeight / assumedDisplayHeight;
 
-    ctx.drawImage(image, -scaledWidth / 2, -scaledHeight / 2, scaledWidth, scaledHeight)
-    ctx.restore()
+    ctx.translate(
+      outputWidth / 2 + position.x * scaleX,
+      outputHeight / 2 + position.y * scaleY
+    );
+    ctx.rotate((rotation * Math.PI) / 180);
+
+    const zoomScale = zoom / 100;
+    const scaledImageWidth = image.width * zoomScale;
+    const scaledImageHeight = image.height * zoomScale;
+
+    ctx.drawImage(image, -scaledImageWidth / 2, -scaledImageHeight / 2, scaledImageWidth, scaledImageHeight);
+    ctx.restore();
   }, [image, zoom, rotation, position, aspectRatio])
 
   useEffect(() => {
@@ -117,7 +130,7 @@ export function ImageCropDialog({ open, onOpenChange, imageUrl, onCropComplete, 
             <canvas
               ref={canvasRef}
               className="max-w-full h-auto cursor-move border border-gray-300 rounded"
-              style={{ maxHeight: "500px" }}
+              style={{ maxWidth: "800px", height: "auto" }} // Explicitly limit display size for interaction
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}

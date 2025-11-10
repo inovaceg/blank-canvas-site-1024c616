@@ -70,11 +70,11 @@ export default async function HomePage() {
         <div className="absolute inset-0 z-0 aspect-video">
           <picture>
             {/* Mobile (max-width: 767px) */}
-            <source media="(max-width: 767px)" srcSet={mobileBannerUrl} />
+            <source media="(max-width: 767px)" src={mobileBannerUrl} />
             {/* Tablet (min-width: 768px and max-width: 1023px) */}
-            <source media="(min-width: 768px) and (max-width: 1023px)" srcSet={tabletBannerUrl} />
+            <source media="(min-width: 768px) and (max-width: 1023px)" src={tabletBannerUrl} />
             {/* Desktop (min-width: 1024px) */}
-            <source media="(min-width: 1024px)" srcSet={desktopBannerUrl} />
+            <source media="(min-width: 1024px)" src={desktopBannerUrl} />
             {/* Fallback Image for browsers that don't support <picture> or if no source matches */}
             <img
               src={desktopBannerUrl} // Usar a imagem desktop como fallback principal
