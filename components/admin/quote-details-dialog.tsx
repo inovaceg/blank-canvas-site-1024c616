@@ -83,16 +83,13 @@ export function QuoteDetailsDialog({ open, onOpenChange, quote }: QuoteDetailsDi
             {products.length > 0 && (
               <div>
                 <Label className="font-semibold mb-2 block">Produtos Solicitados:</Label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <ul className="space-y-1"> {/* Alterado para uma lista simples */}
                   {products.map((product, index) => (
-                    <div key={index} className="bg-gray-50 p-3 rounded-md border border-gray-200">
-                      <p className="text-sm font-medium text-foreground">{product.name}</p>
-                      <p className="text-xs text-muted-foreground">Quantidade: {product.quantity} und.</p>
-                      {product.weight && <p className="text-xs text-muted-foreground">Peso: {product.weight}</p>}
-                      {product.unitsPerPackage && <p className="text-xs text-muted-foreground">Unidades/Embalagem: {product.unitsPerPackage}</p>}
-                    </div>
+                    <li key={index} className="text-sm text-muted-foreground">
+                      <span className="font-medium text-foreground">{product.name}:</span> {product.quantity} und.
+                    </li>
                   ))}
-                </div>
+                </ul>
               </div>
             )}
 
