@@ -79,12 +79,15 @@ export function SiteHeader() {
               {/* Ícone do Carrinho */}
               <Button asChild size="icon-sm" variant="ghost" className="relative">
                 <Link href="/carrinho">
-                  <ShoppingCart className="size-5" />
-                  {getTotalItems() > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full size-4 flex items-center justify-center text-xs font-bold">
-                      {getTotalItems()}
-                    </span>
-                  )}
+                  {/* Envolver o ícone e o span condicional em um único span */}
+                  <span>
+                    <ShoppingCart className="size-5" />
+                    {getTotalItems() > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full size-4 flex items-center justify-center text-xs font-bold">
+                        {getTotalItems()}
+                      </span>
+                    )}
+                  </span>
                 </Link>
               </Button>
             </nav>
@@ -93,12 +96,15 @@ export function SiteHeader() {
               {/* Ícone do Carrinho para Mobile */}
               <Button asChild size="icon-sm" variant="ghost" className="relative">
                 <Link href="/carrinho">
-                  <ShoppingCart className="size-5" />
-                  {getTotalItems() > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full size-4 flex items-center justify-center text-xs font-bold">
-                      {getTotalItems()}
-                    </span>
-                  )}
+                  {/* Envolver o ícone e o span condicional em um único span */}
+                  <span>
+                    <ShoppingCart className="size-5" />
+                    {getTotalItems() > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full size-4 flex items-center justify-center text-xs font-bold">
+                        {getTotalItems()}
+                      </span>
+                    )}
+                  </span>
                 </Link>
               </Button>
               <button
