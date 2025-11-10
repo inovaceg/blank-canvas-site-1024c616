@@ -42,17 +42,23 @@ export default async function HomePage() {
   }
   console.log("Featured Products fetched for homepage:", featuredProducts); // Adicionado para depuração
 
-  // Fetch banner URL from settings table
-  const { data: bannerSetting, error: bannerError } = await supabase
+  // Fetch banner URLs from settings table
+  const { data: bannerSettings, error: bannerError } = await supabase
     .from("settings")
-    .select("value")
-    .eq("key", "homepage_banner_url")
-    .single()
+    .select("key, value")
+    .in("key", ["homepage_banner_url_desktop", "homepage_banner_url_tablet", "homepage_banner_url_mobile"]);
 
-  const bannerImageUrl = bannerSetting?.value || "/banner.png" // Fallback to default image
+  const bannerUrls: Record<string, string> = {};
+  bannerSettings?.forEach(setting => {
+    bannerUrls[setting.key] = setting.value || "";
+  });
+
+  const desktopBannerUrl = bannerUrls["homepage_banner_url_desktop"] || "/banner.png";
+  const tabletBannerUrl = bannerUrls["homepage_banner_url_tablet"] || desktopBannerUrl; // Fallback para desktop
+  const mobileBannerUrl = bannerUrls["homepage_banner_url_mobile"] || tabletBannerUrl; // Fallback para tablet/desktop
 
   if (bannerError && bannerError.code !== 'PGRST116') { // PGRST116 means no rows found
-    console.error("Error fetching homepage banner URL:", bannerError)
+    console.error("Error fetching homepage banner URLs:", bannerError)
   }
 
   return (
@@ -62,13 +68,22 @@ export default async function HomePage() {
       {/* Hero Section */}
       <section className="relative flex items-center justify-center text-center overflow-hidden min-h-[400px] lg:min-h-[500px]">
         <div className="absolute inset-0 z-0 aspect-video">
-          <Image
-            src={bannerImageUrl}
-            alt="Doces São Fidélis"
-            fill
-            className="object-cover w-full h-full"
-            priority
-          />
+          <picture>
+            {/* Mobile (max-width: 767px) */}
+            <source media="(max-width: 767px)" srcSet={mobileBannerUrl} />
+            {/* Tablet (min-width: 768px and max-width: 1023px) */}
+            <source media="(min-width: 768px) and (max-width: 1023px)" srcSet={tabletBannerUrl} />
+            {/* Desktop (min-width: 1024px) */}
+            <source media="(min-width: 1024px)" srcSet={desktopBannerUrl} />
+            {/* Fallback Image for browsers that don't support <picture> or if no source matches */}
+            <Image
+              src={desktopBannerUrl} // Usar a imagem desktop como fallback principal
+              alt="Doces São Fidélis"
+              fill
+              className="object-cover w-full h-full"
+              priority
+            />
+          </picture>
           {/* Overlay com um gradiente sutil para melhor contraste do texto */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20" />
         </div>
