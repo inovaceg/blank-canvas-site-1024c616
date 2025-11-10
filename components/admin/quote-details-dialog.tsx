@@ -5,7 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area" // Importar ScrollArea
 import { Label } from "@/components/ui/label"
-import { formatPhoneNumber } from "@/lib/utils" // Importar a função de formatação
+import { formatPhoneNumber, parseQuoteMessage } from "@/lib/utils" // Importar a função de formatação e parseQuoteMessage
 
 interface QuoteRequest {
   id: string
@@ -30,6 +30,8 @@ interface QuoteDetailsDialogProps {
 
 export function QuoteDetailsDialog({ open, onOpenChange, quote }: QuoteDetailsDialogProps) {
   if (!quote) return null
+
+  const { products, additionalMessage } = parseQuoteMessage(quote.message);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -65,7 +67,7 @@ export function QuoteDetailsDialog({ open, onOpenChange, quote }: QuoteDetailsDi
             </div>
             <div>
               <Label className="font-semibold">Telefone:</Label>
-              <p className="text-sm text-muted-foreground">{formatPhoneNumber(quote.phone)}</p> {/* Aplicando a formatação aqui */}
+              <p className="text-sm text-muted-foreground">{formatPhoneNumber(quote.phone)}</p>
             </div>
             {(quote.address || quote.city || quote.state) && (
               <div>
@@ -77,22 +79,27 @@ export function QuoteDetailsDialog({ open, onOpenChange, quote }: QuoteDetailsDi
                 </p>
               </div>
             )}
-            {quote.product_interest && (
+
+            {products.length > 0 && (
               <div>
-                <Label className="font-semibold">Produtos de Interesse:</Label>
-                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{quote.product_interest}</p>
-            </div>
-            )}
-            {quote.quantity && (
-              <div>
-                <Label className="font-semibold">Quantidade Total:</Label>
-                <p className="text-sm text-muted-foreground">{quote.quantity}</p>
+                <Label className="font-semibold mb-2 block">Produtos Solicitados:</Label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {products.map((product, index) => (
+                    <div key={index} className="bg-gray-50 p-3 rounded-md border border-gray-200">
+                      <p className="text-sm font-medium text-foreground">{product.name}</p>
+                      <p className="text-xs text-muted-foreground">Quantidade: {product.quantity} und.</p>
+                      {product.weight && <p className="text-xs text-muted-foreground">Peso: {product.weight}</p>}
+                      {product.unitsPerPackage && <p className="text-xs text-muted-foreground">Unidades/Embalagem: {product.unitsPerPackage}</p>}
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
-            {quote.message && (
+
+            {additionalMessage && (
               <div>
-                <Label className="font-semibold">Mensagem:</Label>
-                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{quote.message}</p>
+                <Label className="font-semibold">Mensagem Adicional:</Label>
+                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{additionalMessage}</p>
               </div>
             )}
           </div>
