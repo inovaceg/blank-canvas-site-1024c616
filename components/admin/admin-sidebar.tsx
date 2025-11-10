@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
-import { LayoutDashboard, Package, FileText, MessageSquare, Mail, LogOut, Menu, X } from "lucide-react"
+import { LayoutDashboard, Package, FileText, MessageSquare, Mail, LogOut, Menu, X, Image as ImageIcon } from "lucide-react" // Adicionado ImageIcon
 import { cn } from "@/lib/utils"
 import Image from "next/image"
 import { useState } from "react"
@@ -14,6 +14,7 @@ const navigation = [
   { name: "Orçamentos", href: "/admin/quotes", icon: FileText },
   { name: "Contatos", href: "/admin/messages", icon: MessageSquare },
   { name: "Newsletter", href: "/admin/newsletter", icon: Mail },
+  { name: "Banner", href: "/admin/banner", icon: ImageIcon }, // Novo item de navegação
 ]
 
 export function AdminSidebar() {

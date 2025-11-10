@@ -26,14 +26,27 @@ interface Product {
 export default async function HomePage() {
   const supabase = await createClient()
 
-  const { data: featuredProducts, error } = await supabase
+  const { data: featuredProducts, error: productsError } = await supabase
     .from("products")
     .select("*")
     .eq("is_featured", true)
     .order("created_at", { ascending: false })
 
-  if (error) {
-    console.error("Error fetching featured products:", error)
+  if (productsError) {
+    console.error("Error fetching featured products:", productsError)
+  }
+
+  // Fetch banner URL from settings table
+  const { data: bannerSetting, error: bannerError } = await supabase
+    .from("settings")
+    .select("value")
+    .eq("key", "homepage_banner_url")
+    .single()
+
+  const bannerImageUrl = bannerSetting?.value || "/banner.png" // Fallback to default image
+
+  if (bannerError && bannerError.code !== 'PGRST116') { // PGRST116 means no rows found
+    console.error("Error fetching homepage banner URL:", bannerError)
   }
 
   return (
@@ -44,7 +57,7 @@ export default async function HomePage() {
       <section className="relative min-h-[600px] flex items-center">
         <div className="absolute inset-0 z-0">
           <Image
-            src="/banner.png"
+            src={bannerImageUrl} {/* Usando a URL dinâmica do banner */}
             alt="Doces São Fidélis"
             fill
             className="object-cover w-full h-full"
