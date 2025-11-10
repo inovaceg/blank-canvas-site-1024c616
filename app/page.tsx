@@ -7,7 +7,7 @@ import Link from "next/link"
 import { ContactForm } from "@/components/contact-form"
 import { NewsletterForm } from "@/components/newsletter-form"
 import { createClient } from "@/lib/supabase/server"
-import Image from "next/image"
+import Image from "next/image" // Manter import para outros usos, mas não para o banner principal
 import { Badge } from "@/components/ui/badge"
 
 interface Product {
@@ -66,7 +66,7 @@ export default async function HomePage() {
       <SiteHeader />
 
       {/* Hero Section */}
-      <section className="relative flex items-center justify-center text-center overflow-hidden min-h-[400px] lg:min-h-[500px]">
+      <section className="relative flex items-center justify-center text-center overflow-hidden"> {/* Removido min-h-[...] */}
         <div className="absolute inset-0 z-0 aspect-video">
           <picture>
             {/* Mobile (max-width: 767px) */}
@@ -76,12 +76,11 @@ export default async function HomePage() {
             {/* Desktop (min-width: 1024px) */}
             <source media="(min-width: 1024px)" srcSet={desktopBannerUrl} />
             {/* Fallback Image for browsers that don't support <picture> or if no source matches */}
-            <Image
+            <img
               src={desktopBannerUrl} // Usar a imagem desktop como fallback principal
               alt="Doces São Fidélis"
-              fill
-              className="object-cover w-full h-full"
-              priority
+              className="absolute inset-0 w-full h-full object-cover" // Usando classes Tailwind para preencher e cobrir
+              // 'priority' é uma prop do Next/Image, removida para <img> padrão
             />
           </picture>
           {/* Overlay com um gradiente sutil para melhor contraste do texto */}
