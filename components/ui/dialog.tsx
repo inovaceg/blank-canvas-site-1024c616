@@ -59,7 +59,8 @@ function DialogContent({
       data-slot="dialog-content"
       className={cn(
         'bg-background data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed top-[50%] left-[50%] z-50 grid translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border shadow-lg duration-200',
-        'w-[calc(100%-1rem)] p-4 sm:w-full sm:max-w-lg sm:p-6', // Ajustado para responsividade em mobile
+        'w-[calc(100%-1rem)] max-w-[calc(100%-1rem)] p-4 sm:w-full sm:max-w-lg sm:p-6', // Ajustado para responsividade em mobile
+        'max-h-[90vh] overflow-y-auto', // Adicionado altura máxima e rolagem
         className,
       )}
       {...props}
