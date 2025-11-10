@@ -34,12 +34,15 @@ export function SiteHeader() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <Link href="/" className="flex items-center gap-3">
-              <img
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Design%20sem%20nome%20%281%29%20%281%29-vqBz106SPSsejO2YFogjWyruHk8EV4.png"
-                alt="Doces São Fidélis"
-                className="h-12 w-auto"
-              />
-              <span className="text-xl font-bold text-primary">Doces São Fidélis</span>
+              {/* Envolver img e span em um único div para resolver o erro React.Children.only */}
+              <div className="flex items-center gap-3">
+                <img
+                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Design%20sem%20nome%20%281%29%20%281%29-vqBz106SPSsejO2YFogjWyruHk8EV4.png"
+                  alt="Doces São Fidélis"
+                  className="h-12 w-auto"
+                />
+                <span className="text-xl font-bold text-primary">Doces São Fidélis</span>
+              </div>
             </Link>
 
             <nav className="hidden md:flex items-center gap-6">
