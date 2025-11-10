@@ -35,15 +35,15 @@ export function QuoteDetailsDialog({ open, onOpenChange, quote }: QuoteDetailsDi
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col">
+      <DialogContent className="max-w-2xl flex flex-col"> {/* Removido max-h-[90vh] */}
         <DialogHeader>
-          <DialogTitle>Detalhes da Solicitação de Orçamento</DialogTitle>
+          <DialogTitle>Detalhes da Soliceração de Orçamento</DialogTitle>
           <DialogDescription>
             Informações completas da solicitação enviada por {quote.contact_name}.
           </DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 pr-4 -mr-4"> {/* Adicionado ScrollArea para conteúdo longo */}
+        <ScrollArea className="flex-1 pr-4 -mr-4">
           <div className="grid grid-cols-1 gap-4 py-4">
             <div>
               <Label className="font-semibold">Data da Solicitação:</Label>
@@ -83,7 +83,7 @@ export function QuoteDetailsDialog({ open, onOpenChange, quote }: QuoteDetailsDi
             {products.length > 0 && (
               <div>
                 <Label className="font-semibold mb-2 block">Produtos Solicitados:</Label>
-                <ul className="space-y-1"> {/* Alterado para uma lista simples */}
+                <ul className="space-y-1">
                   {products.map((product, index) => (
                     <li key={index} className="text-sm text-muted-foreground">
                       <span className="font-medium text-foreground">{product.name}:</span> {product.quantity} und.
