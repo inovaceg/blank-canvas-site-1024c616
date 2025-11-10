@@ -201,31 +201,33 @@ export default async function HomePage() {
           {featuredProducts && featuredProducts.length > 0 ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {featuredProducts.map((product) => (
-                <Card key={product.id} className="overflow-hidden">
-                  <div className="aspect-square relative overflow-hidden bg-muted">
-                    {product.image_url ? (
-                      <Image
-                        src={product.image_url}
-                        alt={product.name}
-                        fill
-                        className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center">
-                        <Package className="size-16 text-muted-foreground/30" />
-                      </div>
-                    )}
-                    {product.is_featured && (
-                      <div className="absolute top-4 right-4">
-                        <Badge className="bg-primary text-primary-foreground">Destaque</Badge>
-                      </div>
-                    )}
-                  </div>
-                  <CardHeader>
-                    <CardTitle>{product.name}</CardTitle>
-                    <CardDescription className="line-clamp-3" dangerouslySetInnerHTML={{ __html: product.description }} />
-                  </CardHeader>
-                </Card>
+                <Link key={product.id} href={`/produtos/${product.id}`} className="block"> {/* Adicionado Link aqui */}
+                  <Card className="overflow-hidden">
+                    <div className="aspect-square relative overflow-hidden bg-muted">
+                      {product.image_url ? (
+                        <Image
+                          src={product.image_url}
+                          alt={product.name}
+                          fill
+                          className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <Package className="size-16 text-muted-foreground/30" />
+                        </div>
+                      )}
+                      {product.is_featured && (
+                        <div className="absolute top-4 right-4">
+                          <Badge className="bg-primary text-primary-foreground">Destaque</Badge>
+                        </div>
+                      )}
+                    </div>
+                    <CardHeader>
+                      <CardTitle>{product.name}</CardTitle>
+                      <CardDescription className="line-clamp-3" dangerouslySetInnerHTML={{ __html: product.description }} />
+                    </CardHeader>
+                  </Card>
+                </Link>
               ))}
             </div>
           ) : (
