@@ -13,9 +13,10 @@ interface ImageCropDialogProps {
   onOpenChange: (open: boolean) => void
   imageUrl: string
   onCropComplete: (croppedImageBlob: Blob) => void
+  aspectRatio?: number // Adicionado: proporção de aspecto para o canvas de corte
 }
 
-export function ImageCropDialog({ open, onOpenChange, imageUrl, onCropComplete }: ImageCropDialogProps) {
+export function ImageCropDialog({ open, onOpenChange, imageUrl, onCropComplete, aspectRatio }: ImageCropDialogProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [image, setImage] = useState<HTMLImageElement | null>(null)
   const [zoom, setZoom] = useState(100)
@@ -38,12 +39,6 @@ export function ImageCropDialog({ open, onOpenChange, imageUrl, onCropComplete }
     }
   }, [imageUrl])
 
-  useEffect(() => {
-    if (image && canvasRef.current) {
-      drawImage()
-    }
-  }, [image, zoom, rotation, position])
-
   const drawImage = useCallback(() => {
     if (!image || !canvasRef.current) return
 
@@ -51,15 +46,17 @@ export function ImageCropDialog({ open, onOpenChange, imageUrl, onCropComplete }
     const ctx = canvas.getContext("2d")
     if (!ctx) return
 
-    const canvasSize = 800
-    canvas.width = canvasSize
-    canvas.height = canvasSize
+    const canvasWidth = 800 // Largura máxima para o canvas no diálogo
+    const canvasHeight = aspectRatio ? canvasWidth / aspectRatio : canvasWidth // Calcula a altura com base na proporção ou padrão quadrado
+
+    canvas.width = canvasWidth
+    canvas.height = canvasHeight
 
     ctx.fillStyle = "#f3f4f6"
-    ctx.fillRect(0, 0, canvasSize, canvasSize)
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight)
 
     ctx.save()
-    ctx.translate(canvasSize / 2 + position.x, canvasSize / 2 + position.y)
+    ctx.translate(canvasWidth / 2 + position.x, canvasHeight / 2 + position.y) // Ajusta a translação para a nova altura
     ctx.rotate((rotation * Math.PI) / 180)
 
     const scale = zoom / 100
@@ -68,7 +65,13 @@ export function ImageCropDialog({ open, onOpenChange, imageUrl, onCropComplete }
 
     ctx.drawImage(image, -scaledWidth / 2, -scaledHeight / 2, scaledWidth, scaledHeight)
     ctx.restore()
-  }, [image, zoom, rotation, position])
+  }, [image, zoom, rotation, position, aspectRatio])
+
+  useEffect(() => {
+    if (image && canvasRef.current) {
+      drawImage()
+    }
+  }, [image, zoom, rotation, position, drawImage]) // drawImage agora está declarado antes de ser usado aqui
 
   const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
     setIsDragging(true)

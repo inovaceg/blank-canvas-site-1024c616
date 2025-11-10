@@ -238,6 +238,7 @@ export function BannerForm() {
           onOpenChange={setCropDialogOpen}
           imageUrl={tempImageUrl}
           onCropComplete={handleCropComplete}
+          aspectRatio={16 / 9} // Passando a proporção 16:9 aqui
         />
       )}
     </>
