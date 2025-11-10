@@ -4,15 +4,14 @@ import type React from "react"
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
+import { useForm, Controller } from "react-hook-form" // Importar Controller
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
-import { Loader2, Upload, Plus, Pencil, X, Settings } from "lucide-react" // Adicionado Settings
+import { Loader2, Upload, Plus, Pencil, X, Settings } from "lucide-react"
 import { ImageCropDialog } from "./image-crop-dialog"
 import { Button } from "@/components/ui/button"
 import {
@@ -23,7 +22,8 @@ import {
   DialogFooter,
   DialogDescription,
 } from "@/components/ui/dialog"
-import { CategoryManagementDialog } from "./category-management-dialog" // Importar o novo diálogo
+import { CategoryManagementDialog } from "./category-management-dialog"
+import { RichTextEditor } from "@/components/ui/rich-text-editor" // Importar RichTextEditor
 
 const productSchema = z.object({
   name: z.string().min(2, "Nome deve ter no mínimo 2 caracteres"),
@@ -31,7 +31,7 @@ const productSchema = z.object({
   description: z.string().min(10, "Descrição deve ter no mínimo 10 caracteres"),
   weight: z.string().optional(),
   price: z.number().min(0, "Preço deve ser maior que zero").optional().nullable(),
-  units_per_package: z.number().int().min(1, "Unidades por embalagem deve ser no mínimo 1").optional().nullable(), // Novo campo
+  units_per_package: z.number().int().min(1, "Unidades por embalagem deve ser no mínimo 1").optional().nullable(),
   image_url: z.string().optional().or(z.literal("")),
 })
 
@@ -58,7 +58,7 @@ export function ProductForm({ product }: ProductFormProps) {
   const [categoryDialogOpen, setCategoryDialogOpen] = useState(false)
   const [newCategoryName, setNewCategoryName] = useState("")
   const [isCreatingCategory, setIsCreatingCategory] = useState(false)
-  const [categoryManagementOpen, setCategoryManagementOpen] = useState(false) // Estado para o novo diálogo
+  const [categoryManagementOpen, setCategoryManagementOpen] = useState(false)
   const supabase = createClient()
 
   const {
@@ -66,13 +66,15 @@ export function ProductForm({ product }: ProductFormProps) {
     handleSubmit,
     setValue,
     watch,
+    control, // Adicionar control para usar Controller
     formState: { errors },
   } = useForm<ProductFormData>({
     resolver: zodResolver(productSchema),
     defaultValues: product || {
       category: "",
-      units_per_package: null, // Definir como null por padrão
-      price: null, // Definir como null por padrão
+      units_per_package: null,
+      price: null,
+      description: "", // Definir um valor padrão para a descrição
     },
   })
 
@@ -191,9 +193,9 @@ export function ProductForm({ product }: ProductFormProps) {
 
       const productData = {
         ...data,
-        category: categoryName, // Submit category name instead of UUID
-        price: data.price === null ? null : data.price, // Ensure null if empty
-        units_per_package: data.units_per_package === null ? null : data.units_per_package, // Ensure null if empty
+        category: categoryName,
+        price: data.price === null ? null : data.price,
+        units_per_package: data.units_per_package === null ? null : data.units_per_package,
       }
 
       console.log("[v0] Submitting product data:", productData)
@@ -318,7 +320,7 @@ export function ProductForm({ product }: ProductFormProps) {
               type="button"
               variant="outline"
               size="icon"
-              onClick={() => setCategoryManagementOpen(true)} // Botão para abrir o gerenciamento de categorias
+              onClick={() => setCategoryManagementOpen(true)}
               title="Gerenciar categorias"
               className="shrink-0"
             >
@@ -330,13 +332,17 @@ export function ProductForm({ product }: ProductFormProps) {
 
         <div className="space-y-2">
           <Label htmlFor="description">Descrição *</Label>
-          <Textarea
-            id="description"
-            placeholder="Descrição detalhada do produto..."
-            rows={4}
-            {...register("description")}
-            className="w-full px-3 py-2 text-sm md:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff8800]"
-            aria-invalid={!!errors.description}
+          <Controller
+            name="description"
+            control={control}
+            render={({ field }) => (
+              <RichTextEditor
+                value={field.value}
+                onChange={field.onChange}
+                placeholder="Descrição detalhada do produto..."
+                className={errors.description ? "aria-invalid" : ""}
+              />
+            )}
           />
           {errors.description && <p className="text-sm text-red-600">{errors.description.message}</p>}
         </div>
@@ -455,7 +461,7 @@ export function ProductForm({ product }: ProductFormProps) {
       <CategoryManagementDialog
         open={categoryManagementOpen}
         onOpenChange={setCategoryManagementOpen}
-        onCategoryChange={fetchCategories} // Para atualizar a lista de categorias no ProductForm
+        onCategoryChange={fetchCategories}
       />
     </>
   )

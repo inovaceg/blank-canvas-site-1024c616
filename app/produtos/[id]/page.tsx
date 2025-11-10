@@ -183,9 +183,7 @@ export default function ProductDetailPage() {
                 <h1 className="font-serif text-3xl lg:text-4xl font-bold text-foreground">
                   {product.name}
                 </h1>
-                <p className="text-lg text-muted-foreground whitespace-pre-wrap">
-                  {product.description}
-                </p>
+                <div className="text-lg text-muted-foreground whitespace-pre-wrap prose" dangerouslySetInnerHTML={{ __html: product.description }} />
 
                 <div className="space-y-3">
                   {product.ingredients && (
