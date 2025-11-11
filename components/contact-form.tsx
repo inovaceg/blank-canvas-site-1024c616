@@ -16,11 +16,9 @@ const contactFormSchema = z.object({
   companyName: z.string().optional().or(z.literal("")), // Tornar opcional
   contactName: z.string().min(2, "Nome do contato deve ter no mínimo 2 caracteres"),
   email: z.string().email("E-mail inválido"),
-  phone: z.string().min(10, "Telefone inválido"),
+  phone: z.string().min(14, "Telefone inválido (ex: 22-9-8888-8888)").max(14, "Telefone inválido (ex: 22-9-8888-8888)"), // Atualizado para 14 caracteres
   cep: z.string().min(8, "CEP inválido").max(9, "CEP inválido"), // Novo campo CEP
   address: z.string().optional().or(z.literal("")), // Rua/Avenida do CEP
-  // number: z.string().optional().or(z.literal("")), // Removido
-  // complement: z.string().optional().or(z.literal("")), // Removido
   neighborhood: z.string().optional().or(z.literal("")), // Bairro do CEP
   city: z.string().optional().or(z.literal("")), // Cidade do CEP
   state: z.string().min(2, "Estado inválido").max(2, "Estado inválido").optional().or(z.literal("")), // Estado do CEP
@@ -73,7 +71,6 @@ export function ContactForm() {
             setValue("neighborhood", data.bairro)
             setValue("city", data.localidade)
             setValue("state", data.uf)
-            // setValue("complement", data.complemento || "") // Removido
             toast.success("Endereço preenchido automaticamente!")
           } else {
             toast.error("CEP não encontrado. Por favor, digite o endereço manualmente.")
@@ -82,7 +79,6 @@ export function ContactForm() {
             setValue("neighborhood", "")
             setValue("city", "")
             setValue("state", "")
-            // setValue("complement", "") // Removido
           }
         } catch (error) {
           console.error("Erro ao buscar CEP:", error)
@@ -93,13 +89,35 @@ export function ContactForm() {
     fetchAddress()
   }, [watchedCep, setValue])
 
+  // Função para mascarar o telefone
+  const handlePhoneInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    let value = e.target.value;
+    // Remove todos os caracteres não numéricos
+    let cleanedValue = value.replace(/\D/g, '');
+
+    // Aplica a máscara: XX-X-XXXX-XXXX
+    let formattedValue = '';
+    if (cleanedValue.length > 0) {
+      formattedValue = cleanedValue.substring(0, 2); // XX
+      if (cleanedValue.length > 2) {
+        formattedValue += '-' + cleanedValue.substring(2, 3); // X
+      }
+      if (cleanedValue.length > 3) {
+        formattedValue += '-' + cleanedValue.substring(3, 7); // XXXX
+      }
+      if (cleanedValue.length > 7) {
+        formattedValue += '-' + cleanedValue.substring(7, 11); // XXXX
+      }
+    }
+    setValue('phone', formattedValue, { shouldValidate: true });
+  };
+
 
   const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true)
 
     try {
       // Constrói o endereço completo para enviar ao banco de dados
-      // Removido data.number e data.complement da construção do fullAddress
       const fullAddress = [data.address, data.neighborhood].filter(Boolean).join(', ');
 
       const response = await fetch("/api/contact", {
@@ -159,7 +177,14 @@ export function ContactForm() {
 
         <div className="space-y-2">
           <Label htmlFor="phone">Telefone / WhatsApp *</Label>
-          <Input id="phone" placeholder="(XX) XXXXX-XXXX" {...register("phone")} aria-invalid={!!errors.phone} />
+          <Input
+            id="phone"
+            placeholder="XX-X-XXXX-XXXX"
+            {...register("phone")}
+            onChange={handlePhoneInputChange} // Usando a função de mascaramento
+            aria-invalid={!!errors.phone}
+            maxLength={14} // Definindo o comprimento máximo para o formato mascarado
+          />
           {errors.phone && <p className="text-sm text-destructive">{errors.phone.message}</p>}
         </div>
       </div>
@@ -175,21 +200,6 @@ export function ContactForm() {
         <Input id="address" placeholder="Rua, Avenida, etc." {...register("address")} aria-invalid={!!errors.address} />
         {errors.address && <p className="text-sm text-destructive">{errors.address.message}</p>}
       </div>
-
-      {/* Campos 'number' e 'complement' removidos */}
-      {/*
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="space-y-2">
-          <Label htmlFor="number">Número</Label>
-          <Input id="number" placeholder="123" {...register("number")} aria-invalid={!!errors.number} />
-          {errors.number && <p className="text-sm text-destructive">{errors.number.message}</p>}
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="complement">Complemento (Opcional)</Label>
-          <Input id="complement" placeholder="Apto 101, Bloco B" {...register("complement")} />
-        </div>
-      </div>
-      */}
 
       <div className="space-y-2">
         <Label htmlFor="neighborhood">Bairro</Label>
