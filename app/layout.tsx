@@ -1,4 +1,4 @@
-import type React from "react"
+import React from "react" // Alterado de 'import type React' para 'import React'
 import type { Metadata } from "next"
 import { Playfair_Display, Inter } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
@@ -41,10 +41,12 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body className={`${inter.variable} ${playfair.variable} font-sans antialiased`}>
         <CartProvider> {/* Envolvendo a aplicação com CartProvider */}
-          {children}
+          <React.Fragment> {/* Adicionado React.Fragment para envolver múltiplos filhos */}
+            {children}
+            <Toaster position="top-center" />
+            <Analytics />
+          </React.Fragment>
         </CartProvider>
-        <Toaster position="top-center" />
-        <Analytics />
       </body>
     </html>
   )
