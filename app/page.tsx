@@ -65,350 +65,349 @@ export default async function HomePage() {
     <div className="min-h-screen">
       <SiteHeader />
 
-      {/* Hero Section */}
-      <section className="relative flex items-center justify-center text-center overflow-hidden h-[60vh] md:h-[70vh] lg:h-[80vh]"> {/* Adjusted height for responsiveness */}
-        <div className="absolute inset-0 z-0"> {/* Removed aspect-video here */}
-          <picture>
-            {/* Mobile (max-width: 767px) */}
-            <source media="(max-width: 767px)" src={mobileBannerUrl} />
-            {/* Tablet (min-width: 768px and max-width: 1023px) */}
-            <source media="(min-width: 768px) and (max-width: 1023px)" src={tabletBannerUrl} />
-            {/* Desktop (min-width: 1024px) */}
-            <source media="(min-width: 1024px)" src={desktopBannerUrl} />
-            {/* Fallback Image for browsers that don't support <picture> or if no source matches */}
-            <img
-              src={desktopBannerUrl} // Usar a imagem desktop como fallback principal
-              alt="Doces São Fidélis"
-              className="absolute inset-0 w-full h-full object-cover" // Using Tailwind classes to fill and cover
-              // 'priority' is a Next/Image prop, removed for standard <img>
-            />
-          </picture>
-          {/* Overlay com um gradiente sutil para melhor contraste do texto */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20" />
-        </div>
+      <main className="flex-1">
+        {/* Hero Section */}
+        <section className="relative flex items-center justify-center text-center overflow-hidden h-[60vh] md:h-[70vh] lg:h-[80vh]"> {/* Adjusted height for responsiveness */}
+          <div className="absolute inset-0 z-0"> {/* Removed aspect-video here */}
+            <picture>
+              {/* Mobile (max-width: 767px) */}
+              <source media="(max-width: 767px)" src={mobileBannerUrl} />
+              {/* Tablet (min-width: 768px and max-width: 1023px) */}
+              <source media="(min-width: 768px) and (max-width: 1023px)" src={tabletBannerUrl} />
+              {/* Desktop (min-width: 1024px) */}
+              <source media="(min-width: 1024px)" src={desktopBannerUrl} />
+              {/* Fallback Image for browsers that don't support <picture> or if no source matches */}
+              <img
+                src={desktopBannerUrl} // Usar a imagem desktop como fallback principal
+                alt="Doces São Fidélis"
+                className="absolute inset-0 w-full h-full object-cover" // Using Tailwind classes to fill and cover
+                // 'priority' is a Next/Image prop, removed for standard <img>
+              />
+            </picture>
+            {/* Overlay com um gradiente sutil para melhor contraste do texto */}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20" />
+          </div>
 
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-8 sm:py-16 md:py-24 lg:py-32 animate-in fade-in duration-1000"> {/* Adjusted padding */}
-          <div className="max-w-3xl space-y-4 mx-auto"> {/* Reduced space-y for mobile */}
-            <h1 className="font-serif text-3xl lg:text-6xl font-bold text-white text-balance drop-shadow-lg"> {/* Adjusted text size for mobile */}
-              Doces São Fidélis: Sabor Autêntico que Atravessa Gerações
-            </h1>
-            <p className="text-base text-white/90 text-pretty drop-shadow-md"> {/* Adjusted text size for mobile */}
-              Produzindo bananadas e gomas de amido desde 2000 com a tradição artesanal.
-            </p>
-            <div className="flex flex-wrap gap-3 justify-center"> {/* Reduced gap for mobile */}
-              <Button asChild size="default" className="rounded-full"> {/* Adjusted button size for mobile */}
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-8 sm:py-16 md:py-24 lg:py-32 animate-in fade-in duration-1000"> {/* Adjusted padding */}
+            <div className="max-w-3xl space-y-4 mx-auto"> {/* Reduced space-y for mobile */}
+              <h1 className="font-serif text-3xl lg:text-6xl font-bold text-white text-balance drop-shadow-lg"> {/* Adjusted text size for mobile */}
+                Doces São Fidélis: Sabor Autêntico que Atravessa Gerações
+              </h1>
+              <p className="text-base text-white/90 text-pretty drop-shadow-md"> {/* Adjusted text size for mobile */}
+                Produzindo bananadas e gomas de amido desde 2000 com a tradição artesanal.
+              </p>
+              <div className="flex flex-wrap gap-3 justify-center"> {/* Reduced gap for mobile */}
+                <Button asChild size="default" className="rounded-full"> {/* Adjusted button size for mobile */}
+                  <Link href="/produtos">
+                    <span>
+                      Veja Nosso Catálogo
+                      <ArrowRight />
+                    </span>
+                  </Link>
+                </Button>
+                <Button
+                  asChild
+                  variant="outline"
+                  size="default" // Adjusted button size for mobile
+                  className="rounded-full border-white text-white hover:bg-white/10 bg-transparent"
+                >
+                  <Link href="/contato"><span>Entre em Contato</span></Link>
+                </Button>
+                <Button asChild size="default" className="rounded-full bg-accent text-accent-foreground hover:bg-accent/90"> {/* Adjusted button size for mobile */}
+                  <Link href="#newsletter-section"><span>Cadastre-se para receber novidades</span></Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Sobre Nós Section */}
+        {/* <section className="py-20 lg:py-32">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-4xl mx-auto text-center space-y-6">
+              <h2 className="font-serif text-3xl lg:text-5xl font-bold text-foreground">Nossa História e Missão</h2>
+              <p className="text-lg text-muted-foreground text-pretty">
+                A Doces São Fidélis nasceu em 2000, com o sonho de Roberto Porto de criar doces autênticos e deliciosos. A
+                nossa missão é produzir bananadas e gomas de amido de qualidade excepcional, respeitando as tradições
+                familiares e o sabor único do Brasil.
+              </p>
+              <Button asChild variant="link" className="text-primary hover:underline">
+                <Link href="/nossa-historia">
+                  <span>
+                    Saiba mais sobre nossa jornada <ArrowRight className="size-4" />
+                  </span>
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </section> */}
+
+        {/* Benefícios e Qualidade Section (Antiga Features Section) */}
+        {/* <section className="py-20 lg:py-32 bg-secondary">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center space-y-4 mb-16">
+              <h2 className="font-serif text-3xl lg:text-5xl font-bold text-foreground">
+                A Qualidade é o Nosso Maior Compromisso
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                Usamos apenas ingredientes naturais, processos artesanais e controle rigoroso em cada etapa da produção.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <Card className="bg-white">
+                <CardHeader>
+                  <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <Leaf className="size-6 text-primary" />
+                  </div>
+                  <CardTitle>Ingredientes Selecionados</CardTitle>
+                  <CardDescription>
+                    Utilizamos apenas ingredientes frescos e naturais, cuidadosamente selecionados para garantir o sabor
+                    autêntico e a qualidade superior em cada doce. Sem aditivos artificiais.
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+
+              <Card className="bg-white">
+                <CardHeader>
+                  <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <Heart className="size-6 text-primary" />
+                  </div>
+                  <CardTitle>Processo Artesanal</CardTitle>
+                  <CardDescription>
+                    Nossas receitas são passadas de geração em geração, preservando o modo artesanal de preparo que
+                    confere um sabor caseiro e inesquecível, cheio de carinho e história.
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+
+              <Card className="bg-white">
+                <CardHeader>
+                  <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <Award className="size-6 text-primary" />
+                  </div>
+                  <CardTitle>Compromisso com a Excelência</CardTitle>
+                  <CardDescription>
+                    Com mais de duas décadas de experiência, somos referência na produção de doces artesanais,
+                    conquistando a confiança e o paladar de nossos clientes com excelência e dedicação.
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+
+              <Card className="bg-white">
+                <CardHeader>
+                  <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+                    <ShoppingBag className="size-6 text-primary" />
+                  </div>
+                  <CardTitle>Variedade de Produtos</CardTitle>
+                  <CardDescription>
+                    Oferecemos uma ampla gama de bananadas e gomas de amido, com diferentes sabores e embalagens,
+                    perfeitas para todas as ocasiões e para agradar a todos os gostos.
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+            </div>
+          </div>
+        </section> */}
+
+        {/* Destaque de Produtos Section */}
+        {/* <section className="py-20 lg:py-32">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center space-y-4 mb-16">
+              <h2 className="font-serif text-3xl lg:text-5xl font-bold text-foreground">Nosso Catálogo de Produtos</h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                Conheça a nossa seleção de bananadas e gomas de amido, feitas com o carinho da tradição.
+              </p>
+            </div>
+
+            {featuredProducts && featuredProducts.length > 0 ? (
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {featuredProducts.map((product) => (
+                  <Link key={product.id} href={`/produtos/${product.id}`} className="block">
+                    <Card className="overflow-hidden">
+                      <div className="aspect-square relative overflow-hidden bg-muted">
+                        {product.image_url ? (
+                          <Image
+                            src={product.image_url}
+                            alt={product.name}
+                            fill
+                            className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <Package className="size-16 text-muted-foreground/30" />
+                          </div>
+                        )}
+                        {product.is_featured && (
+                          <div className="absolute top-4 right-4">
+                            <Badge className="bg-primary text-primary-foreground">Destaque</Badge>
+                          </div>
+                        )}
+                      </div>
+                      <CardHeader>
+                        <CardTitle>{product.name}</CardTitle>
+                        <CardDescription className="line-clamp-3" dangerouslySetInnerHTML={{ __html: product.description }} />
+                      </CardHeader>
+                    </Card>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-16">
+                <div className="inline-flex items-center justify-center size-16 rounded-full bg-muted mb-6">
+                  <Package className="size-8 text-muted-foreground" />
+                </div>
+                <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
+                  Nenhum produto em destaque no momento
+                </h2>
+                <p className="text-muted-foreground mb-6">
+                  Em breve teremos novos produtos em destaque para você.
+                </p>
+              </div>
+            )}
+
+            <div className="text-center mt-12">
+              <Button asChild size="lg">
                 <Link href="/produtos">
                   <span>
-                    Veja Nosso Catálogo
+                    Ver Todos os Produtos
                     <ArrowRight />
                   </span>
                 </Link>
               </Button>
-              <Button
-                asChild
-                variant="outline"
-                size="default" // Adjusted button size for mobile
-                className="rounded-full border-white text-white hover:bg-white/10 bg-transparent"
-              >
-                <Link href="/contato"><span>Entre em Contato</span></Link>
-              </Button>
-              <Button asChild size="default" className="rounded-full bg-accent text-accent-foreground hover:bg-accent/90"> {/* Adjusted button size for mobile */}
-                <Link href="#newsletter-section"><span>Cadastre-se para receber novidades</span></Link>
-              </Button>
             </div>
           </div>
-        </div>
-      </section>
+        </section> */}
 
-      {/* Sobre Nós Section */}
-      <section className="py-20 lg:py-32">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
-            <h2 className="font-serif text-3xl lg:text-5xl font-bold text-foreground">Nossa História e Missão</h2>
-            <p className="text-lg text-muted-foreground text-pretty">
-              A Doces São Fidélis nasceu em 2000, com o sonho de Roberto Porto de criar doces autênticos e deliciosos. A
-              nossa missão é produzir bananadas e gomas de amido de qualidade excepcional, respeitando as tradições
-              familiares e o sabor único do Brasil.
-            </p>
-            <Button asChild variant="link" className="text-primary hover:underline">
-              <Link href="/nossa-historia">
-                <span>
-                  Saiba mais sobre nossa jornada <ArrowRight className="size-4" />
-                </span>
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Benefícios e Qualidade Section (Antiga Features Section) */}
-      <section className="py-20 lg:py-32 bg-secondary">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="font-serif text-3xl lg:text-5xl font-bold text-foreground">
-              A Qualidade é o Nosso Maior Compromisso
-            </h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Usamos apenas ingredientes naturais, processos artesanais e controle rigoroso em cada etapa da produção.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="bg-white">
-              <CardHeader>
-                <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                  <Leaf className="size-6 text-primary" />
-                </div>
-                <CardTitle>Ingredientes Selecionados</CardTitle>
-                <CardDescription>
-                  Utilizamos apenas ingredientes frescos e naturais, cuidadosamente selecionados para garantir o sabor
-                  autêntico e a qualidade superior em cada doce. Sem aditivos artificiais.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="bg-white">
-              <CardHeader>
-                <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                  <Heart className="size-6 text-primary" />
-                </div>
-                <CardTitle>Processo Artesanal</CardTitle>
-                <CardDescription>
-                  Nossas receitas são passadas de geração em geração, preservando o modo artesanal de preparo que
-                  confere um sabor caseiro e inesquecível, cheio de carinho e história.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="bg-white">
-              <CardHeader>
-                <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                  <Award className="size-6 text-primary" />
-                </div>
-                <CardTitle>Compromisso com a Excelência</CardTitle>
-                <CardDescription>
-                  Com mais de duas décadas de experiência, somos referência na produção de doces artesanais,
-                  conquistando a confiança e o paladar de nossos clientes com excelência e dedicação.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="bg-white">
-              <CardHeader>
-                <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                  <ShoppingBag className="size-6 text-primary" />
-                </div>
-                <CardTitle>Variedade de Produtos</CardTitle>
-                <CardDescription>
-                  Oferecemos uma ampla gama de bananadas e gomas de amido, com diferentes sabores e embalagens,
-                  perfeitas para todas as ocasiões e para agradar a todos os gostos.
-                </CardDescription>
-              </CardHeader>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Destaque de Produtos Section */}
-      <section className="py-20 lg:py-32">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="font-serif text-3xl lg:text-5xl font-bold text-foreground">Nosso Catálogo de Produtos</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Conheça a nossa seleção de bananadas e gomas de amido, feitas com o carinho da tradição.
-            </p>
-          </div>
-
-          {featuredProducts && featuredProducts.length > 0 ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {featuredProducts.map((product) => (
-                <Link key={product.id} href={`/produtos/${product.id}`} className="block"> {/* Adicionado Link aqui */}
-                  <Card className="overflow-hidden">
-                    <div className="aspect-square relative overflow-hidden bg-muted">
-                      {product.image_url ? (
-                        <Image
-                          src={product.image_url}
-                          alt={product.name}
-                          fill
-                          className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <Package className="size-16 text-muted-foreground/30" />
-                        </div>
-                      )}
-                      {product.is_featured && (
-                        <div className="absolute top-4 right-4">
-                          <Badge className="bg-primary text-primary-foreground">Destaque</Badge>
-                        </div>
-                      )}
-                    </div>
-                    <CardHeader>
-                      <CardTitle>{product.name}</CardTitle>
-                      <CardDescription className="line-clamp-3" dangerouslySetInnerHTML={{ __html: product.description }} />
-                    </CardHeader>
-                  </Card>
-                </Link>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-16">
-              <div className="inline-flex items-center justify-center size-16 rounded-full bg-muted mb-6">
-                <Package className="size-8 text-muted-foreground" />
-              </div>
-              <h2 className="font-serif text-2xl font-bold text-foreground mb-2">
-                Nenhum produto em destaque no momento
-              </h2>
-              <p className="text-muted-foreground mb-6">
-                Em breve teremos novos produtos em destaque para você.
+        {/* Depoimentos Section */}
+        {/* <section className="py-20 lg:py-32 bg-secondary">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center space-y-4 mb-16">
+              <h2 className="font-serif text-3xl lg:text-5xl font-bold text-foreground">O Que Nossos Clientes Dizem</h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+                A satisfação dos nossos clientes é a nossa maior recompensa.
               </p>
             </div>
-          )}
 
-          <div className="text-center mt-12">
-            <Button asChild size="lg">
-              <Link href="/produtos">
-                <span>
-                  Ver Todos os Produtos
-                  <ArrowRight />
-                </span>
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* Depoimentos Section */}
-      <section className="py-20 lg:py-32 bg-secondary">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4 mb-16">
-            <h2 className="font-serif text-3xl lg:text-5xl font-bold text-foreground">O Que Nossos Clientes Dizem</h2>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              A satisfação dos nossos clientes é a nossa maior recompensa.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <Card className="bg-white">
-              <CardContent className="p-6 space-y-4">
-                <MessageSquareText className="size-8 text-primary" />
-                <p className="text-muted-foreground italic">
-                  "As bananadas da Doces São Fidélis são incríveis! O sabor é único e traz toda a tradição que amamos."
-                </p>
-                <div className="flex items-center gap-3">
-                  <div className="size-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-medium">
-                    MS
-                  </div>
-                  <div>
-                    <p className="font-semibold text-foreground">Maria Silva</p>
-                    <p className="text-sm text-muted-foreground">Cliente Satisfeita</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="bg-white">
-              <CardContent className="p-6 space-y-4">
-                <MessageSquareText className="size-8 text-primary" />
-                <p className="text-muted-foreground italic">
-                  "As gomas de amido são deliciosas e perfeitas para qualquer hora do dia. Qualidade impecável!"
-                </p>
-                <div className="flex items-center gap-3">
-                  <div className="size-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-medium">
-                    JP
-                  </div>
-                  <div>
-                    <p className="font-semibold text-foreground">João Pedro</p>
-                    <p className="text-sm text-muted-foreground">Comprador Frequente</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="bg-white">
-              <CardContent className="p-6 space-y-4">
-                <MessageSquareText className="size-8 text-primary" />
-                <p className="text-muted-foreground italic">
-                  "Recomendo a todos! Os doces são feitos com muito carinho e o sabor é de infância."
-                </p>
-                <div className="flex items-center gap-3">
-                  <div className="size-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-medium">
-                    AF
-                  </div>
-                  <div>
-                    <p className="font-semibold text-foreground">Ana Ferreira</p>
-                    <p className="text-sm text-muted-foreground">Fã dos Doces</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact Section */}
-      <section className="py-20 lg:py-32">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-start">
-            {/* Contact Form */}
-            <div>
-              <div className="space-y-4 mb-8">
-                <h2 className="font-serif text-3xl lg:text-5xl font-bold text-foreground">Entre em Contato</h2>
-                <p className="text-lg text-muted-foreground">
-                  Tem alguma dúvida ou quer fazer um pedido? Envie uma mensagem e entraremos em contato em breve.
-                </p>
-              </div>
-              <ContactForm />
-            </div>
-
-            {/* Newsletter */}
-            <div className="lg:sticky lg:top-24" id="newsletter-section">
-              <Card className="bg-primary text-primary-foreground border-0">
-                <CardContent className="p-8 lg:p-12">
-                  <div className="space-y-6">
-                    <div className="space-y-2">
-                      <h3 className="font-serif text-2xl lg:text-3xl font-bold">Receba Nossas Novidades</h3>
-                      <p className="text-primary-foreground/90">
-                        Cadastre-se em nossa newsletter e fique por dentro de promoções, novos produtos e receitas
-                        exclusivas!
-                      </p>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <Card className="bg-white">
+                <CardContent className="p-6 space-y-4">
+                  <MessageSquareText className="size-8 text-primary" />
+                  <p className="text-muted-foreground italic">
+                    "As bananadas da Doces São Fidélis são incríveis! O sabor é único e traz toda a tradição que amamos."
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <div className="size-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-medium">
+                      MS
                     </div>
-                    <NewsletterForm />
+                    <div>
+                      <p className="font-semibold text-foreground">Maria Silva</p>
+                      <p className="text-sm text-muted-foreground">Cliente Satisfeita</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="bg-white">
+                <CardContent className="p-6 space-y-4">
+                  <MessageSquareText className="size-8 text-primary" />
+                  <p className="text-muted-foreground italic">
+                    "As gomas de amido são deliciosas e perfeitas para qualquer hora do dia. Qualidade impecável!"
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <div className="size-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-medium">
+                      JP
+                    </div>
+                    <div>
+                      <p className="font-semibold text-foreground">João Pedro</p>
+                      <p className="text-sm text-muted-foreground">Comprador Frequente</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              <Card className="bg-white">
+                <CardContent className="p-6 space-y-4">
+                  <MessageSquareText className="size-8 text-primary" />
+                  <p className="text-muted-foreground italic">
+                    "Recomendo a todos! Os doces são feitos com muito carinho e o sabor é de infância."
+                  </p>
+                  <div className="flex items-center gap-3">
+                    <div className="size-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-500 font-medium">
+                      AF
+                    </div>
+                    <div>
+                      <p className="font-semibold text-foreground">Ana Ferreira</p>
+                      <p className="text-sm text-muted-foreground">Fã dos Doces</p>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
             </div>
           </div>
-        </div>
-      </section>
+        </section> */}
 
-      {/* CTA Section */}
-      <section className="py-20 lg:py-32">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <Card className="bg-primary text-primary-foreground border-0">
-            <CardContent className="p-12 lg:p-16">
-              <div className="max-w-3xl mx-auto text-center space-y-6">
-                <h2 className="font-serif text-3xl lg:text-5xl font-bold text-balance">
-                  Pronto para Experimentar Nossos Doces?
-                </h2>
-                <p className="text-lg text-primary-foreground/90 text-pretty">
-                  Entre em contato conosco e solicite um orçamento personalizado para o seu pedido. Atendemos pequenas e
-                  grandes quantidades.
-                </p>
-                <div className="flex flex-wrap gap-4 justify-center">
-                  {/* Removido o botão "Solicitar Orçamento" */}
-                  <Button
-                    asChild
-                    size="lg"
-                    variant="ghost"
-                    className="text-primary-foreground hover:bg-primary-foreground/10"
-                  >
-                    <Link href="/produtos"><span>Ver Todos os Produtos</span></Link>
-                  </Button>
+        {/* Contact Section */}
+        {/* <section className="py-20 lg:py-32">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid lg:grid-cols-2 gap-12 items-start">
+              <div>
+                <div className="space-y-4 mb-8">
+                  <h2 className="font-serif text-3xl lg:text-5xl font-bold text-foreground">Entre em Contato</h2>
+                  <p className="text-lg text-muted-foreground">
+                    Tem alguma dúvida ou quer fazer um pedido? Envie uma mensagem e entraremos em contato em breve.
+                  </p>
                 </div>
+                <ContactForm />
               </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
+
+              <div className="lg:sticky lg:top-24" id="newsletter-section">
+                <Card className="bg-primary text-primary-foreground border-0">
+                  <CardContent className="p-8 lg:p-12">
+                    <div className="space-y-6">
+                      <div className="space-y-2">
+                        <h3 className="font-serif text-2xl lg:text-3xl font-bold">Receba Nossas Novidades</h3>
+                        <p className="text-primary-foreground/90">
+                          Cadastre-se em nossa newsletter e fique por dentro de promoções, novos produtos e receitas
+                          exclusivas!
+                        </p>
+                      </div>
+                      <NewsletterForm />
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </section> */}
+
+        {/* CTA Section */}
+        {/* <section className="py-20 lg:py-32">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <Card className="bg-primary text-primary-foreground border-0">
+              <CardContent className="p-12 lg:p-16">
+                <div className="max-w-3xl mx-auto text-center space-y-6">
+                  <h2 className="font-serif text-3xl lg:text-5xl font-bold text-balance">
+                    Pronto para Experimentar Nossos Doces?
+                  </h2>
+                  <p className="text-lg text-primary-foreground/90 text-pretty">
+                    Entre em contato conosco e solicite um orçamento personalizado para o seu pedido. Atendemos pequenas e
+                    grandes quantidades.
+                  </p>
+                  <div className="flex flex-wrap gap-4 justify-center">
+                    <Button
+                      asChild
+                      size="lg"
+                      variant="ghost"
+                      className="text-primary-foreground hover:bg-primary-foreground/10"
+                    >
+                      <Link href="/produtos"><span>Ver Todos os Produtos</span></Link>
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section> */}
+      </main>
 
       <SiteFooter />
     </div>
