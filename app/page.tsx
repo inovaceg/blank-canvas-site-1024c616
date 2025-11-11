@@ -78,7 +78,8 @@ export default async function HomePage() {
                 className="absolute inset-0 w-full h-full object-cover"
               />
             </picture>
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-black/20" />
+            {/* Aumentando o ofuscamento para melhorar o contraste do texto */}
+            <div className="absolute inset-0 bg-black/60" /> 
           </div>
 
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-8 sm:py-16 md:py-24 lg:py-32 animate-in fade-in duration-1000">
