@@ -11,21 +11,23 @@ import { Label } from "@/components/ui/label"
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
 
-// Esquema de validação para o formulário de solicitação de orçamento
-const quoteRequestSchema = z.object({
-  companyName: z.string().min(2, "Nome da empresa deve ter no mínimo 2 caracteres"),
+// Esquema de validação para o formulário de contato
+const contactFormSchema = z.object({
+  companyName: z.string().optional().or(z.literal("")), // Tornar opcional
   contactName: z.string().min(2, "Nome do contato deve ter no mínimo 2 caracteres"),
   email: z.string().email("E-mail inválido"),
   phone: z.string().min(10, "Telefone inválido"),
-  address: z.string().min(3, "Endereço inválido").optional().or(z.literal("")),
-  city: z.string().min(2, "Cidade inválida").optional().or(z.literal("")),
-  state: z.string().min(2, "Estado inválido").max(2, "Estado inválido").optional().or(z.literal("")),
-  productInterest: z.string().optional(),
-  quantity: z.string().optional(),
+  cep: z.string().min(8, "CEP inválido").max(9, "CEP inválido"), // Novo campo CEP
+  address: z.string().optional().or(z.literal("")), // Rua/Avenida do CEP
+  number: z.string().optional().or(z.literal("")), // Número da residência/comércio
+  complement: z.string().optional().or(z.literal("")), // Complemento
+  neighborhood: z.string().optional().or(z.literal("")), // Bairro do CEP
+  city: z.string().optional().or(z.literal("")), // Cidade do CEP
+  state: z.string().min(2, "Estado inválido").max(2, "Estado inválido").optional().or(z.literal("")), // Estado do CEP
   message: z.string().min(10, "Mensagem deve ter no mínimo 10 caracteres"),
 })
 
-type QuoteRequestFormData = z.infer<typeof quoteRequestSchema>
+type ContactFormData = z.infer<typeof contactFormSchema>
 
 interface ViaCepResponse {
   cep: string
@@ -51,17 +53,15 @@ export function ContactForm() {
     setValue,
     watch,
     formState: { errors },
-  } = useForm<QuoteRequestFormData>({
-    resolver: zodResolver(quoteRequestSchema),
+  } = useForm<ContactFormData>({
+    resolver: zodResolver(contactFormSchema),
   })
 
-  const watchedCep = watch("address") // Usaremos o campo 'address' para simular o CEP para preenchimento automático
+  const watchedCep = watch("cep") // Agora observamos o campo 'cep'
 
   // Efeito para preencher o endereço automaticamente ao digitar o CEP
   useEffect(() => {
     const fetchAddress = async () => {
-      // Assumindo que o usuário digita o CEP no campo de endereço temporariamente
-      // Ou podemos adicionar um campo de CEP separado se for mais claro
       const cepValue = watchedCep?.replace(/\D/g, ''); // Remove caracteres não numéricos
       if (cepValue && cepValue.length === 8) {
         try {
@@ -70,15 +70,19 @@ export function ContactForm() {
 
           if (!data.erro) {
             setValue("address", data.logradouro)
+            setValue("neighborhood", data.bairro)
             setValue("city", data.localidade)
             setValue("state", data.uf)
+            setValue("complement", data.complemento || "") // Preenche complemento se disponível
             toast.success("Endereço preenchido automaticamente!")
           } else {
             toast.error("CEP não encontrado. Por favor, digite o endereço manualmente.")
             // Limpa os campos se o CEP não for encontrado
             setValue("address", "")
+            setValue("neighborhood", "")
             setValue("city", "")
             setValue("state", "")
+            setValue("complement", "")
           }
         } catch (error) {
           console.error("Erro ao buscar CEP:", error)
@@ -90,10 +94,13 @@ export function ContactForm() {
   }, [watchedCep, setValue])
 
 
-  const onSubmit = async (data: QuoteRequestFormData) => {
+  const onSubmit = async (data: ContactFormData) => {
     setIsSubmitting(true)
 
     try {
+      // Constrói o endereço completo para enviar ao banco de dados
+      const fullAddress = [data.address, data.number, data.complement, data.neighborhood].filter(Boolean).join(', ');
+
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -102,21 +109,19 @@ export function ContactForm() {
           contact_name: data.contactName,
           email: data.email,
           phone: data.phone,
-          address: data.address,
+          address: fullAddress, // Envia o endereço completo
           city: data.city,
           state: data.state,
-          product_interest: data.productInterest,
-          quantity: data.quantity,
           message: data.message,
         }),
       })
 
-      if (!response.ok) throw new Error("Erro ao enviar solicitação de orçamento")
+      if (!response.ok) throw new Error("Erro ao enviar mensagem de contato")
 
-      toast.success("Solicitação de orçamento enviada com sucesso! Entraremos em contato em breve.")
+      toast.success("Mensagem enviada com sucesso! Entraremos em contato em breve.")
       reset()
     } catch (error) {
-      toast.error("Erro ao enviar solicitação de orçamento. Tente novamente.")
+      toast.error("Erro ao enviar mensagem de contato. Tente novamente.")
     } finally {
       setIsSubmitting(false)
     }
@@ -125,7 +130,7 @@ export function ContactForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="space-y-2">
-        <Label htmlFor="companyName">Nome da Empresa *</Label>
+        <Label htmlFor="companyName">Nome da Empresa (Opcional)</Label>
         <Input id="companyName" placeholder="Nome da sua empresa" {...register("companyName")} aria-invalid={!!errors.companyName} />
         {errors.companyName && <p className="text-sm text-destructive">{errors.companyName.message}</p>}
       </div>
@@ -157,9 +162,33 @@ export function ContactForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="address">Endereço (com CEP para preenchimento automático)</Label>
-        <Input id="address" placeholder="Digite o CEP (ex: 00000000) ou o endereço completo" {...register("address")} aria-invalid={!!errors.address} />
+        <Label htmlFor="cep">CEP *</Label>
+        <Input id="cep" placeholder="00000-000" {...register("cep")} aria-invalid={!!errors.cep} maxLength={9} />
+        {errors.cep && <p className="text-sm text-destructive">{errors.cep.message}</p>}
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="address">Endereço (Rua, Avenida, etc.)</Label>
+        <Input id="address" placeholder="Rua, Avenida, etc." {...register("address")} aria-invalid={!!errors.address} />
         {errors.address && <p className="text-sm text-destructive">{errors.address.message}</p>}
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-6">
+        <div className="space-y-2">
+          <Label htmlFor="number">Número</Label>
+          <Input id="number" placeholder="123" {...register("number")} aria-invalid={!!errors.number} />
+          {errors.number && <p className="text-sm text-destructive">{errors.number.message}</p>}
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="complement">Complemento (Opcional)</Label>
+          <Input id="complement" placeholder="Apto 101, Bloco B" {...register("complement")} />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label htmlFor="neighborhood">Bairro</Label>
+        <Input id="neighborhood" placeholder="Seu bairro" {...register("neighborhood")} aria-invalid={!!errors.neighborhood} />
+        {errors.neighborhood && <p className="text-sm text-destructive">{errors.neighborhood.message}</p>}
       </div>
 
       <div className="grid md:grid-cols-2 gap-6">
@@ -175,16 +204,7 @@ export function ContactForm() {
         </div>
       </div>
 
-      <div className="grid md:grid-cols-2 gap-6">
-        <div className="space-y-2">
-          <Label htmlFor="productInterest">Produtos de Interesse (Opcional)</Label>
-          <Input id="productInterest" placeholder="Ex: Bananada, Goma de Amido" {...register("productInterest")} />
-        </div>
-        <div className="space-y-2">
-          <Label htmlFor="quantity">Quantidade Desejada (Opcional)</Label>
-          <Input id="quantity" placeholder="Ex: 100kg, 500 unidades" {...register("quantity")} />
-        </div>
-      </div>
+      {/* Campos 'productInterest' e 'quantity' removidos */}
 
       <div className="space-y-2">
         <Label htmlFor="message">Mensagem *</Label>
@@ -202,10 +222,10 @@ export function ContactForm() {
         {isSubmitting ? (
           <>
             <Loader2 className="animate-spin" />
-            Enviando Solicitação...
+            Enviando Mensagem...
           </>
         ) : (
-          "Enviar Solicitação de Orçamento"
+          "Enviar Mensagem"
         )}
       </Button>
     </form>
