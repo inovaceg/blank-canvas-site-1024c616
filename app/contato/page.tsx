@@ -85,7 +85,7 @@ export default function ContactPage() {
 
               {/* Contact Form */}
               <div className="lg:col-span-2">
-                <Card>
+                <Card className="bg-primary text-primary-foreground border-0"> {/* Aplicando as classes aqui */}
                   <CardHeader>
                     <CardTitle className="text-2xl">Envie uma Mensagem</CardTitle>
                     <CardDescription>
