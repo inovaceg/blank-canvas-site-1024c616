@@ -131,7 +131,7 @@ export default async function HomePage() {
         </section>
 
         {/* Benefícios e Qualidade Section (Antiga Features Section) */}
-        <section className="py-20 lg:py-32 bg-secondary">
+        <section className="py-20 lg:py-32 bg-primary/10">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center space-y-4 mb-16">
               <h2 className="font-serif text-3xl lg:text-5xl font-bold text-foreground">
