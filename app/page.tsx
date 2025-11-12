@@ -123,9 +123,7 @@ export default async function HomePage() {
               </p>
               <Button asChild size="lg">
                 <Link href="/nossa-historia">
-                  <span>
-                    Saiba mais sobre nossa jornada <ArrowRight className="size-4" />
-                  </span>
+                  Saiba mais sobre nossa jornada <ArrowRight className="size-4" />
                 </Link>
               </Button>
             </div>
