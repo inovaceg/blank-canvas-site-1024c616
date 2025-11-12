@@ -92,20 +92,6 @@ export default function OurHistoryPage() {
           </div>
         </section>
 
-        {/* Factory Image Section */}
-        <section className="py-16 lg:py-24">
-          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-xl">
-              <Image
-                src="/vista-aerea-fabrica.jpg"
-                alt="Vista aérea da fábrica Doces São Fidélis"
-                fill
-                className="object-cover"
-              />
-            </div>
-          </div>
-        </section>
-
         {/* Values Section (Mantido) */}
         <section className="py-16 lg:py-24 bg-secondary">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
