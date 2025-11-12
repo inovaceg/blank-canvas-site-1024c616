@@ -209,7 +209,7 @@ export default async function HomePage() {
             </div>
 
             {featuredProducts && featuredProducts.length > 0 ? (
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                 {featuredProducts.map((product) => (
                   <Link key={product.id} href={`/produtos/${product.id}`} className="block">
                     <Card className="overflow-hidden">
