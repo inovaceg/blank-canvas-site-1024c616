@@ -119,9 +119,7 @@ export default async function HomePage() {
             <div className="max-w-4xl mx-auto text-center space-y-6">
               <h2 className="font-serif text-3xl lg:text-5xl font-bold text-foreground">Nossa História e Missão</h2>
               <p className="text-lg text-muted-foreground text-pretty">
-                A Doces São Fidélis nasceu em 2000, com o sonho de Roberto Porto de criar doces autênticos e deliciosos. A
-                nossa missão é produzir bananadas e gomas de amido de qualidade excepcional, respeitando as tradições
-                familiares e o sabor único do Brasil.
+                A Doces São Fidelis nasceu em outubro de 2000, movida por um sonho: levar doces artesanais de qualidade a todo o Brasil. Após duas décadas de experiência no setor, Roberto Porto investiu em um novo empreendimento, focado em bananadas e gomas de amido de qualidade superior, sabor autêntico e custo acessível.
               </p>
               <Button asChild variant="link" className="text-primary hover:underline">
                 <Link href="/nossa-historia">
