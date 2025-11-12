@@ -92,6 +92,20 @@ export default function OurHistoryPage() {
           </div>
         </section>
 
+        {/* Factory Image Section */}
+        <section className="py-16 lg:py-24">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-xl">
+              <Image
+                src="/vista-aerea-fabrica.jpg"
+                alt="Vista aérea da fábrica Doces São Fidélis"
+                fill
+                className="object-cover"
+              />
+            </div>
+          </div>
+        </section>
+
         {/* Values Section (Mantido) */}
         <section className="py-16 lg:py-24 bg-secondary">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -258,12 +272,12 @@ export default function OurHistoryPage() {
                 <Button asChild size="lg" className="bg-primary-foreground text-primary hover:bg-primary-foreground/90 rounded-full">
                   <Link href="/produtos"><span>Ver Produtos</span></Link>
                 </Button>
-                {/* Adicionando rounded-full ao botão Fale Conosco */}
+                {/* Adicionando bg-transparent para garantir que o fundo branco da variante 'outline' seja sobrescrito */}
                 <Button 
                   asChild 
                   variant="outline" 
                   size="lg" 
-                  className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10 rounded-full"
+                  className="bg-transparent border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10 rounded-full"
                 >
                   <Link href="/contato"><span>Fale Conosco</span></Link>
                 </Button>
