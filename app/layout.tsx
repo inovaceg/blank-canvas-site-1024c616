@@ -1,8 +1,8 @@
 import React from "react"
 import type { Metadata } from "next"
 import { Playfair_Display, Inter } from "next/font/google"
-import { Analytics } from "@vercel/analytics/next" // Reintroduzido
-import { Toaster } from "sonner" // Reintroduzido
+import { Analytics } from "@vercel/analytics/next"
+import { Toaster } from "sonner"
 import "./globals.css"
 import { CartProvider } from "@/components/cart-provider"
 
@@ -16,19 +16,11 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/icon-light-32x32.png",
-        media: "(prefers-color-scheme: light)",
-      },
-      {
-        url: "/icon-dark-32x32.png",
-        media: "(prefers-color-scheme: dark)",
-      },
-      {
-        url: "/icon.svg",
-        type: "image/svg+xml",
+        url: "/logo-doces-sao-fidelis-favicon.png", // Referência exclusiva para o novo favicon
+        type: "image/png",
       },
     ],
-    apple: "/apple-icon.png",
+    apple: "/logo-doces-sao-fidelis-favicon.png", // Usar a mesma imagem para o ícone da Apple
   },
 }
 

@@ -142,7 +142,7 @@ export default async function HomePage() {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid md:grid-cols-4 lg:grid-cols-4 gap-6">
               <Card className="bg-white">
                 <CardHeader>
                   <div className="size-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
