@@ -10,7 +10,7 @@
   --card-foreground: oklch(0.2 0.01 60);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.2 0.01 60);
-  --primary: oklch(0.55 0.25 20); /* Deep Ruby Red */
+  --primary: oklch(0.45 0.25 20); /* Darker Ruby Red */
   --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.96 0.01 80);
   --secondary-foreground: oklch(0.2 0.01 60);
@@ -22,8 +22,8 @@
   --destructive-foreground: oklch(1 0 0);
   --border: oklch(0.92 0.01 80);
   --input: oklch(0.92 0.01 80);
-  --ring: oklch(0.55 0.25 20);
-  --chart-1: oklch(0.55 0.25 20);
+  --ring: oklch(0.45 0.25 20); /* Darker Ruby Red */
+  --chart-1: oklch(0.45 0.25 20); /* Darker Ruby Red */
   --chart-2: oklch(0.85 0.1 80);
   --chart-3: oklch(0.45 0.15 40);
   --chart-4: oklch(0.75 0.1 80);
@@ -31,12 +31,12 @@
   --radius: 0.5rem;
   --sidebar: oklch(1 0 0);
   --sidebar-foreground: oklch(0.2 0.01 60);
-  --sidebar-primary: oklch(0.55 0.25 20);
+  --sidebar-primary: oklch(0.45 0.25 20); /* Darker Ruby Red */
   --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: oklch(0.96 0.01 80);
   --sidebar-accent-foreground: oklch(0.2 0.01 60);
   --sidebar-border: oklch(0.92 0.01 80);
-  --sidebar-ring: oklch(0.55 0.25 20);
+  --sidebar-ring: oklch(0.45 0.25 20); /* Darker Ruby Red */
 }
 
 .dark {
@@ -46,7 +46,7 @@
   --card-foreground: oklch(0.98 0.01 90);
   --popover: oklch(0.18 0.01 60);
   --popover-foreground: oklch(0.98 0.01 90);
-  --primary: oklch(0.65 0.2 30); /* Lighter Ruby Red for contrast */
+  --primary: oklch(0.55 0.2 30); /* Darker Ruby Red for contrast in dark mode */
   --primary-foreground: oklch(0.15 0.01 60);
   --secondary: oklch(0.25 0.02 60);
   --secondary-foreground: oklch(0.98 0.01 90);
@@ -58,20 +58,20 @@
   --destructive-foreground: oklch(0.98 0.01 90);
   --border: oklch(0.25 0.02 60);
   --input: oklch(0.25 0.02 60);
-  --ring: oklch(0.65 0.2 30);
-  --chart-1: oklch(0.65 0.2 30);
+  --ring: oklch(0.55 0.2 30); /* Darker Ruby Red for contrast in dark mode */
+  --chart-1: oklch(0.55 0.2 30); /* Darker Ruby Red for contrast in dark mode */
   --chart-2: oklch(0.45 0.08 120);
   --chart-3: oklch(0.65 0.1 40);
   --chart-4: oklch(0.85 0.12 90);
   --chart-5: oklch(0.55 0.12 100);
   --sidebar: oklch(0.18 0.01 60);
   --sidebar-foreground: oklch(0.98 0.01 90);
-  --sidebar-primary: oklch(0.65 0.2 30);
+  --sidebar-primary: oklch(0.55 0.2 30); /* Darker Ruby Red for contrast in dark mode */
   --sidebar-primary-foreground: oklch(0.15 0.01 60);
   --sidebar-accent: oklch(0.25 0.02 60);
   --sidebar-accent-foreground: oklch(0.98 0.01 90);
   --sidebar-border: oklch(0.25 0.02 60);
-  --sidebar-ring: oklch(0.65 0.2 30);
+  --sidebar-ring: oklch(0.55 0.2 30); /* Darker Ruby Red for contrast in dark mode */
 }
 
 @theme inline {
