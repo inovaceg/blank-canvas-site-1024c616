@@ -88,7 +88,7 @@ export default function ContactPage() {
                 <Card className="bg-primary text-primary-foreground border-0"> {/* Aplicando as classes aqui */}
                   <CardHeader>
                     <CardTitle className="text-2xl">Envie uma Mensagem</CardTitle>
-                    <CardDescription>
+                    <CardDescription className="text-primary-foreground"> {/* Adicionado text-primary-foreground aqui */}
                       Preencha o formulário abaixo e entraremos em contato o mais breve possível.
                     </CardDescription>
                   </CardHeader>
