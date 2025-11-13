@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server"
-import { createClient } from "@/lib/supabase/server"
+import { createAdminClient } from "@/lib/supabase/admin" // Importar o cliente admin
 
 export async function POST(request: Request) {
   try {
     const data = await request.json()
     console.log("[API Contact] Incoming request data:", data); // Log de entrada para depuração
 
-    const supabase = await createClient()
+    const supabase = createAdminClient() // Usar o cliente admin aqui
 
     // Preparar os dados, garantindo que campos NOT NULL sejam sempre strings não vazias após trim
     // e campos NULLABLE sejam null se vazios
