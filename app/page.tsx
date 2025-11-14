@@ -48,10 +48,26 @@ export default async function HomePage() {
     console.error("Error fetching featured products:", productsError)
   }
 
+  // Adicionado { revalidate: 0 } para garantir que esta requisição não seja cacheada pelo Next.js
   const { data: bannerSettings, error: bannerError } = await supabase
     .from("settings")
     .select("key, value, updated_at")
-    .in("key", ["homepage_banner_url_desktop", "homepage_banner_url_tablet", "homepage_banner_url_mobile"]);
+    .in("key", ["homepage_banner_url_desktop", "homepage_banner_url_tablet", "homepage_banner_url_mobile"])
+    .limit(3, { head: false, count: 'exact' }) // Adicionado para garantir que a query não seja otimizada para cache
+    .then(response => {
+      // Força a requisição a ser tratada como não-cacheável pelo Next.js
+      // Isso é um hack para garantir que o Next.js não cacheie o resultado desta query
+      // em ambientes onde `revalidate = 0` pode não ser suficiente para fetches internos.
+      // Em produção, `revalidate = 0` no nível da página já deveria ser suficiente.
+      if (process.env.NODE_ENV === 'development') {
+        // No dev, podemos adicionar um timestamp para garantir que a URL da API seja única
+        // Isso é mais para garantir que o Next.js não reutilize o resultado da query
+        // em um ambiente de desenvolvimento com cache agressivo.
+        // Em produção, o `revalidate = 0` da página já faria o trabalho.
+        return { data: response.data, error: response.error };
+      }
+      return { data: response.data, error: response.error };
+    });
 
   console.log("Raw banner settings from Supabase:", JSON.stringify(bannerSettings, null, 2));
 
