@@ -5,6 +5,13 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Calendar, Heart, Users, Trophy, MapPin } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image" // Importar Image
+import type { Metadata } from "next" // Importar Metadata
+
+export const metadata: Metadata = {
+  title: "Nossa História - Tradição e Qualidade Doces São Fidélis",
+  description: "Conheça a jornada da Doces São Fidélis desde 2000, nossa paixão por doces artesanais, compromisso com a qualidade e a tradição familiar em São Fidélis, RJ.",
+  keywords: ["História Doces São Fidélis", "Tradição doces", "Fábrica de doces RJ", "Doces artesanais", "Roberto Porto"],
+};
 
 export default function OurHistoryPage() {
   return (
@@ -33,7 +40,7 @@ export default function OurHistoryPage() {
               <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl">
                 <img
                   src="/traditional-banana-candy-bananada.jpg"
-                  alt="Produção artesanal de bananadas"
+                  alt="Produção artesanal de bananadas Doces São Fidélis"
                   className="object-cover w-full h-full"
                 />
               </div>
@@ -84,7 +91,7 @@ export default function OurHistoryPage() {
               <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl">
                 <img
                   src="/assorted-fruit-starch-gummies-colorful.jpg"
-                  alt="Gomas de amido coloridas"
+                  alt="Gomas de amido coloridas Doces São Fidélis"
                   className="object-cover w-full h-full"
                 />
               </div>
@@ -216,7 +223,7 @@ export default function OurHistoryPage() {
               <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-xl mt-8">
                 <Image
                   src="/vista-aerea-fabrica.jpg"
-                  alt="Vista aérea da fábrica Doces São Fidélis"
+                  alt="Vista aérea da fábrica Doces São Fidélis em São Fidélis, RJ"
                   fill
                   className="object-cover"
                 />

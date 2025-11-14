@@ -11,6 +11,7 @@ import { cookies, headers } from "next/headers"
 import { unstable_noStore } from 'next/cache';
 import { Badge } from "@/components/ui/badge"
 import { MapEmbed } from "@/components/MapEmbed"; // Importação do MapEmbed
+import type { Metadata } from "next" // Importar Metadata
 
 interface Product {
   id: string
@@ -32,6 +33,12 @@ export const revalidate = 0; // Força a renderização dinâmica, desabilita o 
 
 // URL de fallback para o banner, caso o Supabase não retorne nada
 const FALLBACK_BANNER_URL = "/traditional-banana-candy-bananada.jpg"; 
+
+export const metadata: Metadata = {
+  title: "Bananadas e Gomas Artesanais - Doces São Fidélis",
+  description: "Descubra a tradição e o sabor autêntico das bananadas e gomas de amido da Doces São Fidélis. Produtos artesanais de qualidade para todo o Brasil.",
+  keywords: ["Bananada", "Goma de amido", "Doces artesanais", "Doces São Fidélis", "Comprar doces online", "Fábrica de doces", "Doces tradicionais"],
+};
 
 export default async function HomePage() {
   unstable_noStore(); // Força a renderização dinâmica para este componente de servidor

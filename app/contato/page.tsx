@@ -3,6 +3,14 @@ import { SiteFooter } from "@/components/site-footer"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ContactForm } from "@/components/contact-form"
 import { Mail, MapPin, Phone, Clock } from "lucide-react"
+import { MapEmbed } from "@/components/MapEmbed"; // Importar MapEmbed
+import type { Metadata } from "next" // Importar Metadata
+
+export const metadata: Metadata = {
+  title: "Contato Doces São Fidélis - Fale Conosco",
+  description: "Entre em contato com a Doces São Fidélis para dúvidas, orçamentos ou visitas. Estamos em São Fidélis, RJ. Telefone, e-mail e formulário de contato disponíveis.",
+  keywords: ["Contato Doces São Fidélis", "Telefone Doces São Fidélis", "E-mail Doces São Fidélis", "Endereço Doces São Fidélis", "Fábrica de doces RJ", "Orçamento doces"],
+};
 
 export default function ContactPage() {
   return (
@@ -37,9 +45,9 @@ export default function ContactPage() {
                     </div>
                     <CardTitle>Endereço</CardTitle>
                     <CardDescription>
-                      São Fidélis, RJ
+                      Rua Alsalga Tito de Azevedo, Nova Divinéia
                       <br />
-                      Brasil
+                      São Fidélis, RJ - Brasil
                     </CardDescription>
                   </CardHeader>
                 </Card>
@@ -51,7 +59,7 @@ export default function ContactPage() {
                     </div>
                     <CardTitle>Telefone</CardTitle>
                     <CardDescription>
-                      (22) 9999-9999
+                      (32) 98848-4644
                       <br />
                       WhatsApp disponível
                     </CardDescription>
@@ -96,6 +104,11 @@ export default function ContactPage() {
                     <ContactForm />
                   </CardContent>
                 </Card>
+                {/* Mapa de localização na página de contato */}
+                <div className="mt-8">
+                  <h2 className="text-center text-2xl font-semibold text-foreground mb-4">Nossa Localização</h2>
+                  <MapEmbed lat={-21.637652323862493} lng={-41.732340334072234} zoom={15} />
+                </div>
               </div>
             </div>
           </div>

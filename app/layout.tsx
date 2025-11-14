@@ -10,8 +10,12 @@ const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-serif"
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
 
 export const metadata: Metadata = {
-  title: "Doces São Fidélis - Bananadas e Gomas Artesanais",
-  description: "Desde 2000, produzindo bananadas e gomas de amido artesanais com ingredientes naturais e sabor único.",
+  title: {
+    default: "Doces São Fidélis - Bananadas e Gomas Artesanais de Qualidade",
+    template: "%s | Doces São Fidélis",
+  },
+  description: "Desde 2000, produzindo bananadas e gomas de amido artesanais com ingredientes naturais, sabor único e tradição. Ideal para revenda e consumo.",
+  keywords: ["Doces São Fidélis", "Bananada artesanal", "Gomas de amido", "Doces caseiros", "Doces tradicionais", "Comprar bananada online", "Fábrica de doces São Fidélis", "Distribuidor de doces RJ", "Doces para revenda", "Mariola"],
   generator: "v0.app",
   icons: {
     icon: [
@@ -21,6 +25,28 @@ export const metadata: Metadata = {
       },
     ],
     apple: "/logo-doces-sao-fidelis-favicon.png", // Usar a mesma imagem para o ícone da Apple
+  },
+  openGraph: {
+    title: "Doces São Fidélis - Bananadas e Gomas Artesanais de Qualidade",
+    description: "Desde 2000, produzindo bananadas e gomas de amido artesanais com ingredientes naturais, sabor único e tradição. Ideal para revenda e consumo.",
+    url: "https://www.docessaofidelis.com.br", // Substitua pela URL real do seu site
+    siteName: "Doces São Fidélis",
+    images: [
+      {
+        url: "/logo-doces-sao-fidelis.png", // Imagem para Open Graph
+        width: 800,
+        height: 600,
+        alt: "Logo Doces São Fidélis",
+      },
+    ],
+    locale: "pt_BR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Doces São Fidélis - Bananadas e Gomas Artesanais de Qualidade",
+    description: "Desde 2000, produzindo bananadas e gomas de amido artesanais com ingredientes naturais, sabor único e tradição. Ideal para revenda e consumo.",
+    images: ["/logo-doces-sao-fidelis.png"], // Imagem para Twitter Card
   },
 }
 
