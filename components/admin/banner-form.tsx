@@ -167,8 +167,11 @@ export function BannerForm() {
 
       if (error) throw error;
 
+      // Chamar a API de revalidação da homepage
+      await fetch("/api/revalidate-homepage");
+
       toast.success("Banners atualizados com sucesso!");
-      router.refresh();
+      router.refresh(); // Revalida a página atual do admin
     } catch (error) {
       console.error("Error updating banners:", error);
       toast.error("Erro ao atualizar os banners.");
