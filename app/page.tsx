@@ -448,24 +448,28 @@ export default async function HomePage() {
         </section>
 
         {/* --------------------------------------------------------------
-          NOVA SEÇÃO – MAPA DE LOCALIZAÇÃO (com indicador temporário)
+          NOVA SEÇÃO – MAPA DE LOCALIZAÇÃO (ajustada)
         -------------------------------------------------------------- */}
         <section className="py-20 lg:py-32 bg-white">
           <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-            <h3 className="text-center text-2xl font-semibold text-foreground mb-8">
-              Como nos encontrar
-            </h3>
-            {/* INDICADOR VISUAL TEMPORÁRIO */}
-            <div className="bg-red-200 border-4 border-red-500 p-4 mb-8 text-center text-red-800 font-bold">
-              --- INÍCIO DA SEÇÃO DO MAPA (DEBUG) ---
-            </div>
+            <div className="max-w-4xl mx-auto text-center space-y-6"> {/* Adicionado max-w-4xl mx-auto text-center space-y-6 */}
+              <h3 className="text-center text-3xl lg:text-4xl font-bold text-foreground mb-4">
+                Visite Nossa Fábrica
+              </h3>
+              <p className="text-lg text-muted-foreground text-pretty mb-8">
+                Estamos localizados em São Fidélis, RJ. Venha nos fazer uma visita e conhecer de perto a tradição e a qualidade dos nossos doces.
+              </p>
 
-            {/* O componente MapEmbed recebe a latitude e longitude fornecidas */}
-            <MapEmbed lat={-21.637652323862493} lng={-41.732340334072234} zoom={15} />
+              <MapEmbed lat={-21.637652323862493} lng={-41.732340334072234} zoom={15} />
 
-            {/* INDICADOR VISUAL TEMPORÁRIO */}
-            <div className="bg-red-200 border-4 border-red-500 p-4 mt-8 text-center text-red-800 font-bold">
-              --- FIM DA SEÇÃO DO MAPA (DEBUG) ---
+              <div className="pt-6">
+                <Button asChild size="lg">
+                  <Link href="/contato">
+                    <span>Entre em Contato para Visitas</span>
+                    <ArrowRight className="size-4 ml-2" />
+                  </Link>
+                </Button>
+              </div>
             </div>
           </div>
         </section>
