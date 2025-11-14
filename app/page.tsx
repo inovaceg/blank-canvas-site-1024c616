@@ -7,9 +7,9 @@ import Link from "next/link"
 import { ContactForm } from "@/components/contact-form"
 import { NewsletterForm } from "@/components/newsletter-form"
 import { createClient } from "@/lib/supabase/server"
-import Image from "next/image" // Importar Image do Next.js
-import { cookies, headers } from "next/headers" // Importar cookies e headers
-import { unstable_noStore } from 'next/cache'; // Importar unstable_noStore
+// import Image from "next/image" // Removido: Não usaremos o componente Image do Next.js aqui
+import { cookies, headers } from "next/headers"
+import { unstable_noStore } from 'next/cache';
 import { Badge } from "@/components/ui/badge"
 
 interface Product {
@@ -104,18 +104,14 @@ export default async function HomePage() {
             {desktopBannerUrl && (
               <>
                 <picture>
-                  <source media="(max-width: 767px)" srcSet={mobileBannerUrl || tabletBannerUrl || desktopBannerUrl} />
-                  <source media="(min-width: 768px) and (max-width: 1023px)" srcSet={tabletBannerUrl || desktopBannerUrl} />
-                  <source media="(min-width: 1024px)" srcSet={desktopBannerUrl} />
-                  <Image // Usando o componente Image do Next.js
-                    key={desktopBannerUrl} // Adicionando key dinâmica
-                    src={desktopBannerUrl}
+                  {mobileBannerUrl && <source media="(max-width: 767px)" srcSet={mobileBannerUrl} />}
+                  {tabletBannerUrl && <source media="(min-width: 768px) and (max-width: 1023px)" srcSet={tabletBannerUrl} />}
+                  {desktopBannerUrl && <source media="(min-width: 1024px)" srcSet={desktopBannerUrl} />}
+                  <img
+                    key={desktopBannerUrl} // Adicionando key dinâmica para React
+                    src={desktopBannerUrl} // Fallback src
                     alt="Doces São Fidélis"
-                    fill // Usar fill para preencher o contêiner
-                    className="object-cover"
-                    priority // Carregar com alta prioridade
-                    sizes="(max-width: 767px) 100vw, (max-width: 1023px) 100vw, 100vw" // Definir sizes para responsividade
-                    unoptimized={true} // Desativar otimização para evitar cache
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
                 </picture>
                 <div className="absolute inset-0 bg-black/60" />
@@ -256,10 +252,9 @@ export default async function HomePage() {
                     <Card className="overflow-hidden">
                       <div className="aspect-square relative overflow-hidden bg-muted">
                         {product.image_url ? (
-                          <Image
+                          <img
                             src={product.image_url}
                             alt={product.name}
-                            fill
                             className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
                           />
                         ) : (
