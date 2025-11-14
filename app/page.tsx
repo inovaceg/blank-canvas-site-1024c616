@@ -7,7 +7,7 @@ import Link from "next/link"
 import { ContactForm } from "@/components/contact-form"
 import { NewsletterForm } from "@/components/newsletter-form"
 import { createClient } from "@/lib/supabase/server"
-import Image from "next/image"
+import Image from "next/image" // Importar Image do Next.js
 import { Badge } from "@/components/ui/badge"
 import { cookies } from "next/headers" // Importar cookies
 
@@ -104,10 +104,14 @@ export default async function HomePage() {
                   <source media="(max-width: 767px)" srcSet={mobileBannerUrl || tabletBannerUrl || desktopBannerUrl} />
                   <source media="(min-width: 768px) and (max-width: 1023px)" srcSet={tabletBannerUrl || desktopBannerUrl} />
                   <source media="(min-width: 1024px)" srcSet={desktopBannerUrl} />
-                  <img
+                  <Image // Usando o componente Image do Next.js
+                    key={desktopBannerUrl} // Adicionando key dinâmica
                     src={desktopBannerUrl}
                     alt="Doces São Fidélis"
-                    className="absolute inset-0 w-full h-full object-cover"
+                    fill // Usar fill para preencher o contêiner
+                    className="object-cover"
+                    priority // Carregar com alta prioridade
+                    sizes="(max-width: 767px) 100vw, (max-width: 1023px) 100vw, 100vw" // Definir sizes para responsividade
                   />
                 </picture>
                 <div className="absolute inset-0 bg-black/60" />
