@@ -80,7 +80,7 @@ export function BannerForm() {
   const fetchBannerUrls = async () => {
     const { data, error } = await supabase
       .from("settings")
-      .select("key, value")
+      .select("key, value, updated_at")
       .in("key", ["homepage_banner_url_desktop", "homepage_banner_url_tablet", "homepage_banner_url_mobile"]);
 
     if (error && error.code !== 'PGRST116') {
@@ -176,6 +176,19 @@ export function BannerForm() {
 
       console.log("Supabase upsert successful, response:", JSON.stringify(upsertData, null, 2));
       toast.success("Banners atualizados com sucesso!");
+      
+      // Chamar a API para revalidar a página inicial
+      const revalidateResponse = await fetch("/api/revalidate-homepage", {
+        method: "POST",
+      });
+
+      if (!revalidateResponse.ok) {
+        console.error("Failed to revalidate homepage:", await revalidateResponse.json());
+        toast.error("Erro ao revalidar a página inicial.");
+      } else {
+        console.log("Homepage revalidated successfully.");
+      }
+
       router.refresh(); // Revalida a página atual do admin
     } catch (error) {
       console.error("Error updating banners:", error);
