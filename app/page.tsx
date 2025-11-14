@@ -52,14 +52,18 @@ export default async function HomePage() {
   const bannerTimestamps: Record<string, string> = {};
 
   bannerSettings?.forEach(setting => {
-    bannerUrls[setting.key] = setting.value || "";
+    bannerUrls[setting.key] = setting.value ?? ""; // Usa ?? para tratar null/undefined
     bannerTimestamps[setting.key] = setting.updated_at ? new Date(setting.updated_at).getTime().toString() : '';
   });
 
   const getCacheBustedUrl = (urlKey: string) => {
-    const baseUrl = bannerUrls[urlKey] ?? ""; // Corrigido: Usa ?? para tratar string vazia corretamente
+    const baseUrl = bannerUrls[urlKey];
     const timestamp = bannerTimestamps[urlKey];
-    return baseUrl && timestamp ? `${baseUrl}?v=${timestamp}` : baseUrl;
+    // Só retorna um URL se baseUrl não for uma string vazia
+    if (baseUrl && baseUrl.trim() !== "") {
+      return timestamp ? `${baseUrl}?v=${timestamp}` : baseUrl;
+    }
+    return ""; // Retorna string vazia se não houver URL
   };
 
   const desktopBannerUrl = getCacheBustedUrl("homepage_banner_url_desktop");
