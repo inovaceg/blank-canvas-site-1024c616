@@ -29,10 +29,12 @@ interface Product {
 
 export const revalidate = 0; // Força a renderização dinâmica, desabilita o cache para esta página
 
+// URL de fallback para o banner, caso o Supabase não retorne nada
+const FALLBACK_BANNER_URL = "/traditional-banana-candy-bananada.jpg"; 
+
 export default async function HomePage() {
   unstable_noStore(); // Força a renderização dinâmica para este componente de servidor
   cookies() // Esta chamada também força a página a ser renderizada dinamicamente
-  // headers().set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate'); // Removido: Não é a forma correta de definir cabeçalhos em Server Components
 
   console.log("HomePage rendered at:", new Date().toISOString());
 
@@ -69,21 +71,27 @@ export default async function HomePage() {
   console.log("Processed banner URLs:", JSON.stringify(bannerUrls, null, 2));
   console.log("Processed banner Timestamps:", JSON.stringify(bannerTimestamps, null, 2));
 
-  const getCacheBustedUrl = (urlKey: string) => {
+  const getCacheBustedUrl = (urlKey: string, fallbackUrl: string) => {
     const baseUrl = bannerUrls[urlKey];
     const timestamp = bannerTimestamps[urlKey];
     
-    if (baseUrl && baseUrl.trim() !== "") {
+    const effectiveBaseUrl = (baseUrl && baseUrl.trim() !== "") ? baseUrl : fallbackUrl;
+
+    if (effectiveBaseUrl && effectiveBaseUrl.trim() !== "") {
       // Se houver um timestamp de atualização, use-o. Caso contrário, use o timestamp atual para garantir que o cache seja ignorado.
       const effectiveTimestamp = timestamp || Date.now().toString();
-      return `${baseUrl}?v=${effectiveTimestamp}`;
+      // Adiciona o parâmetro de cache-busting apenas se a URL não for a de fallback estática (que não precisa de cache-busting)
+      if (effectiveBaseUrl !== fallbackUrl) {
+        return `${effectiveBaseUrl}?v=${effectiveTimestamp}`;
+      }
+      return effectiveBaseUrl;
     }
     return "";
   };
 
-  const desktopBannerUrl = getCacheBustedUrl("homepage_banner_url_desktop");
-  const tabletBannerUrl = getCacheBustedUrl("homepage_banner_url_tablet");
-  const mobileBannerUrl = getCacheBustedUrl("homepage_banner_url_mobile");
+  const desktopBannerUrl = getCacheBustedUrl("homepage_banner_url_desktop", FALLBACK_BANNER_URL);
+  const tabletBannerUrl = getCacheBustedUrl("homepage_banner_url_tablet", desktopBannerUrl); // Usa desktop como fallback para tablet
+  const mobileBannerUrl = getCacheBustedUrl("homepage_banner_url_mobile", desktopBannerUrl); // Usa desktop como fallback para mobile
 
   console.log("Final desktop banner URL being used:", desktopBannerUrl);
   console.log("Final tablet banner URL being used:", tabletBannerUrl);
