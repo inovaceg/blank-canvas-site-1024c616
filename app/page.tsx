@@ -27,8 +27,12 @@ interface Product {
   created_at: string
 }
 
+export const revalidate = 0; // Força a renderização dinâmica, desabilita o cache para esta página
+
 export default async function HomePage() {
   cookies() // Esta chamada força a página a ser renderizada dinamicamente
+
+  console.log("HomePage rendered at:", new Date().toISOString());
 
   const supabase = await createClient()
 
@@ -49,6 +53,8 @@ export default async function HomePage() {
     .select("key, value, updated_at")
     .in("key", ["homepage_banner_url_desktop", "homepage_banner_url_tablet", "homepage_banner_url_mobile"]);
 
+  console.log("Raw banner settings from Supabase:", bannerSettings);
+
   const bannerUrls: Record<string, string> = {};
   const bannerTimestamps: Record<string, string> = {};
 
@@ -57,18 +63,30 @@ export default async function HomePage() {
     bannerTimestamps[setting.key] = setting.updated_at ? new Date(setting.updated_at).getTime().toString() : '';
   });
 
+  console.log("Processed banner URLs:", bannerUrls);
+  console.log("Processed banner Timestamps:", bannerTimestamps);
+
   const getCacheBustedUrl = (urlKey: string) => {
     const baseUrl = bannerUrls[urlKey];
     const timestamp = bannerTimestamps[urlKey];
+    
     if (baseUrl && baseUrl.trim() !== "") {
-      return timestamp ? `${baseUrl}?v=${timestamp}` : baseUrl;
+      // Se houver um URL base, sempre adiciona um timestamp para cache-busting
+      // Usa o timestamp do banco de dados, ou Date.now() como fallback robusto
+      const effectiveTimestamp = timestamp || Date.now().toString();
+      return `${baseUrl}?v=${effectiveTimestamp}`;
     }
-    return "";
+    return ""; // Retorna string vazia se não houver URL
   };
 
   const desktopBannerUrl = getCacheBustedUrl("homepage_banner_url_desktop");
   const tabletBannerUrl = getCacheBustedUrl("homepage_banner_url_tablet");
   const mobileBannerUrl = getCacheBustedUrl("homepage_banner_url_mobile");
+
+  console.log("Final desktop banner URL being used:", desktopBannerUrl);
+  console.log("Final tablet banner URL being used:", tabletBannerUrl);
+  console.log("Final mobile banner URL being used:", mobileBannerUrl);
+
 
   if (bannerError && bannerError.code !== 'PGRST116') {
     console.error("Error fetching homepage banner URLs:", bannerError)

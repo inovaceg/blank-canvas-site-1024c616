@@ -153,6 +153,7 @@ export function BannerForm() {
 
   const onSubmit = async (data: BannerFormData) => {
     setIsSubmitting(true);
+    console.log("Submitting banner data:", data);
 
     try {
       const updates = [
@@ -165,7 +166,10 @@ export function BannerForm() {
         .from("settings")
         .upsert(updates, { onConflict: "key" });
 
-      if (error) throw error;
+      if (error) {
+        console.error("Supabase upsert error:", error);
+        throw error;
+      }
 
       toast.success("Banners atualizados com sucesso!");
       router.refresh(); // Revalida a página atual do admin
