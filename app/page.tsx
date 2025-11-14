@@ -32,7 +32,6 @@ export default async function HomePage() {
   const { data: featuredProducts, error: productsError } = await supabase
     .from("products")
     .select("*")
-    // Removido o filtro .eq("is_featured", true)
     .eq("is_active", true) // Mantém o filtro para mostrar apenas produtos ativos
     .order("display_order", { ascending: true }) // Ordena por display_order
     .order("created_at", { ascending: false })
@@ -43,19 +42,30 @@ export default async function HomePage() {
   }
   console.log("Featured Products fetched for homepage:", featuredProducts);
 
+  // Modificado para buscar 'value' e 'updated_at'
   const { data: bannerSettings, error: bannerError } = await supabase
     .from("settings")
-    .select("key, value")
+    .select("key, value, updated_at")
     .in("key", ["homepage_banner_url_desktop", "homepage_banner_url_tablet", "homepage_banner_url_mobile"]);
 
   const bannerUrls: Record<string, string> = {};
+  const bannerTimestamps: Record<string, string> = {}; // Para armazenar os timestamps
+
   bannerSettings?.forEach(setting => {
     bannerUrls[setting.key] = setting.value || "";
+    bannerTimestamps[setting.key] = setting.updated_at ? new Date(setting.updated_at).getTime().toString() : ''; // Converte para timestamp
   });
 
-  const desktopBannerUrl = bannerUrls["homepage_banner_url_desktop"] || "/banner.png";
-  const tabletBannerUrl = bannerUrls["homepage_banner_url_tablet"] || desktopBannerUrl;
-  const mobileBannerUrl = bannerUrls["homepage_banner_url_mobile"] || tabletBannerUrl;
+  // Adiciona o parâmetro de cache-busting aos URLs
+  const getCacheBustedUrl = (urlKey: string, defaultUrl: string) => {
+    const baseUrl = bannerUrls[urlKey] || defaultUrl;
+    const timestamp = bannerTimestamps[urlKey];
+    return timestamp ? `${baseUrl}?v=${timestamp}` : baseUrl;
+  };
+
+  const desktopBannerUrl = getCacheBustedUrl("homepage_banner_url_desktop", "/banner.png");
+  const tabletBannerUrl = getCacheBustedUrl("homepage_banner_url_tablet", desktopBannerUrl);
+  const mobileBannerUrl = getCacheBustedUrl("homepage_banner_url_url_mobile", tabletBannerUrl); // Corrigido o nome da chave
 
   if (bannerError && bannerError.code !== 'PGRST116') {
     console.error("Error fetching homepage banner URLs:", bannerError)
