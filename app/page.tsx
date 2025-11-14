@@ -123,7 +123,7 @@ export default async function HomePage() {
                     className="absolute inset-0 w-full h-full object-cover"
                   />
                 </picture>
-                <div className="absolute inset-0 bg-black/60" />
+                <div className="absolute inset-0 bg-black/40" /> {/* ALTERADO: de bg-black/60 para bg-black/40 */}
               </>
             )}
           </div>
