@@ -53,7 +53,7 @@ export default async function HomePage() {
     .select("key, value, updated_at")
     .in("key", ["homepage_banner_url_desktop", "homepage_banner_url_tablet", "homepage_banner_url_mobile"]);
 
-  console.log("Raw banner settings from Supabase:", bannerSettings);
+  console.log("Raw banner settings from Supabase:", JSON.stringify(bannerSettings, null, 2));
 
   const bannerUrls: Record<string, string> = {};
   const bannerTimestamps: Record<string, string> = {};
@@ -63,20 +63,18 @@ export default async function HomePage() {
     bannerTimestamps[setting.key] = setting.updated_at ? new Date(setting.updated_at).getTime().toString() : '';
   });
 
-  console.log("Processed banner URLs:", bannerUrls);
-  console.log("Processed banner Timestamps:", bannerTimestamps);
+  console.log("Processed banner URLs:", JSON.stringify(bannerUrls, null, 2));
+  console.log("Processed banner Timestamps:", JSON.stringify(bannerTimestamps, null, 2));
 
   const getCacheBustedUrl = (urlKey: string) => {
     const baseUrl = bannerUrls[urlKey];
     const timestamp = bannerTimestamps[urlKey];
     
     if (baseUrl && baseUrl.trim() !== "") {
-      // Se houver um URL base, sempre adiciona um timestamp para cache-busting
-      // Usa o timestamp do banco de dados, ou Date.now() como fallback robusto
       const effectiveTimestamp = timestamp || Date.now().toString();
       return `${baseUrl}?v=${effectiveTimestamp}`;
     }
-    return ""; // Retorna string vazia se não houver URL
+    return "";
   };
 
   const desktopBannerUrl = getCacheBustedUrl("homepage_banner_url_desktop");

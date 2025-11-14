@@ -153,7 +153,7 @@ export function BannerForm() {
 
   const onSubmit = async (data: BannerFormData) => {
     setIsSubmitting(true);
-    console.log("Submitting banner data:", data);
+    console.log("Submitting banner data:", JSON.stringify(data, null, 2));
 
     try {
       const updates = [
@@ -162,16 +162,19 @@ export function BannerForm() {
         { key: "homepage_banner_url_mobile", value: data.mobile_image_url || "" },
       ];
 
-      const { error } = await supabase
-        .from("settings")
-        .upsert(updates, { onConflict: "key" });
+      console.log("Supabase upsert payload:", JSON.stringify(updates, null, 2));
 
-      // Adicionado log para o erro do Supabase upsert
+      const { data: upsertData, error } = await supabase
+        .from("settings")
+        .upsert(updates, { onConflict: "key" })
+        .select(); // Adicionado .select() para obter os dados atualizados
+
       if (error) {
         console.error("Supabase upsert error:", error);
         throw error;
       }
 
+      console.log("Supabase upsert successful, response:", JSON.stringify(upsertData, null, 2));
       toast.success("Banners atualizados com sucesso!");
       router.refresh(); // Revalida a página atual do admin
     } catch (error) {
