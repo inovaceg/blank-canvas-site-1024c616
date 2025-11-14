@@ -8,9 +8,9 @@ import { ContactForm } from "@/components/contact-form"
 import { NewsletterForm } from "@/components/newsletter-form"
 import { createClient } from "@/lib/supabase/server"
 import Image from "next/image" // Importar Image do Next.js
-import { cookies } from "next/headers" // Importar cookies
+import { cookies, headers } from "next/headers" // Importar cookies e headers
 import { unstable_noStore } from 'next/cache'; // Importar unstable_noStore
-import { Badge } from "@/components/ui/badge" // Importar Badge
+import { Badge } from "@/components/ui/badge"
 
 interface Product {
   id: string
@@ -33,6 +33,7 @@ export const revalidate = 0; // Força a renderização dinâmica, desabilita o 
 export default async function HomePage() {
   unstable_noStore(); // Força a renderização dinâmica para este componente de servidor
   cookies() // Esta chamada também força a página a ser renderizada dinamicamente
+  // headers().set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate'); // Removido: Não é a forma correta de definir cabeçalhos em Server Components
 
   console.log("HomePage rendered at:", new Date().toISOString());
 
