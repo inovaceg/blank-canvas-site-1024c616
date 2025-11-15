@@ -12,7 +12,7 @@ import Image from "next/image"
 import { useState, useEffect } from "react"
 import { useCart } from "@/components/cart-provider"
 import { Input } from "@/components/ui/input"
-import type { Metadata } from "next" // Importar Metadata
+// import type { Metadata } from "next" // Removido o import de Metadata
 
 interface Product {
   id: string
@@ -30,11 +30,12 @@ interface Product {
   created_at: string
 }
 
-export const metadata: Metadata = {
-  title: "Catálogo de Produtos - Bananadas e Gomas de Amido",
-  description: "Explore nosso catálogo completo de bananadas artesanais, gomas de amido e doces tradicionais. Produtos frescos e de alta qualidade da Doces São Fidélis.",
-  keywords: ["Catálogo de doces", "Bananada", "Goma de amido", "Doces para revenda", "Doces São Fidélis", "Comprar doces", "Mariola"],
-};
+// A exportação de metadata foi movida para app/produtos/layout.tsx
+// export const metadata: Metadata = {
+//   title: "Catálogo de Produtos - Bananadas e Gomas de Amido",
+//   description: "Explore nosso catálogo completo de bananadas artesanais, gomas de amido e doces tradicionais. Produtos frescos e de alta qualidade da Doces São Fidélis.",
+//   keywords: ["Catálogo de doces", "Bananada", "Goma de amido", "Doces para revenda", "Doces São Fidélis", "Comprar doces", "Mariola"],
+// };
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([])

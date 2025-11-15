@@ -1,16 +1,19 @@
+"use client"
+
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { ContactForm } from "@/components/contact-form"
 import { Mail, MapPin, Phone, Clock } from "lucide-react"
 import { MapEmbed } from "@/components/MapEmbed"; // Importar MapEmbed
-import type { Metadata } from "next" // Importar Metadata
+// import type { Metadata } from "next" // Removido o import de Metadata
 
-export const metadata: Metadata = {
-  title: "Contato Doces São Fidélis - Fale Conosco",
-  description: "Entre em contato com a Doces São Fidélis para dúvidas, orçamentos ou visitas. Estamos em São Fidélis, RJ. Telefone, e-mail e formulário de contato disponíveis.",
-  keywords: ["Contato Doces São Fidélis", "Telefone Doces São Fidélis", "E-mail Doces São Fidélis", "Endereço Doces São Fidélis", "Fábrica de doces RJ", "Orçamento doces"],
-};
+// A exportação de metadata foi movida para app/contato/layout.tsx
+// export const metadata: Metadata = {
+//   title: "Contato Doces São Fidélis - Fale Conosco",
+//   description: "Entre em contato com a Doces São Fidélis para dúvidas, orçamentos ou visitas. Estamos em São Fidélis, RJ. Telefone, e-mail e formulário de contato disponíveis.",
+//   keywords: ["Contato Doces São Fidélis", "Telefone Doces São Fidélis", "E-mail Doces São Fidélis", "Endereço Doces São Fidélis", "Fábrica de doces RJ", "Orçamento doces"],
+// };
 
 export default function ContactPage() {
   return (

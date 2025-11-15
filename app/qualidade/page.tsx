@@ -1,17 +1,20 @@
+"use client" // Adicionado "use client" para garantir que o componente seja um Client Component
+
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
 import { Button } from "@/components/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { CheckCircle, Leaf, Shield, Award, Thermometer, Users2 } from "lucide-react"
 import Link from "next/link"
-import type { Metadata } from "next" // Importar Metadata
 import Image from "next/image" // Importar Image para usar o componente otimizado
+// import type { Metadata } from "next" // Removido o import Metadata
 
-export const metadata: Metadata = {
-  title: "Qualidade Doces São Fidélis - Bananadas e Gomas Artesanais",
-  description: "Nosso compromisso com a qualidade: ingredientes naturais, processo produtivo rigoroso e segurança alimentar. Descubra a excelência dos doces São Fidélis.",
-  keywords: ["Qualidade doces", "Segurança alimentar", "Ingredientes naturais", "Processo artesanal", "Certificações doces", "Doces São Fidélis"],
-};
+// A exportação de metadata foi movida para app/qualidade/layout.tsx
+// export const metadata: Metadata = {
+//   title: "Qualidade Doces São Fidélis - Bananadas e Gomas Artesanais",
+//   description: "Nosso compromisso com a qualidade: ingredientes naturais, processo produtivo rigoroso e segurança alimentar. Descubra a excelência dos doces São Fidélis.",
+//   keywords: ["Qualidade doces", "Segurança alimentar", "Ingredientes naturais", "Processo artesanal", "Certificações doces", "Doces São Fidélis"],
+// };
 
 export default function QualityPage() {
   return (
@@ -101,8 +104,8 @@ export default function QualityPage() {
                   </div>
                   <h3 className="font-serif text-xl font-bold text-foreground">Ingredientes Naturais</h3>
                   <p className="text-sm text-muted-foreground">
-                    Utilizamos apenas ingredientes naturais e selecionados. Bananas frescas, açúcar de qualidade e
-                    frutas para as gomas, sem conservantes artificiais.
+                    Utilizamos apenas ingredientes frescos e naturais, cuidadosamente selecionados para garantir o sabor
+                    autêntico e a qualidade superior em cada doce. Sem aditivos artificiais.
                   </p>
                 </CardContent>
               </Card>
