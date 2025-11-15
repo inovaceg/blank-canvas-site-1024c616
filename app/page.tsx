@@ -12,6 +12,7 @@ import { unstable_noStore } from 'next/cache';
 import { Badge } from "@/components/ui/badge"
 import { MapEmbed } from "@/components/MapEmbed"; // Importação do MapEmbed
 import type { Metadata } from "next" // Importar Metadata
+import Image from "next/image" // Importar Image para usar o componente otimizado
 
 interface Product {
   id: string
@@ -248,6 +249,16 @@ export default async function HomePage() {
                   </CardDescription>
                 </CardHeader>
               </Card>
+            </div>
+
+            {/* Nova imagem adicionada aqui */}
+            <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-xl mt-12">
+              <Image
+                src="/producao-geral.jpg"
+                alt="Equipe Doces São Fidélis trabalhando na produção de doces artesanais"
+                fill
+                className="object-cover"
+              />
             </div>
           </div>
         </section>
