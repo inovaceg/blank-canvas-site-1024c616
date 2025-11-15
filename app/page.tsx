@@ -197,6 +197,16 @@ export default async function HomePage() {
               </p>
             </div>
 
+            {/* Nova imagem adicionada aqui */}
+            <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-xl mb-12">
+              <Image
+                src="/producao-geral.jpg"
+                alt="Equipe Doces São Fidélis trabalhando na produção de doces artesanais"
+                fill
+                className="object-cover"
+              />
+            </div>
+
             <div className="grid md:grid-cols-4 lg:grid-cols-4 gap-6">
               <Card className="bg-white">
                 <CardHeader>
@@ -249,16 +259,6 @@ export default async function HomePage() {
                   </CardDescription>
                 </CardHeader>
               </Card>
-            </div>
-
-            {/* Nova imagem adicionada aqui */}
-            <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-xl mt-12">
-              <Image
-                src="/producao-geral.jpg"
-                alt="Equipe Doces São Fidélis trabalhando na produção de doces artesanais"
-                fill
-                className="object-cover"
-              />
             </div>
           </div>
         </section>
