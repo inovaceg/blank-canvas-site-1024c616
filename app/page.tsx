@@ -202,6 +202,8 @@ export default async function HomePage() {
               <img
                 src="/producao-geral.jpg"
                 alt="Equipe Doces São Fidélis trabalhando na produção de doces artesanais"
+                width={1200} // Adicionado width explícito
+                height={675} // Adicionado height explícito (para 16:9)
                 className="absolute inset-0 w-full h-full object-cover"
               />
             </div>
