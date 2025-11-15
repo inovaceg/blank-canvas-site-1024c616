@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { CheckCircle, Leaf, Shield, Award, Thermometer, Users2 } from "lucide-react"
 import Link from "next/link"
 import type { Metadata } from "next" // Importar Metadata
+import Image from "next/image" // Importar Image para usar o componente otimizado
 
 export const metadata: Metadata = {
   title: "Qualidade Doces São Fidélis - Bananadas e Gomas Artesanais",
@@ -61,9 +62,10 @@ export default function QualityPage() {
                 </ul>
               </div>
               <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-xl">
-                <img
+                <Image
                   src="/producao-bananada-1.jpg"
                   alt="Controle de qualidade na produção de bananadas Doces São Fidélis"
+                  fill
                   className="object-cover w-full h-full"
                 />
               </div>
@@ -79,6 +81,16 @@ export default function QualityPage() {
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 Os fundamentos que garantem a excelência dos nossos produtos
               </p>
+            </div>
+
+            {/* Nova imagem adicionada aqui */}
+            <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-xl mb-12">
+              <Image
+                src="/producao-bananada-2.jpg"
+                alt="Equipe Doces São Fidélis trabalhando na produção de doces"
+                fill
+                className="object-cover"
+              />
             </div>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
