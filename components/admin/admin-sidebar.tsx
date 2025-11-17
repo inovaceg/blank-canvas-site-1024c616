@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
-import { LayoutDashboard, Package, FileText, MessageSquare, Mail, LogOut, Menu, X, Image as ImageIcon } from "lucide-react" // Adicionado ImageIcon
+import { LayoutDashboard, Package, FileText, MessageSquare, Mail, LogOut, Menu, X, Image as ImageIcon, AtSign } from "lucide-react" // Adicionado AtSign para Zoho Mail
 import { cn } from "@/lib/utils"
 import Image from "next/image"
 import { useState } from "react"
@@ -14,7 +14,8 @@ const navigation = [
   { name: "Orçamentos", href: "/admin/quotes", icon: FileText },
   { name: "Contatos", href: "/admin/messages", icon: MessageSquare },
   { name: "Newsletter", href: "/admin/newsletter", icon: Mail },
-  { name: "Banner", href: "/admin/banner", icon: ImageIcon }, // Novo item de navegação
+  { name: "Banner", href: "/admin/banner", icon: ImageIcon },
+  { name: "E-mails Zoho", href: "/admin/zoho-mail", icon: AtSign }, // Novo item de navegação
 ]
 
 export function AdminSidebar() {
