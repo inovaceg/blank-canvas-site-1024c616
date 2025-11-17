@@ -13,12 +13,12 @@ interface QuoteRequest {
   contact_name: string
   email: string
   phone: string
-  address?: string
-  city?: string
-  state?: string
-  product_interest?: string
-  quantity?: string
-  message?: string
+  address?: string | null // Alterado para aceitar null
+  city?: string | null // Alterado para aceitar null
+  state?: string | null // Alterado para aceitar null
+  product_interest?: string | null // Alterado para aceitar null
+  quantity?: string | null // Alterado para aceitar null
+  message?: string | null // Alterado para aceitar null
   created_at: string
 }
 
