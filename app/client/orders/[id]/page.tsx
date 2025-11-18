@@ -22,12 +22,11 @@ interface ProductDetail {
 
 interface Order {
   id: string
-  // Removido order_date e delivery_date_requested, usando created_at
   status: string
-  total_amount?: number
-  message?: string | null // Corrigido: Renomeado de 'notes' para 'message'
+  total_price?: number // Corrigido: Usar total_price
+  message?: string | null // Corrigido: Usar message
   created_at: string
-  product_details: ProductDetail[]; // Agora é um array de ProductDetail
+  product_details: ProductDetail[];
 }
 
 export default function ClientOrderDetailPage() {
@@ -72,7 +71,7 @@ export default function ClientOrderDetailPage() {
       .select(`
         id,
         status,
-        total_amount,
+        total_price,
         message,
         created_at,
         product_details
@@ -151,52 +150,51 @@ export default function ClientOrderDetailPage() {
         >
           <span>
             <ArrowLeft className="size-4" />
-            Voltar para Meus Pedidos
+            VOLTAR PARA MEUS PEDIDOS
           </span>
         </Link>
 
         <Card className="p-6">
           <CardHeader className="p-0 mb-6">
             <div className="flex items-center justify-between">
-              <CardTitle className="text-2xl">Detalhes do Pedido #{order.id.substring(0, 8)}</CardTitle>
+              <CardTitle className="text-2xl">DETALHES DO PEDIDO #{order.id.substring(0, 8)}</CardTitle>
               <Badge variant={getStatusBadgeVariant(order.status)} className="text-base px-3 py-1">
                 {getStatusText(order.status)}
               </Badge>
             </div>
-            <CardDescription className="text-sm text-muted-foreground">
-              Pedido realizado em {new Date(order.created_at).toLocaleString("pt-BR")}
+            <CardDescription className="text-sm text-muted-foreground uppercase">
+              PEDIDO REALIZADO EM {new Date(order.created_at).toLocaleString("pt-BR")}
             </CardDescription>
           </CardHeader>
           <CardContent className="p-0 space-y-6">
             <div>
-              <h3 className="font-semibold text-lg mb-3">Informações Gerais</h3>
+              <h3 className="font-semibold text-lg mb-3 uppercase">INFORMAÇÕES GERAIS</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                 <div>
-                  <p className="text-muted-foreground">Data do Pedido:</p>
-                  <p className="font-medium">{new Date(order.created_at).toLocaleDateString("pt-BR")}</p>
+                  <p className="text-muted-foreground uppercase">DATA DO PEDIDO:</p>
+                  <p className="font-medium uppercase">{new Date(order.created_at).toLocaleDateString("pt-BR")}</p>
                 </div>
-                {/* Removido delivery_date_requested */}
                 <div>
-                  <p className="text-muted-foreground">Status:</p>
-                  <p className="font-medium">{getStatusText(order.status)}</p>
+                  <p className="text-muted-foreground uppercase">STATUS:</p>
+                  <p className="font-medium uppercase">{getStatusText(order.status)}</p>
                 </div>
-                {order.total_amount && (
+                {order.total_price && (
                   <div>
-                    <p className="text-muted-foreground">Valor Total:</p>
-                    <p className="font-medium">R$ {order.total_amount.toFixed(2)}</p>
+                    <p className="text-muted-foreground uppercase">VALOR TOTAL:</p>
+                    <p className="font-medium uppercase">R$ {order.total_price.toFixed(2)}</p>
                   </div>
                 )}
                 {order.message && (
                   <div className="sm:col-span-2">
-                    <p className="text-muted-foreground">Observações:</p>
-                    <p className="font-medium whitespace-pre-wrap">{order.message}</p>
+                    <p className="text-muted-foreground uppercase">OBSERVAÇÕES:</p>
+                    <p className="font-medium whitespace-pre-wrap uppercase">{order.message}</p>
                   </div>
                 )}
               </div>
             </div>
 
             <div>
-              <h3 className="font-semibold text-lg mb-3">Itens do Pedido</h3>
+              <h3 className="font-semibold text-lg mb-3 uppercase">ITENS DO PEDIDO</h3>
               <div className="space-y-4">
                 {order.product_details?.map((item) => (
                   <div key={item.id} className="flex items-center gap-4 border-b pb-4 last:border-b-0 last:pb-0">
@@ -215,13 +213,13 @@ export default function ClientOrderDetailPage() {
                       )}
                     </div>
                     <div className="flex-1">
-                      <p className="font-medium text-foreground">{item.name}</p>
-                      <p className="text-sm text-muted-foreground">Quantidade: {item.quantity}</p>
+                      <p className="font-medium text-foreground uppercase">{item.name}</p>
+                      <p className="text-sm text-muted-foreground uppercase">QUANTIDADE: {item.quantity}</p>
                       {item.price !== undefined && item.price !== null && (
-                        <p className="text-sm text-muted-foreground">Preço Unitário: R$ {item.price.toFixed(2)}</p>
+                        <p className="text-sm text-muted-foreground uppercase">PREÇO UNITÁRIO: R$ {item.price.toFixed(2)}</p>
                       )}
                       {item.price !== undefined && item.price !== null && (
-                        <p className="text-sm text-muted-foreground">Total: R$ {(item.quantity * item.price).toFixed(2)}</p>
+                        <p className="text-sm text-muted-foreground uppercase">TOTAL: R$ {(item.quantity * item.price).toFixed(2)}</p>
                       )}
                     </div>
                   </div>
