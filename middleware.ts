@@ -19,11 +19,12 @@ export async function middleware(request: NextRequest) {
           return request.cookies.getAll()
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-          response = NextResponse.next({
-            request,
-          })
+          // IMPORTANTE: As cookies devem ser definidas APENAS no objeto 'response'.
+          // A linha abaixo foi removida pois tentava modificar 'request.cookies', o que é incorreto.
+          // cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+          
           cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options))
+          console.log(`[Middleware] Set cookie: ${name}`);
         },
       },
     },
@@ -44,11 +45,19 @@ export async function middleware(request: NextRequest) {
   const isLoginPage = request.nextUrl.pathname === "/admin/login"
   const isRegisterPage = request.nextUrl.pathname === "/admin/register"
 
-  if (isLoginPage || isRegisterPage) {
-    console.log(`[Middleware] Allowing unconditional access to ${request.nextUrl.pathname} for debugging.`);
+  // Se o usuário está autenticado e tenta acessar a página de login/registro, redireciona para o dashboard admin (que o middleware resolverá)
+  if (user && (isLoginPage || isRegisterPage)) {
+    console.log(`[Middleware] Authenticated user trying to access login/register. Redirecting to /admin.`);
+    return NextResponse.redirect(new URL("/admin", request.url));
+  }
+
+  // Se o usuário NÃO está autenticado e tenta acessar a página de login/registro, permite o acesso
+  if (!user && (isLoginPage || isRegisterPage)) {
+    console.log(`[Middleware] Unauthenticated user accessing login/register. Allowing.`);
     return response;
   }
 
+  // Para todas as outras rotas (admin ou client)
   let userRole: string | null = null;
   if (user) {
     try {
