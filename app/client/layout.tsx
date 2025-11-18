@@ -3,7 +3,6 @@ import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
-import { toast } from "sonner"
 
 export default async function ClientLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -25,7 +24,6 @@ export default async function ClientLayout({ children }: { children: React.React
 
   if (profileError || (profile?.role !== 'client' && profile?.role !== 'admin')) {
     console.error("User is not a client or admin, redirecting:", profileError);
-    // toast.error("Acesso negado. Você não tem permissão para acessar esta área."); // Não usar toast em Server Components
     redirect("/admin/login"); // Redireciona se o papel não for adequado
   }
 
