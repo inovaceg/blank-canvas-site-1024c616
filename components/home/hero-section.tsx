@@ -33,10 +33,10 @@ export function HeroSection({ desktopBannerUrl, tabletBannerUrl, mobileBannerUrl
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-8 sm:py-16 md:py-24 lg:py-32 animate-in fade-in duration-1000">
         <div className="max-w-3xl space-y-4 mx-auto">
-          <h1 className="font-serif text-3xl lg:text-6xl font-bold text-white text-balance drop-shadow-lg">
+          <h1 className="font-serif text-4xl lg:text-7xl font-bold text-white text-balance drop-shadow-lg">
             Tradição e Sabor em Cada Pedaço
           </h1>
-          <p className="text-base text-white/90 text-pretty drop-shadow-md">
+          <p className="text-lg text-white/90 text-pretty drop-shadow-md">
             Fornecemos bananadas e gomas de amido artesanais de alta qualidade para lojistas e grandes redes em todo o Brasil.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
