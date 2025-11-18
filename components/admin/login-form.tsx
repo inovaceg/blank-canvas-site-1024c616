@@ -37,33 +37,37 @@ export function LoginForm() {
     setIsSubmitting(true)
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      console.log("Attempting signInWithPassword for email:", data.email); // Log 1
+      const { error: signInError } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
       })
 
-      if (error) {
+      if (signInError) {
+        console.error("Erro durante signInWithPassword:", signInError); // Log 2
         let errorMessage = "Erro ao fazer login. Verifique suas credenciais."
-        if (error.message.includes("Email not confirmed")) {
+        if (signInError.message.includes("Email not confirmed")) {
           errorMessage = "Seu e-mail ainda não foi confirmado. Por favor, verifique sua caixa de entrada."
-        } else if (error.message.includes("Invalid login credentials")) {
+        } else if (signInError.message.includes("Invalid login credentials")) {
           errorMessage = "Credenciais inválidas. Verifique seu e-mail e senha."
         } else {
-          errorMessage = `Erro: ${error.message}`
+          errorMessage = `Erro: ${signInError.message}`
         }
         toast.error(errorMessage)
         return
       }
 
+      console.log("signInWithPassword successful. Attempting to get user session."); // Log 3
       // Após o login bem-sucedido, buscar o papel do usuário
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       if (userError || !user) {
-        console.error("Erro ao obter informações do usuário após o login:", userError); // Log detalhado
+        console.error("Erro ao obter informações do usuário após o login:", userError); // Log 4 (Este é o erro que você está vendo)
         toast.error("Erro ao obter informações do usuário após o login.");
         router.push("/admin/login"); // Redireciona de volta para o login
         return;
       }
 
+      console.log("User session obtained, user ID:", user.id); // Log 5
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
         .select("role")
@@ -71,12 +75,13 @@ export function LoginForm() {
         .single();
 
       if (profileError || !profile) {
-        console.error("Erro ao buscar perfil do usuário:", profileError); // Log detalhado
+        console.error("Erro ao buscar perfil do usuário:", profileError); // Log 6
         toast.error("Erro ao carregar perfil do usuário. Tente novamente.");
-        router.push("/admin/login"); // Redireciona de volta para o login
+        router.push("/admin/login");
         return;
       }
 
+      console.log("User profile role:", profile.role); // Log 7
       toast.success("Login realizado com sucesso!")
       if (profile.role === 'admin') {
         router.push("/admin")
@@ -88,7 +93,7 @@ export function LoginForm() {
       }
       router.refresh()
     } catch (error) {
-      console.error("Unexpected error during login:", error);
+      console.error("Unexpected error during login:", error); // Log 8
       toast.error("Ocorreu um erro inesperado. Tente novamente mais tarde.")
     } finally {
       setIsSubmitting(false)
