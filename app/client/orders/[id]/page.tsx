@@ -22,11 +22,10 @@ interface ProductDetail {
 
 interface Order {
   id: string
-  order_date: string
-  delivery_date_requested?: string
+  // Removido order_date e delivery_date_requested, usando created_at
   status: string
   total_amount?: number
-  notes?: string
+  message?: string | null // Corrigido: Renomeado de 'notes' para 'message'
   created_at: string
   product_details: ProductDetail[]; // Agora é um array de ProductDetail
 }
@@ -72,11 +71,9 @@ export default function ClientOrderDetailPage() {
       .from("orders")
       .select(`
         id,
-        order_date,
-        delivery_date_requested,
         status,
         total_amount,
-        notes,
+        message,
         created_at,
         product_details
       `)
@@ -178,12 +175,7 @@ export default function ClientOrderDetailPage() {
                   <p className="text-muted-foreground">Data do Pedido:</p>
                   <p className="font-medium">{new Date(order.created_at).toLocaleDateString("pt-BR")}</p>
                 </div>
-                {order.delivery_date_requested && (
-                  <div>
-                    <p className="text-muted-foreground">Data de Entrega Solicitada:</p>
-                    <p className="font-medium">{new Date(order.delivery_date_requested).toLocaleDateString("pt-BR")}</p>
-                  </div>
-                )}
+                {/* Removido delivery_date_requested */}
                 <div>
                   <p className="text-muted-foreground">Status:</p>
                   <p className="font-medium">{getStatusText(order.status)}</p>
@@ -194,10 +186,10 @@ export default function ClientOrderDetailPage() {
                     <p className="font-medium">R$ {order.total_amount.toFixed(2)}</p>
                   </div>
                 )}
-                {order.notes && (
+                {order.message && (
                   <div className="sm:col-span-2">
                     <p className="text-muted-foreground">Observações:</p>
-                    <p className="font-medium whitespace-pre-wrap">{order.notes}</p>
+                    <p className="font-medium whitespace-pre-wrap">{order.message}</p>
                   </div>
                 )}
               </div>
