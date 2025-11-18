@@ -20,13 +20,12 @@ interface ProductDetail {
 
 interface Order {
   id: string
-  order_date: string
-  delivery_date_requested?: string
+  client_id: string // Adicionado client_id à interface
   status: string
-  total_amount?: number
-  notes?: string
+  total_price?: number
+  message?: string | null
   created_at: string
-  product_details?: ProductDetail[] | null; // Adicionado: JSONB com detalhes dos produtos
+  product_details?: ProductDetail[] | null;
 }
 
 export default function ClientOrdersPage() {
@@ -70,11 +69,10 @@ export default function ClientOrdersPage() {
       .from("orders")
       .select(`
         id,
-        order_date,
-        delivery_date_requested,
+        client_id,
         status,
-        total_amount,
-        notes,
+        total_price,
+        message,
         created_at,
         product_details
       `)
@@ -194,7 +192,7 @@ export default function ClientOrdersPage() {
                       </Badge>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">
-                      {order.total_amount ? `R$ ${order.total_amount.toFixed(2)}` : "-"}
+                      {order.total_price ? `R$ ${order.total_price.toFixed(2)}` : "-"}
                     </td>
                     <td className="px-6 py-4 text-sm text-[#4a4a4a]">
                       {order.product_details?.map((item: any) => item.name).join(", ")}
