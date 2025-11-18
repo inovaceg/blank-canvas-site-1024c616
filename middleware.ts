@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
 
 export async function middleware(request: NextRequest) {
-  console.log(`[Middleware] Path: ${request.nextUrl.pathname}`); // Log middleware entry
+  console.log(`[Middleware] Path: ${request.nextUrl.pathname}`);
 
   let response = NextResponse.next({
     request: {
@@ -31,28 +31,24 @@ export async function middleware(request: NextRequest) {
 
   const {
     data: { user },
-    error: authError, // Captura erros de autenticação
+    error: authError,
   } = await supabase.auth.getUser()
 
   if (authError) {
     console.error("[Middleware] Supabase auth.getUser() error:", authError);
-    // Em caso de erro de autenticação, tratamos como usuário não autenticado para fins de redirecionamento.
   }
-  console.log(`[Middleware] User authenticated: ${!!user}`);
+  console.log(`[Middleware] User authenticated: ${!!user} (ID: ${user?.id})`);
 
   const isAdminRoute = request.nextUrl.pathname.startsWith("/admin")
   const isClientRoute = request.nextUrl.pathname.startsWith("/client")
   const isLoginPage = request.nextUrl.pathname === "/admin/login"
   const isRegisterPage = request.nextUrl.pathname === "/admin/register"
 
-  // TEMPORÁRIO: Permite acesso irrestrito às páginas de login/registro para depuração
   if (isLoginPage || isRegisterPage) {
     console.log(`[Middleware] Allowing unconditional access to ${request.nextUrl.pathname} for debugging.`);
     return response;
   }
 
-  // O restante da lógica de autenticação e redirecionamento só será executada para outras rotas
-  // Fetch user role if authenticated
   let userRole: string | null = null;
   if (user) {
     try {
@@ -63,11 +59,11 @@ export async function middleware(request: NextRequest) {
         .single();
       if (profileError) {
         console.error("[Middleware] Error fetching user role from profiles:", profileError);
-        userRole = null; // Assume null role on error
+        userRole = null;
       } else if (profile) {
         userRole = profile.role;
       }
-      console.log(`[Middleware] User role fetched: ${userRole}`);
+      console.log(`[Middleware] User role fetched: ${userRole} for user ID: ${user.id}`);
     } catch (e) {
       console.error("[Middleware] Exception fetching user role:", e);
       userRole = null;
@@ -80,7 +76,7 @@ export async function middleware(request: NextRequest) {
         console.log("[Middleware] Authenticated admin accessing admin route. Allowing.");
         return response;
       } else {
-        console.log("[Middleware] Authenticated non-admin accessing admin route. Redirecting to client dashboard.");
+        console.log("[Middleware] Authenticated non-admin (role: " + userRole + ") accessing admin route. Redirecting to client dashboard.");
         return NextResponse.redirect(new URL("/client/dashboard", request.url));
       }
     } else {
