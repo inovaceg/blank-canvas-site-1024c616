@@ -3,19 +3,19 @@
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
 import { createClient } from "@/lib/supabase/client"
-import { LayoutDashboard, Package, FileText, MessageSquare, Mail, LogOut, Menu, X, Image as ImageIcon, AtSign } from "lucide-react" // Adicionado AtSign para Zoho Mail
+import { LayoutDashboard, Package, FileText, MessageSquare, Mail, LogOut, Menu, X, Image as ImageIcon, AtSign, User } from "lucide-react" // Adicionado User para 'Área do Cliente'
 import { cn } from "@/lib/utils"
 import Image from "next/image"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 const navigation = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { name: "Produtos", href: "/admin/products", icon: Package },
-  { name: "Orçamentos", href: "/admin/quotes", icon: FileText },
+  { name: "Pedidos", href: "/admin/orders", icon: FileText }, // Alterado de Orçamentos para Pedidos
   { name: "Contatos", href: "/admin/messages", icon: MessageSquare },
   { name: "Newsletter", href: "/admin/newsletter", icon: Mail },
   { name: "Banner", href: "/admin/banner", icon: ImageIcon },
-  { name: "E-mails Zoho", href: "/admin/zoho-mail", icon: AtSign }, // Novo item de navegação
+  { name: "E-mails Zoho", href: "/admin/zoho-mail", icon: AtSign },
 ]
 
 export function AdminSidebar() {
@@ -23,6 +23,24 @@ export function AdminSidebar() {
   const router = useRouter()
   const supabase = createClient()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (user && !error) {
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+        if (profile && !profileError) {
+          setUserRole(profile.role);
+        }
+      }
+    };
+    fetchUserRole();
+  }, [supabase]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut()
@@ -84,7 +102,6 @@ export function AdminSidebar() {
                         : "text-[#6b6b6b] hover:bg-[#ddd8d0] hover:text-[#2d2d2d]",
                     )}
                   >
-                    {/* Envolver o ícone e o nome em um único span */}
                     <span>
                       <item.icon className="size-4" />
                       {item.name}
@@ -93,6 +110,25 @@ export function AdminSidebar() {
                 </li>
               )
             })}
+            {userRole === 'client' && (
+              <li>
+                <Link
+                  href="/client/dashboard"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={cn(
+                    "flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-colors",
+                    pathname.startsWith("/client")
+                      ? "bg-white text-[#2d2d2d] shadow-sm"
+                      : "text-[#6b6b6b] hover:bg-[#ddd8d0] hover:text-[#2d2d2d]",
+                  )}
+                >
+                  <span>
+                    <User className="size-4" />
+                    Área do Cliente
+                  </span>
+                </Link>
+              </li>
+            )}
           </ul>
         </nav>
 

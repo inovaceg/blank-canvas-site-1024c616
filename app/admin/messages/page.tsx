@@ -4,12 +4,13 @@ import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { Search, Eye, Trash2 } from "lucide-react"
 import { toast } from "sonner"
-import { QuoteDetailsDialog } from "@/components/admin/quote-details-dialog" // Importar o diálogo de detalhes
-import { ScrollArea } from "@/components/ui/scroll-area" // Importar ScrollArea para a tabela
-import { formatPhoneNumber } from "@/lib/utils" // Importar a função de formatação
+import { OrderDetailsDialog } from "@/components/admin/order-details-dialog" // Importar o diálogo de detalhes (agora para pedidos/mensagens)
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { formatPhoneNumber } from "@/lib/utils"
 
 interface ContactMessage {
   id: string // UUID
+  user_id: string | null // Pode ser null para mensagens de contato anônimas
   company_name: string | null
   contact_name: string
   email: string
@@ -17,8 +18,9 @@ interface ContactMessage {
   address?: string | null
   city?: string | null
   state?: string | null
-  product_interest?: string | null // Será null para mensagens de contato gerais
-  quantity?: string | null // Será null para mensagens de contato gerais
+  product_details?: any[] | null // Será null para mensagens de contato gerais
+  total_price?: number | null // Será null para mensagens de contato gerais
+  status: string // Status do pedido/mensagem
   message: string | null
   created_at: string
 }
@@ -27,8 +29,8 @@ export default function AdminMessagesPage() {
   const [messages, setMessages] = useState<ContactMessage[]>([])
   const [searchTerm, setSearchTerm] = useState("")
   const [loading, setLoading] = useState(true)
-  const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false) // Estado para o diálogo de detalhes
-  const [selectedQuote, setSelectedQuote] = useState<ContactMessage | null>(null) // Estado para a mensagem selecionada
+  const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false)
+  const [selectedMessage, setSelectedMessage] = useState<ContactMessage | null>(null)
   const supabase = createClient()
 
   useEffect(() => {
@@ -37,8 +39,13 @@ export default function AdminMessagesPage() {
 
   const fetchMessages = async () => {
     setLoading(true)
-    // Alterado de contact_forms para quote_requests
-    const { data, error } = await supabase.from("quote_requests").select("*").order("created_at", { ascending: false })
+    // Buscar da tabela 'orders', filtrando por mensagens que não são pedidos (sem product_details ou total_price)
+    // Ou, mais robusto, buscar todos e filtrar no cliente se 'product_details' for null
+    const { data, error } = await supabase
+      .from("orders")
+      .select("*")
+      .is("product_details", null) // Filtra apenas as entradas que não são pedidos de produtos
+      .order("created_at", { ascending: false })
     
     if (error) {
       console.error("Erro ao buscar mensagens de contato do Supabase:", error);
@@ -53,8 +60,7 @@ export default function AdminMessagesPage() {
   const deleteMessage = async (id: string) => {
     if (!confirm("Deseja realmente excluir esta mensagem?")) return
 
-    // Alterado de contact_forms para quote_requests
-    const { error } = await supabase.from("quote_requests").delete().eq("id", id)
+    const { error } = await supabase.from("orders").delete().eq("id", id)
 
     if (error) {
       toast.error("Erro ao excluir mensagem")
@@ -65,7 +71,7 @@ export default function AdminMessagesPage() {
   }
 
   const handleViewDetails = (message: ContactMessage) => {
-    setSelectedQuote(message)
+    setSelectedMessage(message)
     setIsDetailsDialogOpen(true)
   }
 
@@ -83,6 +89,7 @@ export default function AdminMessagesPage() {
         <div className="text-center py-12">Carregando mensagens...</div>
       </main>
     )
+  )
   }
 
   return (
@@ -164,10 +171,10 @@ export default function AdminMessagesPage() {
         </ScrollArea>
       </div>
 
-      <QuoteDetailsDialog
+      <OrderDetailsDialog
         open={isDetailsDialogOpen}
         onOpenChange={setIsDetailsDialogOpen}
-        quote={selectedQuote}
+        order={selectedMessage}
       />
     </main>
   )

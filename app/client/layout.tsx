@@ -1,7 +1,9 @@
 import type React from "react"
-import { createClient } from "@/lib/supabase/server"
 import { redirect } from "next/navigation"
-import { ClientSidebar } from "@/components/client/client-sidebar" // Será criado em breve
+import { createClient } from "@/lib/supabase/server"
+import { SiteHeader } from "@/components/site-header"
+import { SiteFooter } from "@/components/site-footer"
+import { toast } from "sonner"
 
 export default async function ClientLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -11,21 +13,27 @@ export default async function ClientLayout({ children }: { children: React.React
   } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect("/admin/login") // Redireciona para o login se não autenticado
+    redirect("/admin/login") // Redireciona para o login se não houver usuário
   }
 
-  // Em um cenário real, você também verificaria o 'role' aqui para garantir que é um 'client'
-  // O middleware já faz isso, mas é bom ter uma camada extra aqui se necessário.
+  // Opcional: Verificar o papel do usuário para garantir que é um 'client' ou 'admin'
+  const { data: profile, error: profileError } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single();
+
+  if (profileError || (profile?.role !== 'client' && profile?.role !== 'admin')) {
+    console.error("User is not a client or admin, redirecting:", profileError);
+    // toast.error("Acesso negado. Você não tem permissão para acessar esta área."); // Não usar toast em Server Components
+    redirect("/admin/login"); // Redireciona se o papel não for adequado
+  }
 
   return (
-    <div className="flex h-screen bg-[#f5f1ed] overflow-hidden">
-      <ClientSidebar />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="border-b bg-white px-4 md:px-8 py-4">
-          <h1 className="text-lg md:text-xl font-semibold text-[#4a4a4a]">Portal do Cliente</h1>
-        </div>
-        <div className="flex-1 overflow-auto p-4 md:p-8">{children}</div>
-      </div>
+    <div className="min-h-screen flex flex-col">
+      <SiteHeader />
+      <main className="flex-1">{children}</main>
+      <SiteFooter />
     </div>
   )
 }

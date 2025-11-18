@@ -4,81 +4,84 @@ import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { Search, Eye, Trash2 } from "lucide-react"
 import { toast } from "sonner"
-import { QuoteDetailsDialog } from "@/components/admin/quote-details-dialog" // Importar o novo diálogo
-import { ScrollArea } from "@/components/ui/scroll-area" // Importar ScrollArea para a tabela
-import { formatPhoneNumber } from "@/lib/utils" // Importar a função de formatação
+import { OrderDetailsDialog } from "@/components/admin/order-details-dialog" // Importar o novo diálogo
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { formatPhoneNumber } from "@/lib/utils"
 
-interface QuoteRequest {
+interface Order {
   id: string
-  company_name: string | null // Pode ser nulo agora
+  user_id: string | null // ID do usuário que fez o pedido
+  company_name: string | null
   contact_name: string
   email: string
   phone: string
-  address?: string
-  city?: string
-  state?: string
-  product_interest?: string
-  quantity?: string
-  message?: string
+  address?: string | null
+  city?: string | null
+  state?: string | null
+  product_details?: any[] | null // JSONB com detalhes dos produtos
+  total_price?: number | null
+  status: string
+  message?: string | null
   created_at: string
 }
 
-export default function AdminQuotesPage() {
-  const [quotes, setQuotes] = useState<QuoteRequest[]>([])
+export default function AdminOrdersPage() {
+  const [orders, setOrders] = useState<Order[]>([])
   const [searchTerm, setSearchTerm] = useState("")
   const [loading, setLoading] = useState(true)
-  const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false) // Estado para o diálogo de detalhes
-  const [selectedQuote, setSelectedQuote] = useState<QuoteRequest | null>(null) // Estado para o orçamento selecionado
+  const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false)
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null)
   const supabase = createClient()
 
   useEffect(() => {
-    fetchQuotes()
+    fetchOrders()
   }, [])
 
-  const fetchQuotes = async () => {
+  const fetchOrders = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from("quote_requests").select("*").order("created_at", { ascending: false })
+    const { data, error } = await supabase.from("orders").select("*").order("created_at", { ascending: false })
     
     if (error) {
-      console.error("Erro ao buscar solicitações de orçamento do Supabase:", error);
-      toast.error("Erro ao carregar solicitações de orçamento.");
-      setQuotes([]);
+      console.error("Erro ao buscar pedidos do Supabase:", error);
+      toast.error("Erro ao carregar pedidos.");
+      setOrders([]);
     } else {
-      setQuotes(data || []);
+      setOrders(data || []);
     }
     setLoading(false)
   }
 
-  const deleteQuote = async (id: string) => {
-    if (!confirm("Deseja realmente excluir esta solicitação?")) return
+  const deleteOrder = async (id: string) => {
+    if (!confirm("Deseja realmente excluir este pedido?")) return
 
-    const { error } = await supabase.from("quote_requests").delete().eq("id", id)
+    const { error } = await supabase.from("orders").delete().eq("id", id)
 
     if (error) {
-      toast.error("Erro ao excluir solicitação")
+      toast.error("Erro ao excluir pedido")
     } else {
-      fetchQuotes()
-      toast.success("Solicitação excluída")
+      fetchOrders()
+      toast.success("Pedido excluído")
     }
   }
 
-  const handleViewDetails = (quote: QuoteRequest) => {
-    setSelectedQuote(quote)
+  const handleViewDetails = (order: Order) => {
+    setSelectedOrder(order)
     setIsDetailsDialogOpen(true)
   }
 
-  const filteredQuotes = quotes.filter(
-    (quote) =>
-      (quote.company_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      quote.contact_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      quote.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (quote.product_interest && quote.product_interest.toLowerCase().includes(searchTerm.toLowerCase()))),
+  const filteredOrders = orders.filter(
+    (order) =>
+      (order.company_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.contact_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.product_details?.some(item => item.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      order.status.toLowerCase().includes(searchTerm.toLowerCase())),
   )
 
   if (loading) {
     return (
       <main className="p-8">
-        <div className="text-center py-12">Carregando solicitações de orçamento...</div>
+        <div className="text-center py-12">Carregando pedidos...</div>
       </main>
     )
   }
@@ -87,14 +90,14 @@ export default function AdminQuotesPage() {
     <main className="p-8">
       <div className="bg-white rounded-lg shadow-sm">
         <div className="p-6 border-b border-gray-200">
-          <h2 className="text-2xl font-bold text-[#4a4a4a] mb-4">Solicitações de Orçamento</h2>
+          <h2 className="text-2xl font-bold text-[#4a4a4a] mb-4">Pedidos</h2>
 
           {/* Search */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Filtrar por empresa, contato, e-mail ou produtos..."
+              placeholder="Filtrar por empresa, contato, e-mail, produtos ou status..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff8800]"
@@ -103,7 +106,7 @@ export default function AdminQuotesPage() {
         </div>
 
         {/* Table */}
-        <ScrollArea className="h-[calc(100vh-250px)]"> {/* Adicionado ScrollArea para a tabela */}
+        <ScrollArea className="h-[calc(100vh-250px)]">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-gray-50 border-b border-gray-200 sticky top-0 z-10">
@@ -121,7 +124,10 @@ export default function AdminQuotesPage() {
                     Telefone
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Produtos
+                    Total
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Status
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -130,29 +136,32 @@ export default function AdminQuotesPage() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredQuotes.map((quote) => (
-                  <tr key={quote.id} className="hover:bg-gray-50">
+                {filteredOrders.map((order) => (
+                  <tr key={order.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a] font-medium">
-                      {quote.company_name || "-"}
+                      {order.company_name || "-"}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{quote.contact_name}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{quote.email}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{formatPhoneNumber(quote.phone)}</td> {/* Aplicando a formatação aqui */}
-                    <td className="px-6 py-4 text-sm text-[#4a4a4a]">{quote.product_interest || "-"}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{order.contact_name}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{order.email}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{formatPhoneNumber(order.phone)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">
+                      {order.total_price !== null && order.total_price !== undefined ? `R$ ${order.total_price.toFixed(2)}` : "-"}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a] capitalize">{order.status}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(quote.created_at).toLocaleString("pt-BR")}
+                      {new Date(order.created_at).toLocaleString("pt-BR")}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <div className="flex items-center gap-2">
                         <button
-                          onClick={() => handleViewDetails(quote)}
+                          onClick={() => handleViewDetails(order)}
                           className="text-gray-600 hover:text-[#ff8800]"
                           title="Ver detalhes"
                         >
                           <Eye className="size-4" />
                         </button>
                         <button
-                          onClick={() => deleteQuote(quote.id)}
+                          onClick={() => deleteOrder(order.id)}
                           className="text-gray-600 hover:text-red-600"
                           title="Excluir"
                         >
@@ -165,17 +174,17 @@ export default function AdminQuotesPage() {
               </tbody>
             </table>
 
-            {filteredQuotes.length === 0 && (
-              <div className="text-center py-12 text-gray-500">Nenhuma solicitação encontrada</div>
+            {filteredOrders.length === 0 && (
+              <div className="text-center py-12 text-gray-500">Nenhum pedido encontrado</div>
             )}
           </div>
         </ScrollArea>
       </div>
 
-      <QuoteDetailsDialog
+      <OrderDetailsDialog
         open={isDetailsDialogOpen}
         onOpenChange={setIsDetailsDialogOpen}
-        quote={selectedQuote}
+        order={selectedOrder}
       />
     </main>
   )

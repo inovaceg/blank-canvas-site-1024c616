@@ -58,6 +58,7 @@ export function LoginForm() {
       // Após o login bem-sucedido, buscar o papel do usuário
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       if (userError || !user) {
+        console.error("Erro ao obter informações do usuário após o login:", userError); // Log detalhado
         toast.error("Erro ao obter informações do usuário após o login.");
         router.push("/admin/login"); // Redireciona de volta para o login
         return;
@@ -70,7 +71,7 @@ export function LoginForm() {
         .single();
 
       if (profileError || !profile) {
-        console.error("Erro ao buscar perfil do usuário:", profileError);
+        console.error("Erro ao buscar perfil do usuário:", profileError); // Log detalhado
         toast.error("Erro ao carregar perfil do usuário. Tente novamente.");
         router.push("/admin/login"); // Redireciona de volta para o login
         return;
@@ -80,7 +81,7 @@ export function LoginForm() {
       if (profile.role === 'admin') {
         router.push("/admin")
       } else if (profile.role === 'client') {
-        router.push("/client")
+        router.push("/client/dashboard") // Redireciona para o dashboard do cliente
       } else {
         // Caso o papel não seja reconhecido, redireciona para uma página padrão ou login
         router.push("/admin/login")

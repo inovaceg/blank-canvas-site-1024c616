@@ -13,7 +13,7 @@ import { useParams, useRouter } from "next/navigation"
 import { useCart } from "@/components/cart-provider"
 import { Input } from "@/components/ui/input"
 import { toast } from "sonner"
-import { Badge } from "@/components/ui/badge" // Importar Badge
+import { Badge } from "@/components/ui/badge"
 
 interface Product {
   id: string
@@ -22,12 +22,12 @@ interface Product {
   description: string
   ingredients?: string
   weight?: string
-  price?: number
+  price?: number // Preço base do produto
   image_url?: string
   is_featured?: boolean
   units_per_package?: number
-  is_active?: boolean // Novo campo
-  display_order?: number // Novo campo
+  is_active?: boolean
+  display_order?: number
   created_at: string
 }
 
@@ -42,14 +42,19 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState(true)
   const [quantity, setQuantity] = useState(1)
   const [relatedQuantities, setRelatedQuantities] = useState<{ [key: string]: number }>({})
+  const [userPrices, setUserPrices] = useState<{ [key: string]: number }>({}); // Preços específicos do cliente
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
 
   useEffect(() => {
-    fetchProduct()
-  }, [params.id]) // Re-fetch product when ID changes
+    fetchProductAndPrices()
+  }, [params.id])
 
-  const fetchProduct = async () => {
+  const fetchProductAndPrices = async () => {
     setLoading(true)
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    setIsLoggedIn(!!user);
+
     const { data, error } = await supabase
       .from("products")
       .select("*")
@@ -63,7 +68,6 @@ export default function ProductDetailPage() {
       return
     }
 
-    // Redirecionar se o produto não estiver ativo
     if (!data.is_active) {
       toast.error("Este produto não está disponível no momento.")
       router.push("/produtos")
@@ -71,8 +75,26 @@ export default function ProductDetailPage() {
     }
 
     setProduct(data)
-    setQuantity(1) // Reset quantity when product changes
+    setQuantity(1)
     fetchRelatedProducts(data.category, data.id)
+
+    // Fetch client-specific prices if logged in
+    if (user) {
+      const { data: pricesData, error: pricesError } = await supabase
+        .from("client_product_prices")
+        .select("product_id, price")
+        .eq("client_id", user.id);
+
+      if (pricesError) {
+        console.error("Error fetching client prices:", pricesError);
+      } else {
+        const clientPricesMap: { [key: string]: number } = {};
+        pricesData?.forEach(p => {
+          clientPricesMap[p.product_id] = p.price;
+        });
+        setUserPrices(clientPricesMap);
+      }
+    }
     setLoading(false)
   }
 
@@ -81,10 +103,10 @@ export default function ProductDetailPage() {
       .from("products")
       .select("*")
       .eq("category", category)
-      .eq("is_active", true) // Filtrar apenas produtos ativos
-      .neq("id", currentProductId) // Exclude the current product
+      .eq("is_active", true)
+      .neq("id", currentProductId)
       .limit(5)
-      .order("display_order", { ascending: true }) // Ordenar por display_order
+      .order("display_order", { ascending: true })
       .order("created_at", { ascending: false })
 
     if (error) {
@@ -113,25 +135,36 @@ export default function ProductDetailPage() {
     }))
   }
 
+  const getProductPrice = (productItem: Product) => {
+    if (isLoggedIn && userPrices[productItem.id] !== undefined) {
+      return userPrices[productItem.id];
+    }
+    return productItem.price; // Fallback to base price if no client-specific price
+  }
+
   const handleAddToCart = () => {
     if (product) {
+      const displayPrice = getProductPrice(product);
       addItem({
         id: product.id,
         name: product.name,
         image_url: product.image_url,
         weight: product.weight,
         units_per_package: product.units_per_package,
+        price: displayPrice, // Passa o preço correto
       }, quantity)
     }
   }
 
   const handleAddRelatedToCart = (relatedProduct: Product, quantityToAdd: number) => {
+    const displayPrice = getProductPrice(relatedProduct);
     addItem({
       id: relatedProduct.id,
       name: relatedProduct.name,
       image_url: relatedProduct.image_url,
       weight: relatedProduct.weight,
       units_per_package: relatedProduct.units_per_package,
+      price: displayPrice, // Passa o preço correto
     }, quantityToAdd)
   }
 
@@ -158,6 +191,8 @@ export default function ProductDetailPage() {
       </div>
     )
   }
+
+  const productDisplayPrice = getProductPrice(product);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -217,11 +252,13 @@ export default function ProductDetailPage() {
                       <p className="text-sm text-muted-foreground">{product.units_per_package}</p>
                     </div>
                   )}
-                  {product.price !== null && product.price !== undefined && (
+                  {productDisplayPrice !== null && productDisplayPrice !== undefined ? (
                     <div>
                       <p className="text-sm font-medium text-foreground mb-1">Preço:</p>
-                      <p className="text-lg font-bold text-primary">R$ {product.price.toFixed(2)}</p>
+                      <p className="text-lg font-bold text-primary">R$ {productDisplayPrice.toFixed(2)}</p>
                     </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">Preço sob consulta</p>
                   )}
                 </div>
 
@@ -251,7 +288,7 @@ export default function ProductDetailPage() {
                     </Button>
                   </div>
                   <Button className="flex-1" size="lg" onClick={handleAddToCart}>
-                    Adicionar ao Orçamento <ShoppingCart className="size-5 ml-2" />
+                    Adicionar ao Carrinho <ShoppingCart className="size-5 ml-2" />
                   </Button>
                 </div>
               </div >
@@ -263,70 +300,75 @@ export default function ProductDetailPage() {
                   Outros produtos que você pode gostar
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-                  {relatedProducts.map((relatedProduct) => (
-                    <Card key={relatedProduct.id} className="overflow-hidden group">
-                      <Link href={`/produtos/${relatedProduct.id}`} className="block">
-                        <div className="aspect-square relative overflow-hidden bg-muted">
-                          {relatedProduct.image_url ? (
-                            <Image
-                              src={relatedProduct.image_url}
-                              alt={relatedProduct.name}
-                              fill
-                              className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
-                            />
+                  {relatedProducts.map((relatedProduct) => {
+                    const relatedDisplayPrice = getProductPrice(relatedProduct);
+                    return (
+                      <Card key={relatedProduct.id} className="overflow-hidden group">
+                        <Link href={`/produtos/${relatedProduct.id}`} className="block">
+                          <div className="aspect-square relative overflow-hidden bg-muted">
+                            {relatedProduct.image_url ? (
+                              <Image
+                                src={relatedProduct.image_url}
+                                alt={relatedProduct.name}
+                                fill
+                                className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center">
+                                <Package className="size-12 text-muted-foreground/30" />
+                              </div>
+                            )}
+                            {relatedProduct.is_featured && (
+                              <div className="absolute top-2 right-2">
+                                <Badge className="bg-primary text-primary-foreground text-xs">Destaque</Badge>
+                              </div>
+                            )}
+                          </div>
+                        </Link>
+                        <CardHeader className="p-4 pb-2">
+                          <CardTitle className="text-base line-clamp-2">{relatedProduct.name}</CardTitle>
+                          <CardDescription className="text-xs line-clamp-2" dangerouslySetInnerHTML={{ __html: relatedProduct.description }} />
+                        </CardHeader>
+                        <CardContent className="p-4 pt-0">
+                          {relatedDisplayPrice !== null && relatedDisplayPrice !== undefined ? (
+                            <p className="text-sm font-bold text-primary mb-2">R$ {relatedDisplayPrice.toFixed(2)}</p>
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center">
-                              <Package className="size-12 text-muted-foreground/30" />
-                            </div>
+                            <p className="text-xs text-muted-foreground mb-2">Preço sob consulta</p>
                           )}
-                          {relatedProduct.is_featured && (
-                            <div className="absolute top-2 right-2">
-                              <Badge className="bg-primary text-primary-foreground text-xs">Destaque</Badge>
-                            </div>
-                          )}
-                        </div>
-                      </Link>
-                      <CardHeader className="p-4 pb-2">
-                        <CardTitle className="text-base line-clamp-2">{relatedProduct.name}</CardTitle>
-                        <CardDescription className="text-xs line-clamp-2">{relatedProduct.description}</CardDescription>
-                      </CardHeader>
-                      <CardContent className="p-4 pt-0">
-                        {relatedProduct.price !== null && relatedProduct.price !== undefined && (
-                          <p className="text-sm font-bold text-primary mb-2">R$ {relatedProduct.price.toFixed(2)}</p>
-                        )}
-                        <div className="flex items-center gap-2 mt-2">
+                          <div className="flex items-center gap-2 mt-2">
+                            <Button
+                              variant="outline"
+                              size="icon-sm"
+                              onClick={() => handleRelatedQuantityChange(relatedProduct.id, relatedQuantities[relatedProduct.id] - 1)}
+                              disabled={relatedQuantities[relatedProduct.id] <= 1}
+                            >
+                              <Minus className="size-3" />
+                            </Button>
+                            <Input
+                              type="number"
+                              value={relatedQuantities[relatedProduct.id]}
+                              onChange={(e) => handleRelatedQuantityChange(relatedProduct.id, parseInt(e.target.value))}
+                              className="w-12 text-center h-8 text-sm"
+                              min="1"
+                            />
+                            <Button
+                              variant="outline"
+                              size="icon-sm"
+                              onClick={() => handleRelatedQuantityChange(relatedProduct.id, relatedQuantities[relatedProduct.id] + 1)}
+                            >
+                              <Plus className="size-3" />
+                            </Button>
+                          </div>
                           <Button
-                            variant="outline"
-                            size="icon-sm"
-                            onClick={() => handleRelatedQuantityChange(relatedProduct.id, relatedQuantities[relatedProduct.id] - 1)}
-                            disabled={relatedQuantities[relatedProduct.id] <= 1}
+                            className="w-full mt-3 text-xs h-8"
+                            onClick={() => handleAddRelatedToCart(relatedProduct, relatedQuantities[relatedProduct.id])}
                           >
-                            <Minus className="size-3" />
+                            Adicionar ao Carrinho <ShoppingCart className="size-3 ml-1" />
                           </Button>
-                          <Input
-                            type="number"
-                            value={relatedQuantities[relatedProduct.id]}
-                            onChange={(e) => handleRelatedQuantityChange(relatedProduct.id, parseInt(e.target.value))}
-                            className="w-12 text-center h-8 text-sm"
-                            min="1"
-                          />
-                          <Button
-                            variant="outline"
-                            size="icon-sm"
-                            onClick={() => handleRelatedQuantityChange(relatedProduct.id, relatedQuantities[relatedProduct.id] + 1)}
-                          >
-                            <Plus className="size-3" />
-                          </Button>
-                        </div>
-                        <Button
-                          className="w-full mt-3 text-xs h-8"
-                          onClick={() => handleAddRelatedToCart(relatedProduct, relatedQuantities[relatedProduct.id])}
-                        >
-                          Adicionar ao Orçamento <ShoppingCart className="size-3 ml-1" />
-                        </Button>
-                      </CardContent>
-                    </Card>
-                  ))}
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
                 </div>
               </div>
             )}

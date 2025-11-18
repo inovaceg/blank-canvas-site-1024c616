@@ -8,7 +8,8 @@ interface CartItem {
   name: string
   image_url?: string
   weight?: string
-  units_per_package?: number // Adicionado
+  units_per_package?: number
+  price?: number // Adicionado: Preço do produto
   quantity: number
 }
 
@@ -19,6 +20,7 @@ interface CartContextType {
   updateQuantity: (id: string, quantity: number) => void
   clearCart: () => void
   getTotalItems: () => number
+  getTotalPrice: () => number // Adicionado: Obter o preço total do carrinho
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined)
@@ -84,6 +86,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     return cartItems.reduce((total, item) => total + item.quantity, 0)
   }, [cartItems])
 
+  const getTotalPrice = useCallback(() => {
+    return cartItems.reduce((total, item) => total + (item.price || 0) * item.quantity, 0)
+  }, [cartItems])
+
   return (
     <CartContext.Provider
       value={{
@@ -93,6 +99,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         updateQuantity,
         clearCart,
         getTotalItems,
+        getTotalPrice,
       }}
     >
       {children}

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -11,6 +12,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
 import { useCart } from "@/components/cart-provider"
+import { createClient } from "@/lib/supabase/client" // Importar cliente Supabase para obter user_id
 
 // Esquema de validação para o formulário de checkout
 const checkoutSchema = z.object({
@@ -46,8 +48,10 @@ interface ViaCepResponse {
 }
 
 export function CheckoutForm() {
+  const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const { cartItems, clearCart } = useCart()
+  const { cartItems, clearCart, getTotalPrice } = useCart()
+  const supabase = createClient()
 
   const {
     register,
@@ -148,27 +152,58 @@ export function CheckoutForm() {
     setIsSubmitting(true)
 
     if (cartItems.length === 0) {
-      toast.error("Sua lista de orçamento está vazia. Adicione produtos antes de enviar a solicitação.")
+      toast.error("Seu carrinho está vazio. Adicione produtos antes de enviar o pedido.")
       setIsSubmitting(false)
       return
     }
 
     try {
-      const response = await fetch("/api/quote-submission", {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) {
+        toast.error("Você precisa estar logado para finalizar o pedido.");
+        router.push("/admin/login"); // Redireciona para o login
+        setIsSubmitting(false);
+        return;
+      }
+
+      const orderData = {
+        user_id: user.id, // ID do usuário logado
+        company_name: data.companyName || null,
+        contact_name: data.fullName,
+        email: data.email,
+        phone: data.phone,
+        address: `${data.address}, ${data.number}${data.complement ? `, ${data.complement}` : ''}`,
+        city: data.city,
+        state: data.state,
+        product_details: cartItems.map(item => ({ // Armazena os detalhes do carrinho como JSONB
+          id: item.id,
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+          weight: item.weight,
+          units_per_package: item.units_per_package,
+          image_url: item.image_url,
+        })),
+        total_price: getTotalPrice(), // Preço total do carrinho
+        status: 'pending', // Status inicial do pedido
+        message: `Pedido de ${data.fullName} (${data.email}) - Doc. ${data.documentType}: ${data.documentNumber}. Endereço: ${data.address}, ${data.number}, ${data.neighborhood}, ${data.city}-${data.state}, CEP: ${data.cep}.`,
+      };
+
+      const response = await fetch("/api/orders", { // Nova rota da API
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ formData: data, cartItems }),
+        body: JSON.stringify(orderData),
       })
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || "Erro ao enviar solicitação de orçamento");
+        throw new Error(errorData.error || "Erro ao enviar pedido");
       }
 
-      toast.success("Solicitação de orçamento enviada com sucesso! Entraremos em contato em breve.")
+      toast.success("Pedido enviado com sucesso! Entraremos em contato em breve.")
       clearCart()
       reset()
-      // Redirecionar para uma página de confirmação ou home
+      router.push("/client/dashboard"); // Redirecionar para o dashboard do cliente
     } catch (error: any) {
       console.error("Erro ao finalizar pedido:", error);
       toast.error(error.message || "Erro ao finalizar pedido. Tente novamente.");
@@ -302,10 +337,10 @@ export function CheckoutForm() {
         {isSubmitting ? (
           <>
             <Loader2 className="animate-spin" />
-            Enviando Solicitação...
+            Enviando Pedido...
           </>
         ) : (
-          "Confirmar Solicitação de Orçamento"
+          "Confirmar Pedido"
         )}
       </Button>
     </form>

@@ -8,6 +8,15 @@ import { toast } from "sonner"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 
+interface OrderItem {
+  product_id: string;
+  quantity: number;
+  unit_price: number;
+  products: { // Corrigido: products agora é um objeto único
+    name: string;
+  };
+}
+
 interface Order {
   id: string
   order_date: string
@@ -16,14 +25,7 @@ interface Order {
   total_amount?: number
   notes?: string
   created_at: string
-  order_items: {
-    product_id: string;
-    quantity: number;
-    unit_price: number;
-    products: {
-      name: string;
-    };
-  }[];
+  order_items: OrderItem[];
 }
 
 export default function ClientOrdersPage() {
@@ -84,7 +86,8 @@ export default function ClientOrdersPage() {
       console.error("Erro ao buscar pedidos:", error)
       toast.error("Erro ao carregar histórico de pedidos.")
     }
-    setOrders(data as Order[] || []) // Corrigido: Type assertion adicionado aqui
+    // Ajuste na conversão de tipo para evitar o erro de TypeScript
+    setOrders((data || []) as unknown as Order[])
     setLoading(false)
   }
 

@@ -14,7 +14,7 @@ interface OrderItem {
   product_id: string;
   quantity: number;
   unit_price: number;
-  products: {
+  products: { // Corrigido: products agora é um objeto único
     name: string;
     image_url?: string;
     weight?: string;
@@ -97,7 +97,8 @@ export default function ClientOrderDetailPage() {
       router.push("/client/orders") // Redireciona para a lista de pedidos
       return
     }
-    setOrder(data as Order) // Corrigido: Type assertion adicionado aqui
+    // Ajuste na conversão de tipo para evitar o erro de TypeScript
+    setOrder(data as unknown as Order)
     setLoading(false)
   }
 
