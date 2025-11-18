@@ -134,7 +134,7 @@ export default function ClientOrdersPage() {
   if (loading) {
     return (
       <main className="p-8">
-        <div className="text-center py-12">Carregando histórico de pedidos...</div>
+        <div className="text-center py-12">CARREGANDO HISTÓRICO DE PEDIDOS...</div>
       </main>
     )
   }
@@ -145,23 +145,23 @@ export default function ClientOrdersPage() {
         <div className="p-6 border-b border-gray-200">
           <Link
             href="/client"
-            className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-[#ff8800] mb-6"
+            className="inline-flex items-center gap-2 text-sm text-gray-600 hover:text-[#ff8800] mb-6 uppercase"
           >
             <span>
               <ArrowLeft className="size-4" />
-              Voltar para o Dashboard
+              VOLTAR PARA O DASHBOARD
             </span>
           </Link>
-          <h2 className="text-2xl font-bold text-[#4a4a4a] mb-4">Meus Pedidos</h2>
+          <h2 className="text-2xl font-bold text-[#4a4a4a] mb-4 uppercase">MEUS PEDIDOS</h2>
 
           <div className="relative">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Filtrar por ID do pedido, status ou produto..."
+              placeholder="FILTRAR POR ID DO PEDIDO, STATUS OU PRODUTO..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff8800]"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#ff8800] uppercase"
             />
           </div>
         </div>
@@ -171,35 +171,35 @@ export default function ClientOrdersPage() {
             <table className="w-full">
               <thead className="bg-gray-50 border-b border-gray-200 sticky top-0 z-10">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID do Pedido</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data do Pedido</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produtos</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ações</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID DO PEDIDO</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DATA DO PEDIDO</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">STATUS</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">TOTAL</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">PRODUTOS</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">AÇÕES</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {filteredOrders.map((order) => (
                   <tr key={order.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{order.id.substring(0, 8)}...</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a] uppercase">{order.id.substring(0, 8)}...</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a] uppercase">
                       {new Date(order.created_at).toLocaleDateString("pt-BR")}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      <Badge variant={getStatusBadgeVariant(order.status)}>
+                      <Badge variant={getStatusBadgeVariant(order.status)} className="uppercase">
                         {getStatusText(order.status)}
                       </Badge>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a] uppercase">
                       {order.total_price ? `R$ ${order.total_price.toFixed(2)}` : "-"}
                     </td>
-                    <td className="px-6 py-4 text-sm text-[#4a4a4a]">
+                    <td className="px-6 py-4 text-sm text-[#4a4a4a] uppercase">
                       {order.product_details?.map((item: any) => item.name).join(", ")}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <div className="flex items-center gap-2">
-                        <Link href={`/client/orders/${order.id}`} className="text-gray-600 hover:text-[#ff8800]" title="Ver detalhes">
+                        <Link href={`/client/orders/${order.id}`} className="text-gray-600 hover:text-[#ff8800]" title="VER DETALHES">
                           <Eye className="size-4" />
                         </Link>
                       </div>
@@ -210,7 +210,7 @@ export default function ClientOrdersPage() {
             </table>
 
             {filteredOrders.length === 0 && (
-              <div className="text-center py-12 text-gray-500">Nenhum pedido encontrado</div>
+              <div className="text-center py-12 text-gray-500 uppercase">NENHUM PEDIDO ENCONTRADO</div>
             )}
           </div>
         </ScrollArea>
