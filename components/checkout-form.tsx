@@ -166,8 +166,23 @@ export function CheckoutForm() {
         return;
       }
 
+      // Buscar o client_id da tabela 'clients' usando o user.id
+      const { data: clientData, error: clientError } = await supabase
+        .from("clients")
+        .select("id")
+        .eq("user_id", user.id)
+        .single();
+
+      if (clientError || !clientData) {
+        console.error("Erro ao buscar client_id:", clientError);
+        toast.error("Erro ao carregar seus dados de cliente. Verifique seu cadastro.");
+        setIsSubmitting(false);
+        return;
+      }
+
       const orderData = {
         user_id: user.id, // ID do usuário logado
+        client_id: clientData.id, // ID do cliente da tabela 'clients'
         company_name: data.companyName || null,
         contact_name: data.fullName,
         email: data.email,

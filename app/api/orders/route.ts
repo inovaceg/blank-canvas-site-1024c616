@@ -14,6 +14,7 @@ export async function POST(request: Request) {
       .insert([
         {
           user_id: orderData.user_id, // ID do usuário logado
+          client_id: orderData.client_id, // Adicionado: ID do cliente da tabela 'clients'
           company_name: orderData.company_name || null,
           contact_name: orderData.contact_name,
           email: orderData.email,

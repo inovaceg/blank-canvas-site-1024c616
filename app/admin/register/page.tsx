@@ -31,6 +31,6 @@ export default function AdminRegisterPage() {
           </p>
         </div>
       </div>
-    </div>
+    </div >
   )
 }
