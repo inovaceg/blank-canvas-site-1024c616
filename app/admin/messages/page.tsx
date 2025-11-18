@@ -89,7 +89,6 @@ export default function AdminMessagesPage() {
         <div className="text-center py-12">Carregando mensagens...</div>
       </main>
     )
-  )
   }
 
   return (
