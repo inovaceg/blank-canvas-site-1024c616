@@ -1,7 +1,7 @@
 "use client"
 import { Button } from "@/components/button"
 import Link from "next/link"
-import { Store, Menu, X, ShoppingCart, User } from "lucide-react" // Adicionado User para 'Área do Cliente'
+import { Store, Menu, X, ShoppingCart, User, Shield } from "lucide-react" // Adicionado Shield para 'Admin'
 import { useState, useEffect } from "react"
 import { useCart } from "@/components/cart-provider"
 import { createClient } from "@/lib/supabase/client" // Importar cliente Supabase para verificar autenticação
@@ -121,11 +121,19 @@ export function SiteHeader() {
               >
                 Contato
               </Link>
+              {isLoggedIn && userRole === 'admin' && (
+                <Button asChild size="sm" variant="outline" className="rounded-full bg-transparent">
+                  <Link href="/admin">
+                    <Shield className="size-4 mr-2" />
+                    Admin
+                  </Link>
+                </Button>
+              )}
               {isLoggedIn ? (
                 <Button asChild size="sm" variant="outline" className="rounded-full bg-transparent">
-                  <Link href={userRole === 'admin' ? "/admin" : "/client/dashboard"}>
+                  <Link href="/client/dashboard">
                     <User className="size-4 mr-2" />
-                    {userRole === 'admin' ? "Admin" : "Área do Cliente"}
+                    Área do Cliente
                   </Link>
                 </Button>
               ) : (
@@ -207,6 +215,20 @@ export function SiteHeader() {
               >
                 Contato
               </Link>
+              {isLoggedIn && userRole === 'admin' && (
+                <Button
+                  asChild
+                  size="sm"
+                  variant="outline"
+                  className="w-full rounded-full bg-transparent"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  <Link href="/admin">
+                    <Shield className="size-4 mr-2" />
+                    Admin
+                  </Link>
+                </Button>
+              )}
               {isLoggedIn ? (
                 <Button
                   asChild
@@ -215,9 +237,9 @@ export function SiteHeader() {
                   className="w-full rounded-full bg-transparent"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  <Link href={userRole === 'admin' ? "/admin" : "/client/dashboard"}>
+                  <Link href="/client/dashboard">
                     <User className="size-4 mr-2" />
-                    {userRole === 'admin' ? "Admin" : "Área do Cliente"}
+                    Área do Cliente
                   </Link>
                 </Button>
               ) : (
