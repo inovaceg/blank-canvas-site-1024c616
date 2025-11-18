@@ -36,7 +36,7 @@ export function HeroSection({ desktopBannerUrl, tabletBannerUrl, mobileBannerUrl
           <h1 className="font-serif text-4xl lg:text-7xl font-bold text-white text-balance drop-shadow-lg">
             Tradição e Sabor em Cada Pedaço
           </h1>
-          <p className="text-lg text-white/90 text-pretty drop-shadow-md">
+          <p className="text-xl text-white/90 text-pretty drop-shadow-md">
             Fornecemos bananadas e gomas de amido artesanais de alta qualidade para lojistas e grandes redes em todo o Brasil.
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
