@@ -31,18 +31,37 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
+  let userRole: string | null = null;
+  if (user) {
+    const { data: profile, error: profileError } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+
+    if (profileError) {
+      console.error("Error fetching user profile in middleware:", profileError);
+    } else if (profile) {
+      userRole = profile.role;
+    }
+  }
+
   const isAdminRoute = request.nextUrl.pathname.startsWith("/admin")
+  const isClientRoute = request.nextUrl.pathname.startsWith("/client")
   const isLoginPage = request.nextUrl.pathname === "/admin/login"
   const isRegisterPage = request.nextUrl.pathname === "/admin/register"
 
   if (isAdminRoute) {
-    if (user) {
-      // Se o usuário está autenticado e tentando acessar login/registro, redireciona para o dashboard
+    if (user && userRole === 'admin') {
+      // Se o admin está autenticado e tentando acessar login/registro, redireciona para o dashboard admin
       if (isLoginPage || isRegisterPage) {
         return NextResponse.redirect(new URL("/admin", request.url))
       }
-      // Se autenticado e acessando outras rotas admin, permite
+      // Se admin autenticado e acessando outras rotas admin, permite
       return response
+    } else if (user && userRole === 'client') {
+      // Se um cliente está tentando acessar uma rota admin, redireciona para o dashboard do cliente
+      return NextResponse.redirect(new URL("/client", request.url))
     } else {
       // Se o usuário NÃO está autenticado
       if (isLoginPage || isRegisterPage) {
@@ -55,10 +74,23 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Para rotas que não são de administração, apenas retorna a resposta (a sessão pode ter sido atualizada)
+  if (isClientRoute) {
+    if (user && userRole === 'client') {
+      // Se o cliente está autenticado e acessando rotas de cliente, permite
+      return response
+    } else if (user && userRole === 'admin') {
+      // Se um admin está tentando acessar uma rota de cliente, redireciona para o dashboard do admin
+      return NextResponse.redirect(new URL("/admin", request.url))
+    } else {
+      // Se o usuário NÃO está autenticado, redireciona para o login (que pode ser o admin/login por enquanto)
+      return NextResponse.redirect(new URL("/admin/login", request.url))
+    }
+  }
+
+  // Para rotas que não são de administração ou cliente, apenas retorna a resposta (a sessão pode ter sido atualizada)
   return response
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/admin/:path*", "/client/:path*"],
 }

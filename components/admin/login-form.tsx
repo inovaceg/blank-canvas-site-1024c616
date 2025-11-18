@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label"
 import { createClient } from "@/lib/supabase/client"
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
-import Link from "next/link" // Importar Link
+import Link from "next/link"
 
 const loginSchema = z.object({
   email: z.string().email("E-mail inválido"),
@@ -55,8 +55,36 @@ export function LoginForm() {
         return
       }
 
+      // Após o login bem-sucedido, buscar o papel do usuário
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) {
+        toast.error("Erro ao obter informações do usuário após o login.");
+        router.push("/admin/login"); // Redireciona de volta para o login
+        return;
+      }
+
+      const { data: profile, error: profileError } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+
+      if (profileError || !profile) {
+        console.error("Erro ao buscar perfil do usuário:", profileError);
+        toast.error("Erro ao carregar perfil do usuário. Tente novamente.");
+        router.push("/admin/login"); // Redireciona de volta para o login
+        return;
+      }
+
       toast.success("Login realizado com sucesso!")
-      router.push("/admin")
+      if (profile.role === 'admin') {
+        router.push("/admin")
+      } else if (profile.role === 'client') {
+        router.push("/client")
+      } else {
+        // Caso o papel não seja reconhecido, redireciona para uma página padrão ou login
+        router.push("/admin/login")
+      }
       router.refresh()
     } catch (error) {
       console.error("Unexpected error during login:", error);
