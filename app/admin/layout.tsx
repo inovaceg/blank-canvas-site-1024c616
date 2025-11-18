@@ -16,12 +16,15 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   if (userAuthError) {
     console.error("[AdminLayout] Erro ao obter usuário autenticado:", userAuthError);
+    // Se houver um erro de autenticação (ex: sessão expirada, token inválido), redireciona para o login
     redirect("/admin/login");
   }
 
   // Se não há usuário, permite que o login/registro seja renderizado
   if (!user) {
     // Isso permite que /admin/login e /admin/register funcionem
+    // Se o path atual não for login/register, redireciona para login
+    // (O middleware já deve ter lidado com isso, mas é uma segurança extra)
     return <>{children}</>
   }
 
