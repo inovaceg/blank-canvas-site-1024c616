@@ -7,6 +7,7 @@ import { unstable_noStore } from 'next/cache'; // Importar unstable_noStore
 
 export default async function ClientLayout({ children }: { children: React.ReactNode }) {
   unstable_noStore(); // Garante que esta página seja renderizada dinamicamente
+  console.log("[ClientLayout] Starting rendering.");
 
   const supabase = await createClient()
 
@@ -24,28 +25,38 @@ export default async function ClientLayout({ children }: { children: React.React
     console.log("[ClientLayout] Usuário não autenticado, redirecionando para login.");
     redirect("/admin/login")
   }
+  console.log(`[ClientLayout] User ID: ${user.id}`);
 
   // Opcional: Verificar o papel do usuário para garantir que é um 'client' ou 'admin'
-  const { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single();
+  try {
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .single();
 
-  if (profileError) {
-    console.error("[ClientLayout] Erro ao buscar perfil do usuário:", profileError);
-    redirect("/admin/login"); // Redireciona se houver erro ao buscar o perfil
+    if (profileError) {
+      console.error("[ClientLayout] Erro ao buscar perfil do usuário:", profileError);
+      redirect("/admin/login"); // Redireciona se houver erro ao buscar o perfil
+    }
+
+    if (profile?.role !== 'client' && profile?.role !== 'admin') {
+      console.error("[ClientLayout] Usuário não é cliente ou admin, redirecionando:", profile?.role);
+      redirect("/admin/login"); // Redireciona se o papel não for adequado
+    }
+    console.log(`[ClientLayout] User role: ${profile?.role}`);
+  } catch (e) {
+    console.error("[ClientLayout] Exceção ao buscar perfil do usuário:", e);
+    redirect("/admin/login");
   }
 
-  if (profile?.role !== 'client' && profile?.role !== 'admin') {
-    console.error("[ClientLayout] Usuário não é cliente ou admin, redirecionando:", profile?.role);
-    redirect("/admin/login"); // Redireciona se o papel não for adequado
-  }
-
+  console.log("[ClientLayout] User is authorized. Rendering children.");
   return (
     <div className="min-h-screen flex flex-col">
       <SiteHeader />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1">
+        {children}
+      </main>
       <SiteFooter />
     </div>
   )
