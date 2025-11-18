@@ -8,13 +8,14 @@ import { toast } from "sonner"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
 
-interface OrderItem {
-  product_id: string;
+interface ProductDetail {
+  id: string;
+  name: string;
   quantity: number;
-  unit_price: number;
-  products: { // Corrigido: products agora é um objeto único
-    name: string;
-  };
+  price?: number;
+  weight?: string;
+  units_per_package?: number;
+  image_url?: string;
 }
 
 interface Order {
@@ -25,8 +26,7 @@ interface Order {
   total_amount?: number
   notes?: string
   created_at: string
-  order_items: OrderItem[];
-  product_details?: any[] | null; // Adicionado: JSONB com detalhes dos produtos
+  product_details?: ProductDetail[] | null; // Adicionado: JSONB com detalhes dos produtos
 }
 
 export default function ClientOrdersPage() {
@@ -43,10 +43,12 @@ export default function ClientOrdersPage() {
     setLoading(true)
     const { data: userData, error: userError } = await supabase.auth.getUser();
     if (userError || !userData.user) {
+      console.error("[ClientOrdersPage] Erro: Usuário não autenticado.", userError);
       toast.error("Erro: Usuário não autenticado.");
       setLoading(false);
       return;
     }
+    console.log("[ClientOrdersPage] User ID:", userData.user.id);
 
     const { data: clientData, error: clientError } = await supabase
       .from("clients")
@@ -55,13 +57,14 @@ export default function ClientOrdersPage() {
       .single();
 
     if (clientError || !clientData) {
-      console.error("Erro ao buscar dados do cliente:", clientError);
+      console.error("[ClientOrdersPage] Erro ao buscar dados do cliente:", clientError);
       toast.error("Erro ao carregar dados do cliente. Verifique seu cadastro.");
       setLoading(false);
       return;
     }
-
     const clientId = clientData.id;
+    console.log("[ClientOrdersPage] Client ID:", clientId);
+
 
     const { data, error } = await supabase
       .from("orders")
@@ -79,11 +82,13 @@ export default function ClientOrdersPage() {
       .order("created_at", { ascending: false })
 
     if (error) {
-      console.error("Erro ao buscar pedidos:", error)
+      console.error("[ClientOrdersPage] Erro ao buscar pedidos:", error)
       toast.error("Erro ao carregar histórico de pedidos.")
+      setOrders([]);
+    } else {
+      console.log("[ClientOrdersPage] Pedidos carregados:", data);
+      setOrders((data || []) as unknown as Order[])
     }
-    // Ajuste na conversão de tipo para evitar o erro de TypeScript
-    setOrders((data || []) as unknown as Order[])
     setLoading(false)
   }
 
