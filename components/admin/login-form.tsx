@@ -37,14 +37,14 @@ export function LoginForm() {
     setIsSubmitting(true)
 
     try {
-      console.log("Attempting signInWithPassword for email:", data.email); // Log 1
+      console.log("Attempting signInWithPassword for email:", data.email);
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
       })
 
       if (signInError) {
-        console.error("Erro durante signInWithPassword:", signInError); // Log 2
+        console.error("Erro durante signInWithPassword:", signInError);
         let errorMessage = "Erro ao fazer login. Verifique suas credenciais."
         if (signInError.message.includes("Email not confirmed")) {
           errorMessage = "Seu e-mail ainda não foi confirmado. Por favor, verifique sua caixa de entrada."
@@ -57,43 +57,13 @@ export function LoginForm() {
         return
       }
 
-      console.log("signInWithPassword successful. Attempting to get user session."); // Log 3
-      // Após o login bem-sucedido, buscar o papel do usuário
-      const { data: { user }, error: userError } = await supabase.auth.getUser();
-      if (userError || !user) {
-        console.error("Erro ao obter informações do usuário após o login:", userError); // Log 4 (Este é o erro que você está vendo)
-        toast.error("Erro ao obter informações do usuário após o login.");
-        router.push("/admin/login"); // Redireciona de volta para o login
-        return;
-      }
-
-      console.log("User session obtained, user ID:", user.id); // Log 5
-      const { data: profile, error: profileError } = await supabase
-        .from("profiles")
-        .select("role")
-        .eq("id", user.id)
-        .single();
-
-      if (profileError || !profile) {
-        console.error("Erro ao buscar perfil do usuário:", profileError); // Log 6
-        toast.error("Erro ao carregar perfil do usuário. Tente novamente.");
-        router.push("/admin/login");
-        return;
-      }
-
-      console.log("User profile role:", profile.role); // Log 7
+      // Login bem-sucedido. Agora, apenas redirecionamos e deixamos o middleware/layout
+      // lidar com a busca do papel do usuário e o redirecionamento final.
       toast.success("Login realizado com sucesso!")
-      if (profile.role === 'admin') {
-        router.push("/admin")
-      } else if (profile.role === 'client') {
-        router.push("/client/dashboard") // Redireciona para o dashboard do cliente
-      } else {
-        // Caso o papel não seja reconhecido, redireciona para uma página padrão ou login
-        router.push("/admin/login")
-      }
-      router.refresh()
+      router.push("/admin"); // Redireciona para o caminho base do admin
+      router.refresh(); // Força um refresh para reavaliar o middleware e o layout
     } catch (error) {
-      console.error("Unexpected error during login:", error); // Log 8
+      console.error("Unexpected error during login:", error);
       toast.error("Ocorreu um erro inesperado. Tente novamente mais tarde.")
     } finally {
       setIsSubmitting(false)
