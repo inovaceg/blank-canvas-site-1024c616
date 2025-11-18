@@ -1,44 +1,28 @@
 "use client"
 import { Button } from "@/components/button"
 import Link from "next/link"
-import { Phone, Mail, Menu, X, ShoppingCart, Instagram } from "lucide-react"
-import { useState, useEffect } from "react" // Importar useEffect
+import { Store, Menu, X, ShoppingCart, Instagram } from "lucide-react" // Alterado: Phone removido, Store adicionado
+import { useState, useEffect } from "react"
 import { useCart } from "@/components/cart-provider"
-import { formatPhoneNumber } from "@/lib/utils"
+// import { formatPhoneNumber } from "@/lib/utils" // Removido: formatPhoneNumber não é mais necessário
 
 export function SiteHeader() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
-  const [isMounted, setIsMounted] = useState(false) // Novo estado para hidratação
+  const [isMounted, setIsMounted] = useState(false)
   const { getTotalItems } = useCart()
 
   useEffect(() => {
-    setIsMounted(true) // Define como true apenas no cliente após a montagem
+    setIsMounted(true)
   }, [])
 
   return (
     <header className="sticky top-0 z-50">
       <div className="bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex h-10 items-center justify-between text-sm">
-            {/* Telefone no canto esquerdo */}
-            <a href="tel:+553498484644" className="flex items-center gap-2 hover:underline">
-              <Phone className="size-4" />
-              <span>{formatPhoneNumber("34984844644")}</span>
-            </a>
-
-            {/* Ícone do Instagram e "Tradição desde 2000" no canto direito */}
-            <div className="flex items-center gap-4">
-              <a
-                href="https://instagram.com/docessaofidelis"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 hover:underline"
-                aria-label="Instagram"
-              >
-                <Instagram className="size-4" />
-                <span className="sr-only">Instagram</span>
-              </a>
-              <div className="hidden sm:block font-medium">Tradição desde 2000</div>
+          <div className="flex h-10 items-center justify-center text-sm"> {/* Alterado para justify-center */}
+            <div className="flex items-center gap-2 font-medium"> {/* Adicionado font-medium */}
+              <Store className="size-4" /> {/* Novo ícone de loja */}
+              <span>Vendas Exclusivas para Lojistas e Grandes Redes de Varejo</span> {/* Novo texto */}
             </div>
           </div>
         </div>
@@ -96,7 +80,7 @@ export function SiteHeader() {
                 <Link href="/carrinho">
                   <span>
                     <ShoppingCart className="size-5" />
-                    {isMounted && getTotalItems() > 0 && ( // Renderiza condicionalmente
+                    {isMounted && getTotalItems() > 0 && (
                       <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full size-4 flex items-center justify-center text-xs font-bold">
                         {getTotalItems()}
                       </span>
@@ -111,7 +95,7 @@ export function SiteHeader() {
                 <Link href="/carrinho">
                   <span>
                     <ShoppingCart className="size-5" />
-                    {isMounted && getTotalItems() > 0 && ( // Renderiza condicionalmente
+                    {isMounted && getTotalItems() > 0 && (
                       <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground rounded-full size-4 flex items-center justify-center text-xs font-bold">
                         {getTotalItems()}
                       </span>
