@@ -18,14 +18,14 @@ import { createClient } from "@/lib/supabase/client" // Importar cliente Supabas
 const checkoutSchema = z.object({
   documentType: z.enum(["cpf", "cnpj"], { message: "Selecione o tipo de documento" }),
   documentNumber: z.string().min(11, "Documento inválido").max(18, "Documento inválido"),
-  companyName: z.string().min(2, "Nome da empresa deve ter no mínimo 2 caracteres").optional(),
+  companyName: z.string().optional().nullable(), // Tornar opcional e anulável
   fullName: z.string().min(3, "Nome completo deve ter no mínimo 3 caracteres"),
   email: z.string().email("E-mail inválido"),
   phone: z.string().min(14, "Telefone/WhatsApp inválido (ex: 22-9-8888-8888)").max(14, "Telefone/WhatsApp inválido (ex: 22-9-8888-8888)"), // Atualizado para 14 caracteres
   cep: z.string().min(9, "CEP inválido (ex: 00000-000)").max(9, "CEP inválido (ex: 00000-000)"), // Atualizado para 9 caracteres
   address: z.string().min(3, "Endereço inválido"),
   number: z.string().min(1, "Número é obrigatório"),
-  complement: z.string().optional(),
+  complement: z.string().optional().nullable(), // Tornar opcional e anulável
   neighborhood: z.string().min(2, "Bairro inválido"),
   city: z.string().min(2, "Cidade inválida"),
   state: z.string().min(2, "Estado inválido").max(2, "Estado inválido"),
@@ -64,11 +64,63 @@ export function CheckoutForm() {
     resolver: zodResolver(checkoutSchema),
     defaultValues: {
       documentType: "cpf",
+      companyName: null,
+      complement: null,
     },
   })
 
   const watchedCep = watch("cep")
   const watchedDocumentType = watch("documentType")
+
+  // Efeito para preencher os dados do cliente logado
+  useEffect(() => {
+    const loadClientData = async () => {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) {
+        // Usuário não logado, não preenche nada
+        return;
+      }
+
+      const { data: clientProfile, error: clientError } = await supabase
+        .from("clients")
+        .select("*")
+        .eq("user_id", user.id)
+        .single();
+
+      if (clientError || !clientProfile) {
+        console.warn("Erro ao buscar perfil do cliente para preenchimento automático:", clientError);
+        return;
+      }
+
+      // Preencher os campos do formulário com os dados do cliente
+      setValue("companyName", clientProfile.company_name || null);
+      setValue("fullName", clientProfile.contact_person || "");
+      setValue("email", clientProfile.email || "");
+      setValue("phone", clientProfile.phone || "");
+      setValue("cep", clientProfile.cep || "");
+      setValue("address", clientProfile.address || "");
+      // O campo 'number' não está diretamente no perfil do cliente, então não preenchemos
+      // O campo 'complement' não está diretamente no perfil do cliente, então não preenchemos
+      // O campo 'neighborhood' não está diretamente no perfil do cliente, então não preenchemos
+      setValue("city", clientProfile.city || "");
+      setValue("state", clientProfile.state || "");
+
+      // Preencher CNPJ/CPF se existirem no perfil (assumindo que 'cnpj' pode ser usado para ambos)
+      if (clientProfile.cnpj) {
+        // Lógica para determinar se é CPF ou CNPJ e preencher
+        if (clientProfile.cnpj.replace(/\D/g, '').length === 11) {
+          setValue("documentType", "cpf");
+          setValue("documentNumber", clientProfile.cnpj);
+        } else if (clientProfile.cnpj.replace(/\D/g, '').length === 14) {
+          setValue("documentType", "cnpj");
+          setValue("documentNumber", clientProfile.cnpj);
+        }
+      }
+    };
+
+    loadClientData();
+  }, [supabase, setValue]);
+
 
   // Efeito para preencher o endereço automaticamente ao digitar o CEP
   useEffect(() => {
