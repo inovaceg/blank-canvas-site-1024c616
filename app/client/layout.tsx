@@ -3,16 +3,26 @@ import { redirect } from "next/navigation"
 import { createClient } from "@/lib/supabase/server"
 import { SiteHeader } from "@/components/site-header"
 import { SiteFooter } from "@/components/site-footer"
+import { unstable_noStore } from 'next/cache'; // Importar unstable_noStore
 
 export default async function ClientLayout({ children }: { children: React.ReactNode }) {
+  unstable_noStore(); // Garante que esta página seja renderizada dinamicamente
+
   const supabase = await createClient()
 
   const {
     data: { user },
+    error: userAuthError, // Captura erros de autenticação
   } = await supabase.auth.getUser()
 
+  if (userAuthError) {
+    console.error("[ClientLayout] Erro ao obter usuário autenticado:", userAuthError);
+    redirect("/admin/login");
+  }
+
   if (!user) {
-    redirect("/admin/login") // Redireciona para o login se não houver usuário
+    console.log("[ClientLayout] Usuário não autenticado, redirecionando para login.");
+    redirect("/admin/login")
   }
 
   // Opcional: Verificar o papel do usuário para garantir que é um 'client' ou 'admin'
@@ -22,8 +32,13 @@ export default async function ClientLayout({ children }: { children: React.React
     .eq('id', user.id)
     .single();
 
-  if (profileError || (profile?.role !== 'client' && profile?.role !== 'admin')) {
-    console.error("User is not a client or admin, redirecting:", profileError);
+  if (profileError) {
+    console.error("[ClientLayout] Erro ao buscar perfil do usuário:", profileError);
+    redirect("/admin/login"); // Redireciona se houver erro ao buscar o perfil
+  }
+
+  if (profile?.role !== 'client' && profile?.role !== 'admin') {
+    console.error("[ClientLayout] Usuário não é cliente ou admin, redirecionando:", profile?.role);
     redirect("/admin/login"); // Redireciona se o papel não for adequado
   }
 
