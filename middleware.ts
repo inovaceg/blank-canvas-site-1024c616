@@ -16,15 +16,13 @@ export async function middleware(request: NextRequest) {
     {
       cookies: {
         getAll() {
-          return request.cookies.getAll()
+          const allCookies = request.cookies.getAll();
+          console.log(`[Middleware - getAll] Cookies received:`, allCookies.map(c => `${c.name}=${c.value.substring(0, 10)}...`)); // Log names and first few chars of values
+          return allCookies;
         },
         setAll(cookiesToSet) {
-          // IMPORTANTE: As cookies devem ser definidas APENAS no objeto 'response'.
-          // A linha abaixo foi removida pois tentava modificar 'request.cookies', o que é incorreto.
-          // cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
-          
+          console.log(`[Middleware - setAll] Cookies to set:`, cookiesToSet.map(c => `${c.name}=${c.value.substring(0, 10)}...`));
           cookiesToSet.forEach(({ name, value, options }) => response.cookies.set(name, value, options))
-          console.log(`[Middleware] Set cookie: ${name}`);
         },
       },
     },
