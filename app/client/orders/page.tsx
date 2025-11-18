@@ -26,6 +26,7 @@ interface Order {
   notes?: string
   created_at: string
   order_items: OrderItem[];
+  product_details?: any[] | null; // Adicionado: JSONB com detalhes dos produtos
 }
 
 export default function ClientOrdersPage() {
@@ -72,12 +73,7 @@ export default function ClientOrdersPage() {
         total_amount,
         notes,
         created_at,
-        order_items (
-          product_id,
-          quantity,
-          unit_price,
-          products ( name )
-        )
+        product_details
       `)
       .eq("client_id", clientId)
       .order("created_at", { ascending: false })
@@ -129,7 +125,7 @@ export default function ClientOrdersPage() {
     (order) =>
       order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.order_items.some(item => item.products.name.toLowerCase().includes(searchTerm.toLowerCase()))
+      order.product_details?.some((item: any) => item.name.toLowerCase().includes(searchTerm.toLowerCase())) // Ajustado para JSONB
   )
 
   if (loading) {
@@ -185,7 +181,7 @@ export default function ClientOrdersPage() {
                   <tr key={order.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">{order.id.substring(0, 8)}...</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-[#4a4a4a]">
-                      {new Date(order.order_date).toLocaleDateString("pt-BR")}
+                      {new Date(order.created_at).toLocaleDateString("pt-BR")}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <Badge variant={getStatusBadgeVariant(order.status)}>
@@ -196,7 +192,7 @@ export default function ClientOrdersPage() {
                       {order.total_amount ? `R$ ${order.total_amount.toFixed(2)}` : "-"}
                     </td>
                     <td className="px-6 py-4 text-sm text-[#4a4a4a]">
-                      {order.order_items.map(item => item.products.name).join(", ")}
+                      {order.product_details?.map((item: any) => item.name).join(", ")}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       <div className="flex items-center gap-2">

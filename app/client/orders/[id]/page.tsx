@@ -10,16 +10,14 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Badge } from "@/components/ui/badge"
 import Image from "next/image"
 
-interface OrderItem {
-  product_id: string;
+interface ProductDetail {
+  id: string;
+  name: string;
   quantity: number;
-  unit_price: number;
-  products: { // Corrigido: products agora é um objeto único
-    name: string;
-    image_url?: string;
-    weight?: string;
-    units_per_package?: number;
-  };
+  price?: number;
+  weight?: string;
+  units_per_package?: number;
+  image_url?: string;
 }
 
 interface Order {
@@ -30,7 +28,7 @@ interface Order {
   total_amount?: number
   notes?: string
   created_at: string
-  order_items: OrderItem[];
+  product_details: ProductDetail[]; // Agora é um array de ProductDetail
 }
 
 export default function ClientOrderDetailPage() {
@@ -80,12 +78,7 @@ export default function ClientOrderDetailPage() {
         total_amount,
         notes,
         created_at,
-        order_items (
-          product_id,
-          quantity,
-          unit_price,
-          products ( name, image_url, weight, units_per_package )
-        )
+        product_details
       `)
       .eq("id", params.id as string)
       .eq("client_id", clientId) // Garante que o cliente só veja seus próprios pedidos
@@ -174,7 +167,7 @@ export default function ClientOrderDetailPage() {
               </Badge>
             </div>
             <CardDescription className="text-sm text-muted-foreground">
-              Pedido realizado em {new Date(order.order_date).toLocaleString("pt-BR")}
+              Pedido realizado em {new Date(order.created_at).toLocaleString("pt-BR")}
             </CardDescription>
           </CardHeader>
           <CardContent className="p-0 space-y-6">
@@ -183,7 +176,7 @@ export default function ClientOrderDetailPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
                 <div>
                   <p className="text-muted-foreground">Data do Pedido:</p>
-                  <p className="font-medium">{new Date(order.order_date).toLocaleDateString("pt-BR")}</p>
+                  <p className="font-medium">{new Date(order.created_at).toLocaleDateString("pt-BR")}</p>
                 </div>
                 {order.delivery_date_requested && (
                   <div>
@@ -213,13 +206,13 @@ export default function ClientOrderDetailPage() {
             <div>
               <h3 className="font-semibold text-lg mb-3">Itens do Pedido</h3>
               <div className="space-y-4">
-                {order.order_items.map((item) => (
-                  <div key={item.product_id} className="flex items-center gap-4 border-b pb-4 last:border-b-0 last:pb-0">
+                {order.product_details?.map((item) => (
+                  <div key={item.id} className="flex items-center gap-4 border-b pb-4 last:border-b-0 last:pb-0">
                     <div className="relative size-16 shrink-0 rounded-md overflow-hidden bg-muted">
-                      {item.products.image_url ? (
+                      {item.image_url ? (
                         <Image
-                          src={item.products.image_url}
-                          alt={item.products.name}
+                          src={item.image_url}
+                          alt={item.name}
                           fill
                           className="object-cover"
                         />
@@ -230,10 +223,14 @@ export default function ClientOrderDetailPage() {
                       )}
                     </div>
                     <div className="flex-1">
-                      <p className="font-medium text-foreground">{item.products.name}</p>
+                      <p className="font-medium text-foreground">{item.name}</p>
                       <p className="text-sm text-muted-foreground">Quantidade: {item.quantity}</p>
-                      <p className="text-sm text-muted-foreground">Preço Unitário: R$ {item.unit_price.toFixed(2)}</p>
-                      <p className="text-sm text-muted-foreground">Total: R$ {(item.quantity * item.unit_price).toFixed(2)}</p>
+                      {item.price !== undefined && item.price !== null && (
+                        <p className="text-sm text-muted-foreground">Preço Unitário: R$ {item.price.toFixed(2)}</p>
+                      )}
+                      {item.price !== undefined && item.price !== null && (
+                        <p className="text-sm text-muted-foreground">Total: R$ {(item.quantity * item.price).toFixed(2)}</p>
+                      )}
                     </div>
                   </div>
                 ))}

@@ -186,11 +186,13 @@ export default function ClientProductsPage() {
                         <p className="text-sm text-muted-foreground">{product.units_per_package}</p>
                       </div>
                     )}
-                    {product.client_price !== null && product.client_price !== undefined && (
+                    {product.client_price !== null && product.client_price !== undefined ? (
                       <div>
                         <p className="text-sm font-medium text-foreground mb-1">Seu Preço:</p>
                         <p className="text-lg font-bold text-primary">R$ {product.client_price.toFixed(2)}</p>
                       </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground">Preço sob consulta</p>
                     )}
                     <div className="flex items-center gap-2 mt-4">
                       <Button
@@ -224,9 +226,10 @@ export default function ClientProductsPage() {
                         image_url: product.image_url,
                         weight: product.weight,
                         units_per_package: product.units_per_package,
+                        price: product.client_price, // Passa o preço correto do cliente
                       }, quantities[product.id])}
                     >
-                      Adicionar ao Orçamento <ShoppingCart className="size-4 ml-2" />
+                      Adicionar ao Pedido <ShoppingCart className="size-4 ml-2" />
                     </Button>
                   </div>
                 </CardContent>

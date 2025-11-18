@@ -1,17 +1,17 @@
 "use client"
 
-import { SiteHeader } from "@/components/site-header"
-import { SiteFooter } from "@/components/site-footer"
-import { Button } from "@/components/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
+import { useState, useEffect } from "react"
 import { createClient } from "@/lib/supabase/client"
 import { Package, ShoppingCart, Minus, Plus } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
-import { useState, useEffect } from "react"
 import { useCart } from "@/components/cart-provider"
 import { Input } from "@/components/ui/input"
+import { Button } from "@/components/button"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { SiteHeader } from "@/components/site-header" // Importado
+import { SiteFooter } from "@/components/site-footer" // Importado
 
 interface Product {
   id: string
@@ -72,19 +72,29 @@ export default function ProductsPage() {
 
     // Fetch client-specific prices if logged in
     if (user) {
-      const { data: pricesData, error: pricesError } = await supabase
-        .from("client_product_prices")
-        .select("product_id, price")
-        .eq("client_id", user.id);
+      const { data: clientData, error: clientError } = await supabase
+        .from("clients")
+        .select("id")
+        .eq("user_id", user.id)
+        .single();
 
-      if (pricesError) {
-        console.error("Error fetching client prices:", pricesError);
+      if (clientError || !clientData) {
+        console.warn("Client data not found for logged-in user, using default prices.", clientError);
       } else {
-        const clientPricesMap: { [key: string]: number } = {};
-        pricesData?.forEach(p => {
-          clientPricesMap[p.product_id] = p.price;
-        });
-        setUserPrices(clientPricesMap);
+        const { data: pricesData, error: pricesError } = await supabase
+          .from("client_product_prices")
+          .select("product_id, price")
+          .eq("client_id", clientData.id);
+
+        if (pricesError) {
+          console.error("Error fetching client prices:", pricesError);
+        } else {
+          const clientPricesMap: { [key: string]: number } = {};
+          pricesData?.forEach(p => {
+            clientPricesMap[p.product_id] = p.price;
+          });
+          setUserPrices(clientPricesMap);
+        }
       }
     }
     setLoading(false)
@@ -236,7 +246,7 @@ export default function ProductsPage() {
                               price: displayPrice, // Passa o preço correto
                             }, quantities[product.id])}
                           >
-                            Adicionar ao Carrinho <ShoppingCart className="size-4 ml-2" />
+                            Adicionar ao Pedido <ShoppingCart className="size-4 ml-2" />
                           </Button>
                         </div>
                       </CardContent>

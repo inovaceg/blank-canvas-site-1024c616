@@ -45,12 +45,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setCartItems((prevItems) => {
       const existingItem = prevItems.find((i) => i.id === item.id)
       if (existingItem) {
-        toast.info(`Quantidade de "${item.name}" atualizada no orçamento.`)
+        toast.info(`Quantidade de "${item.name}" atualizada no pedido.`)
         return prevItems.map((i) =>
           i.id === item.id ? { ...i, quantity: i.quantity + quantityToAdd } : i
         )
       } else {
-        toast.success(`"${item.name}" adicionado ao orçamento!`)
+        toast.success(`"${item.name}" adicionado ao pedido!`)
         return [...prevItems, { ...item, quantity: quantityToAdd }]
       }
     })
@@ -60,7 +60,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setCartItems((prevItems) => {
       const removedItem = prevItems.find(item => item.id === id);
       if (removedItem) {
-        toast.info(`"${removedItem.name}" removido do orçamento.`);
+        toast.info(`"${removedItem.name}" removido do pedido.`);
       }
       return prevItems.filter((item) => item.id !== id);
     });

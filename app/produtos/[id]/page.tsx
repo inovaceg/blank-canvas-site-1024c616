@@ -80,19 +80,29 @@ export default function ProductDetailPage() {
 
     // Fetch client-specific prices if logged in
     if (user) {
-      const { data: pricesData, error: pricesError } = await supabase
-        .from("client_product_prices")
-        .select("product_id, price")
-        .eq("client_id", user.id);
+      const { data: clientData, error: clientError } = await supabase
+        .from("clients")
+        .select("id")
+        .eq("user_id", user.id)
+        .single();
 
-      if (pricesError) {
-        console.error("Error fetching client prices:", pricesError);
+      if (clientError || !clientData) {
+        console.warn("Client data not found for logged-in user, using default prices.", clientError);
       } else {
-        const clientPricesMap: { [key: string]: number } = {};
-        pricesData?.forEach(p => {
-          clientPricesMap[p.product_id] = p.price;
-        });
-        setUserPrices(clientPricesMap);
+        const { data: pricesData, error: pricesError } = await supabase
+          .from("client_product_prices")
+          .select("product_id, price")
+          .eq("client_id", clientData.id);
+
+        if (pricesError) {
+          console.error("Error fetching client prices:", pricesError);
+        } else {
+          const clientPricesMap: { [key: string]: number } = {};
+          pricesData?.forEach(p => {
+            clientPricesMap[p.product_id] = p.price;
+          });
+          setUserPrices(clientPricesMap);
+        }
       }
     }
     setLoading(false)
@@ -288,7 +298,7 @@ export default function ProductDetailPage() {
                     </Button>
                   </div>
                   <Button className="flex-1" size="lg" onClick={handleAddToCart}>
-                    Adicionar ao Carrinho <ShoppingCart className="size-5 ml-2" />
+                    Adicionar ao Pedido <ShoppingCart className="size-5 ml-2" />
                   </Button>
                 </div>
               </div >
@@ -363,7 +373,7 @@ export default function ProductDetailPage() {
                             className="w-full mt-3 text-xs h-8"
                             onClick={() => handleAddRelatedToCart(relatedProduct, relatedQuantities[relatedProduct.id])}
                           >
-                            Adicionar ao Carrinho <ShoppingCart className="size-3 ml-1" />
+                            Adicionar ao Pedido <ShoppingCart className="size-3 ml-1" />
                           </Button>
                         </CardContent>
                       </Card>

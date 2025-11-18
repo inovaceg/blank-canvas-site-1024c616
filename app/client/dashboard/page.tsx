@@ -2,33 +2,56 @@ import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Package, ShoppingCart, History, User } from "lucide-react" // Adicionado User para 'Meu Perfil'
 import Link from "next/link"
+import { unstable_noStore } from 'next/cache'; // Importar unstable_noStore
 
 export default async function ClientDashboardPage() {
+  unstable_noStore(); // Garante que esta página seja renderizada dinamicamente
+
   const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
+  const { data: { user }, error: userError } = await supabase.auth.getUser()
+
+  if (userError || !user) {
+    console.error("[ClientDashboardPage] Erro ao obter usuário autenticado:", userError);
+    // O layout já deve ter redirecionado, mas é bom ter uma verificação aqui também.
+    // Em um componente de página, você pode lançar um erro ou retornar um fallback.
+    return <div className="text-center py-12 text-red-500">Erro: Usuário não autenticado.</div>;
+  }
 
   let clientName = "Cliente";
-  if (user) {
-    const { data: profile, error } = await supabase
+  try {
+    const { data: profile, error: profileFetchError } = await supabase
       .from("profiles")
       .select("first_name")
       .eq("id", user.id)
       .single();
-    if (profile && !error) {
+    if (profileFetchError) {
+      console.error("[ClientDashboardPage] Erro ao buscar first_name do perfil:", profileFetchError);
+    } else if (profile) {
       clientName = profile.first_name || "Cliente";
     }
+  } catch (e) {
+    console.error("[ClientDashboardPage] Exceção ao buscar first_name do perfil:", e);
   }
 
   // Fetch last order (example)
-  const { data: lastOrder, error: orderError } = await supabase
-    .from('orders')
-    .select('created_at')
-    .eq('user_id', user?.id) // Use user?.id para evitar erro se user for null
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .single();
+  let lastOrderDate = 'Nenhum pedido recente';
+  try {
+    const { data: lastOrder, error: orderError } = await supabase
+      .from('orders')
+      .select('created_at')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
 
-  const lastOrderDate = lastOrder ? new Date(lastOrder.created_at).toLocaleDateString('pt-BR') : 'Nenhum pedido recente';
+    if (orderError && orderError.code !== 'PGRST116') { // PGRST116 means no rows found
+      console.error("[ClientDashboardPage] Erro ao buscar último pedido:", orderError);
+    } else if (lastOrder) {
+      lastOrderDate = new Date(lastOrder.created_at).toLocaleDateString('pt-BR');
+    }
+  } catch (e) {
+    console.error("[ClientDashboardPage] Exceção ao buscar último pedido:", e);
+  }
 
 
   return (
