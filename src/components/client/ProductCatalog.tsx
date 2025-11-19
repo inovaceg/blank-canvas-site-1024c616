@@ -167,7 +167,7 @@ export function ProductCatalog({ clientId }: ProductCatalogProps) {
                   )}
                   {product.units_per_package && (
                     <p className="text-sm text-muted-foreground">
-                      <strong>Unidades/Caixa:</strong> {product.units_per_package}
+                      <strong>{product.units_per_package} unidades por embalagem</strong>
                     </p>
                   )}
                 </div>
@@ -238,8 +238,8 @@ export function ProductCatalog({ clientId }: ProductCatalogProps) {
                   )}
                   {selectedProduct.units_per_package && (
                     <div>
-                      <p className="text-sm text-muted-foreground">Unidades por Caixa</p>
-                      <p className="font-medium">{selectedProduct.units_per_package}</p>
+                      <p className="text-sm text-muted-foreground">Embalagem</p>
+                      <p className="font-medium">{selectedProduct.units_per_package} unidades</p>
                     </div>
                   )}
                 </div>
