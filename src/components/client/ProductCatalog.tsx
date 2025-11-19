@@ -11,7 +11,7 @@ import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface ProductCatalogProps {
-  clientId: string;
+  clientId?: string | null;
 }
 
 export function ProductCatalog({ clientId }: ProductCatalogProps) {
@@ -22,15 +22,33 @@ export function ProductCatalog({ clientId }: ProductCatalogProps) {
   const { data: products = [], isLoading: isLoadingProducts } = useQuery({
     queryKey: ["client-products", clientId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("products_with_client_prices")
-        .select("*")
-        .eq("client_id", clientId)
-        .eq("is_active", true)
-        .order("display_order");
+      if (clientId) {
+        const { data, error } = await supabase
+          .from("products_with_client_prices")
+          .select("*")
+          .eq("client_id", clientId)
+          .eq("is_active", true)
+          .order("display_order");
 
-      if (error) throw error;
-      return data;
+        if (error) throw error;
+        return data;
+      } else {
+        // Se não tem clientId, busca produtos com preços padrão
+        const { data, error } = await supabase
+          .from("products")
+          .select("*")
+          .eq("is_active", true)
+          .order("display_order");
+
+        if (error) throw error;
+        return data.map(product => ({
+          ...product,
+          final_price: product.price,
+          default_price: product.price,
+          custom_price: null,
+          client_id: null,
+        }));
+      }
     },
   });
 

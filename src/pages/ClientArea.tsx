@@ -23,7 +23,7 @@ export default function ClientArea() {
         .from("clients")
         .select("*")
         .eq("user_id", user.id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       return data;
@@ -127,13 +127,7 @@ export default function ClientArea() {
             </TabsList>
 
             <TabsContent value="products" className="space-y-6">
-              {clientData ? (
-                <ProductCatalog clientId={clientData.id} />
-              ) : (
-                <div className="text-center py-12">
-                  <p className="text-muted-foreground">Carregando produtos...</p>
-                </div>
-              )}
+              <ProductCatalog clientId={clientData?.id} />
             </TabsContent>
 
             <TabsContent value="cart">
