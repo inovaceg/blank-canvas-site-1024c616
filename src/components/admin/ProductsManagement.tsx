@@ -75,7 +75,7 @@ export default function ProductsManagement() {
         .select('name')
         .order('name');
       if (error) throw error;
-      return data?.map(c => c.name) || [];
+      return data.map(c => c.name);
     }
   });
 
