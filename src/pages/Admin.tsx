@@ -5,6 +5,7 @@ import OrdersManagement from "@/components/admin/OrdersManagement";
 import ClientsManagement from "@/components/admin/ClientsManagement";
 import NewsletterManagement from "@/components/admin/NewsletterManagement";
 import QuotesManagement from "@/components/admin/QuotesManagement";
+import ClientPricesManagement from "@/components/admin/ClientPricesManagement";
 
 export default function Admin() {
   const { user } = useAuth();
@@ -23,10 +24,11 @@ export default function Admin() {
           </div>
 
           <Tabs defaultValue="products" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-5">
+            <TabsList className="grid w-full grid-cols-6">
               <TabsTrigger value="products">Produtos</TabsTrigger>
               <TabsTrigger value="orders">Pedidos</TabsTrigger>
               <TabsTrigger value="clients">Clientes</TabsTrigger>
+              <TabsTrigger value="prices">Preços</TabsTrigger>
               <TabsTrigger value="newsletter">Newsletter</TabsTrigger>
               <TabsTrigger value="quotes">Cotações</TabsTrigger>
             </TabsList>
@@ -41,6 +43,10 @@ export default function Admin() {
 
             <TabsContent value="clients">
               <ClientsManagement />
+            </TabsContent>
+
+            <TabsContent value="prices">
+              <ClientPricesManagement />
             </TabsContent>
 
             <TabsContent value="newsletter">
