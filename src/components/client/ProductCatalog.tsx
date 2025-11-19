@@ -146,19 +146,24 @@ export function ProductCatalog({ clientId }: ProductCatalogProps) {
               </CardHeader>
               <CardContent className="flex-1 pt-6">
                 <CardTitle className="text-lg mb-2">{product.name}</CardTitle>
-                <CardDescription className="line-clamp-2">
-                  {product.description}
-                </CardDescription>
-                {product.weight && (
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Peso: {product.weight}
-                  </p>
+                {product.description && (
+                  <div 
+                    className="text-sm text-muted-foreground line-clamp-3 mb-3"
+                    dangerouslySetInnerHTML={{ __html: product.description }}
+                  />
                 )}
-                {product.units_per_package && (
-                  <p className="text-sm text-muted-foreground">
-                    Unidades/Caixa: {product.units_per_package}
-                  </p>
-                )}
+                <div className="space-y-1">
+                  {product.weight && (
+                    <p className="text-sm text-muted-foreground">
+                      <strong>Peso:</strong> {product.weight}
+                    </p>
+                  )}
+                  {product.units_per_package && (
+                    <p className="text-sm text-muted-foreground">
+                      <strong>Unidades/Caixa:</strong> {product.units_per_package}
+                    </p>
+                  )}
+                </div>
               </CardContent>
               <CardFooter className="flex justify-between items-center pt-0">
                 <div>
