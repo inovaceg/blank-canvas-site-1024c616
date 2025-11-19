@@ -1,4 +1,10 @@
 import { useAuth } from "@/contexts/AuthContext";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ProductsManagement from "@/components/admin/ProductsManagement";
+import OrdersManagement from "@/components/admin/OrdersManagement";
+import ClientsManagement from "@/components/admin/ClientsManagement";
+import NewsletterManagement from "@/components/admin/NewsletterManagement";
+import QuotesManagement from "@/components/admin/QuotesManagement";
 
 export default function Admin() {
   const { user } = useAuth();
@@ -6,61 +12,45 @@ export default function Admin() {
   return (
     <div className="min-h-screen bg-muted/30 py-12">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
-          <h1 className="font-serif text-4xl font-bold text-foreground mb-8">
-            Painel Administrativo
-          </h1>
-          
-          <div className="bg-card rounded-lg shadow-sm border border-border p-8 mb-8">
-            <h2 className="text-2xl font-semibold mb-4">Bem-vindo, Administrador</h2>
-            <p className="text-muted-foreground mb-4">
-              E-mail: {user?.email}
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-8">
+            <h1 className="font-serif text-4xl font-bold text-foreground mb-2">
+              Painel Administrativo
+            </h1>
+            <p className="text-muted-foreground">
+              Bem-vindo, {user?.email}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="bg-card rounded-lg shadow-sm border border-border p-6">
-              <h3 className="text-xl font-semibold mb-2">Produtos</h3>
-              <p className="text-muted-foreground mb-4">
-                Gerencie o catálogo de produtos
-              </p>
-            </div>
+          <Tabs defaultValue="products" className="space-y-6">
+            <TabsList className="grid w-full grid-cols-5">
+              <TabsTrigger value="products">Produtos</TabsTrigger>
+              <TabsTrigger value="orders">Pedidos</TabsTrigger>
+              <TabsTrigger value="clients">Clientes</TabsTrigger>
+              <TabsTrigger value="newsletter">Newsletter</TabsTrigger>
+              <TabsTrigger value="quotes">Cotações</TabsTrigger>
+            </TabsList>
 
-            <div className="bg-card rounded-lg shadow-sm border border-border p-6">
-              <h3 className="text-xl font-semibold mb-2">Clientes</h3>
-              <p className="text-muted-foreground mb-4">
-                Visualize e gerencie clientes
-              </p>
-            </div>
+            <TabsContent value="products">
+              <ProductsManagement />
+            </TabsContent>
 
-            <div className="bg-card rounded-lg shadow-sm border border-border p-6">
-              <h3 className="text-xl font-semibold mb-2">Pedidos</h3>
-              <p className="text-muted-foreground mb-4">
-                Acompanhe todos os pedidos
-              </p>
-            </div>
+            <TabsContent value="orders">
+              <OrdersManagement />
+            </TabsContent>
 
-            <div className="bg-card rounded-lg shadow-sm border border-border p-6">
-              <h3 className="text-xl font-semibold mb-2">Newsletter</h3>
-              <p className="text-muted-foreground mb-4">
-                Gerencie assinantes da newsletter
-              </p>
-            </div>
+            <TabsContent value="clients">
+              <ClientsManagement />
+            </TabsContent>
 
-            <div className="bg-card rounded-lg shadow-sm border border-border p-6">
-              <h3 className="text-xl font-semibold mb-2">Cotações</h3>
-              <p className="text-muted-foreground mb-4">
-                Visualize solicitações de cotação
-              </p>
-            </div>
+            <TabsContent value="newsletter">
+              <NewsletterManagement />
+            </TabsContent>
 
-            <div className="bg-card rounded-lg shadow-sm border border-border p-6">
-              <h3 className="text-xl font-semibold mb-2">Configurações</h3>
-              <p className="text-muted-foreground mb-4">
-                Ajuste configurações do site
-              </p>
-            </div>
-          </div>
+            <TabsContent value="quotes">
+              <QuotesManagement />
+            </TabsContent>
+          </Tabs>
         </div>
       </div>
     </div>
