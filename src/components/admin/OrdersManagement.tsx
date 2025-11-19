@@ -2,12 +2,16 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { Eye } from "lucide-react";
+import { Json } from "@/integrations/supabase/types";
 
 interface OrderProduct {
   id: string;
@@ -29,7 +33,7 @@ interface Order {
   state: string | null;
   status: string;
   total_price: number | null;
-  product_details: OrderProduct[] | null;
+  product_details: Json | null;
   message: string | null;
 }
 
@@ -50,6 +54,7 @@ const statusLabels: Record<string, string> = {
 export default function OrdersManagement() {
   const queryClient = useQueryClient();
   const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
   const { data: orders = [], isLoading } = useQuery({
     queryKey: ['admin-orders', filterStatus],
@@ -115,31 +120,88 @@ export default function OrdersManagement() {
         </Select>
       </div>
 
-      <div className="grid gap-4">
-        {orders.length === 0 ? (
-          <Card>
-            <CardContent className="p-8 text-center text-muted-foreground">
-              Nenhum pedido encontrado
-            </CardContent>
-          </Card>
-        ) : (
-          orders.map((order) => (
-            <Card key={order.id}>
-              <CardHeader>
-                <div className="flex justify-between items-start">
-                  <div>
-                    <CardTitle className="flex items-center gap-2">
-                      Pedido #{order.id.slice(0, 8)}
+      <Card>
+        <CardContent className="p-0">
+          {orders.length === 0 ? (
+            <div className="p-8 text-center text-muted-foreground">
+              Nenhum pedido encontrado.
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[80px]">#</TableHead>
+                  <TableHead>Cliente</TableHead>
+                  <TableHead>Data/Hora</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="w-[100px]">Ações</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {orders.map((order, index) => (
+                  <TableRow key={order.id}>
+                    <TableCell className="font-medium">#{index + 1}</TableCell>
+                    <TableCell>
+                      <div>
+                        <p className="font-medium">{order.contact_name}</p>
+                        <p className="text-sm text-muted-foreground">{order.email}</p>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <div className="text-sm">
+                        <p>{format(new Date(order.created_at), "dd/MM/yyyy", { locale: ptBR })}</p>
+                        <p className="text-muted-foreground">{format(new Date(order.created_at), "HH:mm", { locale: ptBR })}</p>
+                      </div>
+                    </TableCell>
+                    <TableCell>
                       <Badge className={statusColors[order.status]}>
                         {statusLabels[order.status]}
                       </Badge>
-                    </CardTitle>
-                    <CardDescription>
-                      {format(new Date(order.created_at), "dd 'de' MMMM 'de' yyyy 'às' HH:mm", { locale: ptBR })}
-                    </CardDescription>
-                  </div>
-                  <Select value={order.status} onValueChange={(value) => handleStatusChange(order.id, value)}>
-                    <SelectTrigger className="w-[180px]">
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setSelectedOrder(order)}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
+
+      <Dialog open={!!selectedOrder} onOpenChange={(open) => !open && setSelectedOrder(null)}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          {selectedOrder && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  Pedido #{orders.findIndex(o => o.id === selectedOrder.id) + 1}
+                  <Badge className={statusColors[selectedOrder.status]}>
+                    {statusLabels[selectedOrder.status]}
+                  </Badge>
+                </DialogTitle>
+                <p className="text-sm text-muted-foreground">
+                  {format(new Date(selectedOrder.created_at), "dd 'de' MMMM 'de' yyyy 'às' HH:mm", { locale: ptBR })}
+                </p>
+              </DialogHeader>
+
+              <div className="space-y-6">
+                <div>
+                  <label className="text-sm font-semibold mb-2 block">Status do Pedido</label>
+                  <Select 
+                    value={selectedOrder.status} 
+                    onValueChange={(value) => {
+                      handleStatusChange(selectedOrder.id, value);
+                      setSelectedOrder({ ...selectedOrder, status: value });
+                    }}
+                  >
+                    <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -150,48 +212,74 @@ export default function OrdersManagement() {
                     </SelectContent>
                   </Select>
                 </div>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid md:grid-cols-2 gap-4">
+
+                <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <h4 className="font-semibold mb-2">Informações do Cliente</h4>
-                    <div className="text-sm space-y-1">
-                      <p><strong>Nome:</strong> {order.contact_name}</p>
-                      <p><strong>Email:</strong> {order.email}</p>
-                      <p><strong>Telefone:</strong> {order.phone}</p>
-                      {order.company_name && <p><strong>Empresa:</strong> {order.company_name}</p>}
+                    <h4 className="font-semibold mb-3">Informações do Cliente</h4>
+                    <div className="space-y-2 text-sm">
+                      <div>
+                        <span className="text-muted-foreground">Nome:</span>
+                        <p className="font-medium">{selectedOrder.contact_name}</p>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Email:</span>
+                        <p className="font-medium">{selectedOrder.email}</p>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Telefone:</span>
+                        <p className="font-medium">{selectedOrder.phone}</p>
+                      </div>
+                      {selectedOrder.company_name && (
+                        <div>
+                          <span className="text-muted-foreground">Empresa:</span>
+                          <p className="font-medium">{selectedOrder.company_name}</p>
+                        </div>
+                      )}
                     </div>
                   </div>
-                  {(order.address || order.city || order.state) && (
+
+                  {(selectedOrder.address || selectedOrder.city || selectedOrder.state) && (
                     <div>
-                      <h4 className="font-semibold mb-2">Endereço</h4>
-                      <div className="text-sm space-y-1">
-                        {order.address && <p>{order.address}</p>}
-                        {(order.city || order.state) && (
-                          <p>{order.city}{order.city && order.state && ", "}{order.state}</p>
+                      <h4 className="font-semibold mb-3">Endereço</h4>
+                      <div className="space-y-2 text-sm">
+                        {selectedOrder.address && (
+                          <div>
+                            <span className="text-muted-foreground">Rua:</span>
+                            <p className="font-medium">{selectedOrder.address}</p>
+                          </div>
+                        )}
+                        {(selectedOrder.city || selectedOrder.state) && (
+                          <div>
+                            <span className="text-muted-foreground">Cidade/Estado:</span>
+                            <p className="font-medium">
+                              {selectedOrder.city}{selectedOrder.city && selectedOrder.state && ", "}{selectedOrder.state}
+                            </p>
+                          </div>
                         )}
                       </div>
                     </div>
                   )}
                 </div>
-                {order.message && (
+
+                {selectedOrder.message && (
                   <div>
-                    <h4 className="font-semibold mb-2">Mensagem</h4>
-                    <p className="text-sm bg-muted/50 p-3 rounded-md whitespace-pre-wrap">{order.message}</p>
+                    <h4 className="font-semibold mb-3">Mensagem</h4>
+                    <p className="text-sm bg-muted/50 p-4 rounded-md whitespace-pre-wrap">{selectedOrder.message}</p>
                   </div>
                 )}
-                {order.product_details && Array.isArray(order.product_details) && order.product_details.length > 0 && (
+
+                {selectedOrder.product_details && Array.isArray(selectedOrder.product_details) && selectedOrder.product_details.length > 0 && (
                   <div>
-                    <h4 className="font-semibold mb-2">Produtos</h4>
-                    <div className="space-y-2">
-                      {(order.product_details as unknown as OrderProduct[]).map((product, index) => (
-                        <div key={`${product.id}-${index}`} className="flex items-center justify-between bg-muted/50 p-3 rounded-md">
+                    <h4 className="font-semibold mb-3">Produtos</h4>
+                    <div className="space-y-3">
+                      {(selectedOrder.product_details as unknown as OrderProduct[]).map((product, index) => (
+                        <div key={`${product.id}-${index}`} className="flex items-center justify-between bg-muted/50 p-4 rounded-md">
                           <div className="flex items-center gap-3">
                             {product.image_url && (
                               <img 
                                 src={product.image_url} 
                                 alt={product.name} 
-                                className="w-12 h-12 object-cover rounded"
+                                className="w-16 h-16 object-cover rounded"
                               />
                             )}
                             <div>
@@ -205,16 +293,20 @@ export default function OrdersManagement() {
                     </div>
                   </div>
                 )}
-                {order.total_price && (
-                  <div>
-                    <h4 className="font-semibold">Total: <span className="text-primary">R$ {order.total_price.toFixed(2)}</span></h4>
+
+                {selectedOrder.total_price && (
+                  <div className="pt-4 border-t">
+                    <div className="flex justify-between items-center">
+                      <h4 className="font-semibold text-lg">Total</h4>
+                      <p className="text-2xl font-bold text-primary">R$ {selectedOrder.total_price.toFixed(2)}</p>
+                    </div>
                   </div>
                 )}
-              </CardContent>
-            </Card>
-          ))
-        )}
-      </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
