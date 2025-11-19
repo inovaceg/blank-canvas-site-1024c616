@@ -29,23 +29,22 @@ export function HeroSection({ bannerUrl }: HeroSectionProps) {
           <p className="text-lg md:text-xl text-white/90 text-pretty drop-shadow-md">
             Fornecemos bananadas e gomas de amido artesanais de alta qualidade para lojistas e grandes redes em todo o Brasil.
           </p>
-          <div className="flex flex-wrap gap-3 justify-center pt-4">
-            <Button asChild size="lg" className="rounded-full">
+          <div className="flex flex-wrap gap-4 justify-center pt-4">
+            <Button asChild size="lg" className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground">
               <Link to="/produtos">
-                Conheça nossos produtos
+                CONHEÇA NOSSOS PRODUTOS
                 <ArrowRight className="ml-2 size-4" />
               </Link>
             </Button>
             <Button
               asChild
-              variant="outline"
               size="lg"
-              className="rounded-full border-white text-white hover:bg-white/10 bg-transparent"
+              className="rounded-full bg-background/95 text-foreground hover:bg-background border-2 border-background"
             >
-              <Link to="/contato">Entre em Contato</Link>
+              <Link to="/contato">ENTRE EM CONTATO</Link>
             </Button>
             <Button asChild size="lg" className="rounded-full bg-accent text-accent-foreground hover:bg-accent/90">
-              <Link to="/#newsletter">Cadastre-se para novidades</Link>
+              <Link to="#newsletter">CADASTRE-SE PARA RECEBER NOVIDADES</Link>
             </Button>
           </div>
         </div>
