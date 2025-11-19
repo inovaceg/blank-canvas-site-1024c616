@@ -38,7 +38,7 @@ export function ParallaxSection({
   return (
     <div ref={ref} className={cn("relative overflow-hidden", className)}>
       <div
-        className="absolute inset-0 -z-10"
+        className="absolute inset-0"
         style={{
           backgroundImage: `url(${imageUrl})`,
           backgroundSize: "cover",
@@ -47,6 +47,7 @@ export function ParallaxSection({
           willChange: "transform",
         }}
       />
+      <div className="absolute inset-0 bg-black/40" />
       <div className="relative z-10">{children}</div>
     </div>
   );
