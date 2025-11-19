@@ -77,6 +77,8 @@ export type Database = {
       clients: {
         Row: {
           address: string | null
+          address_complement: string | null
+          address_number: string | null
           cep: string | null
           city: string | null
           cnpj: string | null
@@ -86,6 +88,8 @@ export type Database = {
           email: string
           id: string
           is_active: boolean
+          neighborhood: string | null
+          notes: string | null
           phone: string | null
           state: string | null
           updated_at: string | null
@@ -93,6 +97,8 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          address_complement?: string | null
+          address_number?: string | null
           cep?: string | null
           city?: string | null
           cnpj?: string | null
@@ -102,6 +108,8 @@ export type Database = {
           email: string
           id?: string
           is_active?: boolean
+          neighborhood?: string | null
+          notes?: string | null
           phone?: string | null
           state?: string | null
           updated_at?: string | null
@@ -109,6 +117,8 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          address_complement?: string | null
+          address_number?: string | null
           cep?: string | null
           city?: string | null
           cnpj?: string | null
@@ -118,6 +128,8 @@ export type Database = {
           email?: string
           id?: string
           is_active?: boolean
+          neighborhood?: string | null
+          notes?: string | null
           phone?: string | null
           state?: string | null
           updated_at?: string | null
