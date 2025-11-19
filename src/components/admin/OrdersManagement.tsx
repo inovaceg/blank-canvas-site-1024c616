@@ -12,6 +12,7 @@ import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Eye } from "lucide-react";
 import { Json } from "@/integrations/supabase/types";
+import { formatCurrency } from "@/lib/utils";
 
 interface OrderProduct {
   id: string;
@@ -287,7 +288,7 @@ export default function OrdersManagement() {
                               <p className="text-sm text-muted-foreground">Quantidade: {product.quantity}</p>
                             </div>
                           </div>
-                          <p className="font-semibold">R$ {(product.price * product.quantity).toFixed(2)}</p>
+                          <p className="font-semibold">{formatCurrency(product.price * product.quantity)}</p>
                         </div>
                       ))}
                     </div>
@@ -298,7 +299,7 @@ export default function OrdersManagement() {
                   <div className="pt-4 border-t">
                     <div className="flex justify-between items-center">
                       <h4 className="font-semibold text-lg">Total</h4>
-                      <p className="text-2xl font-bold text-primary">R$ {selectedOrder.total_price.toFixed(2)}</p>
+                      <p className="text-2xl font-bold text-primary">{formatCurrency(selectedOrder.total_price)}</p>
                     </div>
                   </div>
                 )}

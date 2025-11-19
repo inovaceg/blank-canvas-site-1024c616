@@ -12,6 +12,7 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Pencil, Trash2, Plus, Upload, X } from "lucide-react";
 import CategoriesDialog from "./CategoriesDialog";
+import { formatCurrency } from "@/lib/utils";
 
 interface Product {
   id: string;
@@ -442,7 +443,7 @@ export default function ProductsManagement() {
                     {product.is_featured && <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded">Destaque</span>}
                   </CardTitle>
                   <CardDescription>
-                    {product.category} {product.weight && `• ${product.weight}`} {product.price && `• R$ ${product.price.toFixed(2)}`}
+                    {product.category} {product.weight && `• ${product.weight}`} {product.price && `• ${formatCurrency(product.price)}`}
                   </CardDescription>
                   {product.description && <p className="text-sm mt-2 line-clamp-2">{stripHtml(product.description)}</p>}
                 </div>
