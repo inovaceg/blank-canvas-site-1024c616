@@ -27,3 +27,29 @@ export const contactFormSchema = z.object({
 });
 
 export type ContactFormData = z.infer<typeof contactFormSchema>;
+
+export const newsletterSchema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(1, "Nome é obrigatório")
+    .max(100, "Nome deve ter no máximo 100 caracteres"),
+  email: z
+    .string()
+    .trim()
+    .email("Email inválido")
+    .max(255, "Email deve ter no máximo 255 caracteres"),
+  whatsapp: z
+    .string()
+    .trim()
+    .min(10, "WhatsApp deve ter pelo menos 10 dígitos")
+    .max(20, "WhatsApp deve ter no máximo 20 caracteres")
+    .regex(/^[+]?[0-9]+$/, "WhatsApp deve conter apenas números"),
+  city: z
+    .string()
+    .trim()
+    .min(1, "Cidade é obrigatória")
+    .max(100, "Cidade deve ter no máximo 100 caracteres"),
+});
+
+export type NewsletterFormData = z.infer<typeof newsletterSchema>;
