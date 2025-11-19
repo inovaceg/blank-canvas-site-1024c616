@@ -232,40 +232,42 @@ export default function ClientPricesManagement() {
             </Select>
           </div>
 
-          {selectedClientId && !isDefaultPricing && (
+          {selectedClientId && (
             <>
-              {/* Adicionar novo preço */}
-              <div className="border rounded-lg p-4 space-y-4 bg-muted/20">
-                <h3 className="text-sm font-medium">Adicionar Preço Personalizado</h3>
-                <div className="grid md:grid-cols-3 gap-4">
-                  <Select value={newProductId} onValueChange={setNewProductId}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecione o produto" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {availableProducts.map(product => (
-                        <SelectItem key={product.id} value={product.id}>
-                          {product.name} (Padrão: R$ {product.price?.toFixed(2) || '0.00'})
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <Input
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    placeholder="Preço personalizado"
-                    value={newPrice}
-                    onChange={(e) => setNewPrice(e.target.value)}
-                  />
-                  <Button onClick={handleAddPrice} disabled={addPriceMutation.isPending}>
-                    <Plus className="h-4 w-4 mr-2" />
-                    Adicionar
-                  </Button>
+              {/* Adicionar novo preço personalizado - só para clientes específicos */}
+              {!isDefaultPricing && (
+                <div className="border rounded-lg p-4 space-y-4 bg-muted/20">
+                  <h3 className="text-sm font-medium">Adicionar Preço Personalizado</h3>
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <Select value={newProductId} onValueChange={setNewProductId}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione o produto" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {availableProducts.map(product => (
+                          <SelectItem key={product.id} value={product.id}>
+                            {product.name} (Padrão: R$ {product.price?.toFixed(2) || '0.00'})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      min="0"
+                      placeholder="Preço personalizado"
+                      value={newPrice}
+                      onChange={(e) => setNewPrice(e.target.value)}
+                    />
+                    <Button onClick={handleAddPrice} disabled={addPriceMutation.isPending}>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Adicionar
+                    </Button>
+                  </div>
                 </div>
-              </div>
+              )}
 
-              {/* Lista de preços */}
+              {/* Lista de preços - aparece tanto para default quanto para clientes */}
               {isLoading ? (
                 <div className="flex justify-center p-8">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
