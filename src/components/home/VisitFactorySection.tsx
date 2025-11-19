@@ -37,7 +37,18 @@ export function VisitFactorySection() {
             />
           </div>
 
-          <div className="text-center">
+          <div className={`mt-8 rounded-lg overflow-hidden shadow-lg transition-all duration-700 delay-300 ${
+            mapInView ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+          }`}>
+            <img 
+              src="/vista-aerea-fabrica.jpg" 
+              alt="Vista aérea da fábrica Doces São Fidélis"
+              className="w-full h-auto"
+              loading="lazy"
+            />
+          </div>
+
+          <div className="text-center mt-8">
             <Button asChild size="lg" className="rounded-full">
               <Link to="/contato">
                 Entre em Contato para Visitas
