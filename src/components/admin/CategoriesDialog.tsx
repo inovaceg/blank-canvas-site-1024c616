@@ -34,6 +34,7 @@ export default function CategoriesDialog() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['categories'] });
+      queryClient.invalidateQueries({ queryKey: ['category-names'] });
       toast.success("Categoria criada com sucesso!");
       setNewCategory("");
     },
@@ -52,6 +53,7 @@ export default function CategoriesDialog() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['categories'] });
+      queryClient.invalidateQueries({ queryKey: ['category-names'] });
       toast.success("Categoria deletada com sucesso!");
     },
     onError: (error: any) => {
