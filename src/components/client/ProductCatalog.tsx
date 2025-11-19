@@ -135,11 +135,11 @@ export function ProductCatalog({ clientId }: ProductCatalogProps) {
             <Card key={product.id} className="flex flex-col">
               <CardHeader className="p-0">
                 {product.image_url && (
-                  <div className="aspect-video w-full overflow-hidden rounded-t-lg">
+                  <div className="aspect-video w-full overflow-hidden rounded-t-lg bg-muted">
                     <img
                       src={product.image_url}
                       alt={product.name || "Produto"}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-contain p-4"
                     />
                   </div>
                 )}
