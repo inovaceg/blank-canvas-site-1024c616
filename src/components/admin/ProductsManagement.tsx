@@ -47,6 +47,14 @@ export default function ProductsManagement() {
     display_order: "0"
   });
 
+  // Remove HTML tags from description
+  const stripHtml = (html: string | null) => {
+    if (!html) return "";
+    const tmp = document.createElement("div");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
+  };
+
   const { data: products = [], isLoading } = useQuery({
     queryKey: ['admin-products'],
     queryFn: async () => {
@@ -436,7 +444,7 @@ export default function ProductsManagement() {
                   <CardDescription>
                     {product.category} {product.weight && `• ${product.weight}`} {product.price && `• R$ ${product.price.toFixed(2)}`}
                   </CardDescription>
-                  {product.description && <p className="text-sm mt-2 line-clamp-2">{product.description}</p>}
+                  {product.description && <p className="text-sm mt-2 line-clamp-2">{stripHtml(product.description)}</p>}
                 </div>
               </div>
               <div className="flex space-x-2">
