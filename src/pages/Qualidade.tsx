@@ -37,8 +37,8 @@ const Qualidade = () => {
 
           <div className="aspect-video bg-secondary/20 rounded-lg overflow-hidden mb-12">
             <img
-              src="https://images.unsplash.com/photo-1556910110-a5a63dfd393c?q=80&w=2070"
-              alt="Produção Doces São Fidélis"
+              src="/producao-geral.jpg"
+              alt="Equipe Doces São Fidélis trabalhando na produção de doces artesanais"
               className="w-full h-full object-cover"
             />
           </div>
