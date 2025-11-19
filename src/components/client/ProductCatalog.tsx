@@ -191,7 +191,7 @@ export function ProductCatalog({ clientId }: ProductCatalogProps) {
                   size="sm"
                 >
                   <Plus className="h-4 w-4 mr-2" />
-                  Adicionar
+                  Realizar Pedido
                 </Button>
               </CardFooter>
             </Card>
