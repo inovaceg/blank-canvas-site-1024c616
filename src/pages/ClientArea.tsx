@@ -50,20 +50,20 @@ export default function ClientArea() {
 
   const createOrderMutation = useMutation({
     mutationFn: async () => {
-      if (!clientData) throw new Error("Cliente não encontrado");
+      if (!user) throw new Error("Usuário não autenticado");
 
       const { data, error } = await supabase
         .from("orders")
         .insert([{
-          client_id: clientData.id,
-          user_id: user?.id,
-          contact_name: clientData.contact_person,
-          email: clientData.email,
-          phone: clientData.phone || "",
-          company_name: clientData.company_name,
-          address: clientData.address,
-          city: clientData.city,
-          state: clientData.state,
+          client_id: clientData?.id || null,
+          user_id: user.id,
+          contact_name: clientData?.contact_person || user.email?.split("@")[0] || "Cliente",
+          email: clientData?.email || user.email || "",
+          phone: clientData?.phone || "",
+          company_name: clientData?.company_name || null,
+          address: clientData?.address || null,
+          city: clientData?.city || null,
+          state: clientData?.state || null,
           product_details: items as any,
           total_price: items.reduce((sum, item) => sum + item.price * item.quantity, 0),
           status: "pending",
@@ -79,7 +79,8 @@ export default function ClientArea() {
       clearCart();
       queryClient.invalidateQueries({ queryKey: ["client-orders"] });
     },
-    onError: () => {
+    onError: (error: any) => {
+      console.error("Erro ao criar pedido:", error);
       toast.error("Erro ao enviar orçamento. Tente novamente.");
     },
   });
