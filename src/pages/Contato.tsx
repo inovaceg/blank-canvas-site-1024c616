@@ -14,6 +14,7 @@ const Contato = () => {
     company_name: "",
     city: "",
     state: "",
+    address: "",
     product_interest: "",
     quantity: "",
     message: ""
@@ -44,6 +45,7 @@ const Contato = () => {
         company_name: "",
         city: "",
         state: "",
+        address: "",
         product_interest: "",
         quantity: "",
         message: ""
@@ -69,137 +71,181 @@ const Contato = () => {
   return (
     <div className="min-h-screen py-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">Entre em Contato</h1>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Estamos prontos para atender você e seu negócio
-          </p>
-        </div>
-
-        <div className="grid lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
-          <div className="space-y-8">
+        <div className="grid lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
+          <div className="bg-primary text-white rounded-lg p-8 lg:p-12">
+            <div className="mb-8">
+              <h1 className="font-serif text-3xl lg:text-4xl font-bold mb-4">Entre em Contato</h1>
+              <p className="text-white/90">
+                Tem alguma dúvida ou quer fazer um pedido? Envie uma mensagem e entraremos em contato em breve.
+              </p>
+            </div>
             <div>
-              <h2 className="text-2xl font-bold mb-6">Solicite um Orçamento</h2>
+              <h2 className="text-xl font-bold mb-6 uppercase tracking-wide">Nome da Empresa (Opcional)</h2>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <Input
-                  name="contact_name"
-                  placeholder="Nome completo *"
-                  value={formData.contact_name}
-                  onChange={handleChange}
-                  required
-                />
-                <Input
-                  name="email"
-                  type="email"
-                  placeholder="E-mail *"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                />
-                <Input
-                  name="phone"
-                  type="tel"
-                  placeholder="Telefone/WhatsApp *"
-                  value={formData.phone}
-                  onChange={handleChange}
-                  required
-                />
-                <Input
                   name="company_name"
-                  placeholder="Nome da empresa"
+                  placeholder="NOME DA SUA EMPRESA"
                   value={formData.company_name}
                   onChange={handleChange}
+                  className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
                 />
-                <div className="grid grid-cols-2 gap-4">
+                
+                <div className="space-y-1">
+                  <label className="text-sm font-semibold uppercase tracking-wide">Nome do Contato *</label>
                   <Input
-                    name="city"
-                    placeholder="Cidade"
-                    value={formData.city}
+                    name="contact_name"
+                    placeholder="SEU NOME COMPLETO"
+                    value={formData.contact_name}
                     onChange={handleChange}
-                  />
-                  <Input
-                    name="state"
-                    placeholder="Estado"
-                    value={formData.state}
-                    onChange={handleChange}
+                    required
+                    className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
                   />
                 </div>
-                <Input
-                  name="product_interest"
-                  placeholder="Produto de interesse"
-                  value={formData.product_interest}
-                  onChange={handleChange}
-                />
-                <Input
-                  name="quantity"
-                  placeholder="Quantidade estimada"
-                  value={formData.quantity}
-                  onChange={handleChange}
-                />
-                <Textarea
-                  name="message"
-                  placeholder="Mensagem"
-                  value={formData.message}
-                  onChange={handleChange}
-                  rows={4}
-                />
-                <Button type="submit" disabled={loading} className="w-full" size="lg">
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-sm font-semibold uppercase tracking-wide">E-mail *</label>
+                    <Input
+                      name="email"
+                      type="email"
+                      placeholder="SEU@EMAIL.COM"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-sm font-semibold uppercase tracking-wide">Telefone / WhatsApp *</label>
+                    <Input
+                      name="phone"
+                      type="tel"
+                      placeholder="XX-XXXXXXXXX"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      required
+                      className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-sm font-semibold uppercase tracking-wide">CEP *</label>
+                  <Input
+                    name="address"
+                    placeholder="00000-000"
+                    value={formData.address}
+                    onChange={handleChange}
+                    className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-sm font-semibold uppercase tracking-wide">Endereço (Rua, Avenida, etc.)</label>
+                  <Input
+                    name="product_interest"
+                    placeholder="RUA, AVENIDA, ETC."
+                    value={formData.product_interest}
+                    onChange={handleChange}
+                    className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-sm font-semibold uppercase tracking-wide">Bairro</label>
+                  <Input
+                    name="quantity"
+                    placeholder="SEU BAIRRO"
+                    value={formData.quantity}
+                    onChange={handleChange}
+                    className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-sm font-semibold uppercase tracking-wide">Cidade</label>
+                    <Input
+                      name="city"
+                      placeholder="SUA CIDADE"
+                      value={formData.city}
+                      onChange={handleChange}
+                      className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-sm font-semibold uppercase tracking-wide">Estado (UF)</label>
+                    <Input
+                      name="state"
+                      placeholder="SP"
+                      value={formData.state}
+                      onChange={handleChange}
+                      className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-sm font-semibold uppercase tracking-wide">Mensagem *</label>
+                  <Textarea
+                    name="message"
+                    placeholder="DESCREVA SUA SOLICITAÇÃO OU DÚVIDA..."
+                    value={formData.message}
+                    onChange={handleChange}
+                    rows={4}
+                    className="bg-white border-0 text-foreground placeholder:text-muted-foreground resize-none"
+                  />
+                </div>
+
+                <Button 
+                  type="submit" 
+                  disabled={loading} 
+                  className="w-full bg-white text-primary hover:bg-white/90 font-semibold uppercase tracking-wide" 
+                  size="lg"
+                >
                   {loading ? "Enviando..." : "Enviar Mensagem"}
                 </Button>
               </form>
             </div>
           </div>
 
-          <div className="space-y-8">
-            <div>
-              <h2 className="text-2xl font-bold mb-6">Informações de Contato</h2>
-              <div className="space-y-4">
-                <div className="flex items-start gap-3">
-                  <MapPin className="size-6 text-primary flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="font-semibold mb-1">Endereço</h3>
-                    <p className="text-muted-foreground">
-                      São Fidélis, RJ - Brasil
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Phone className="size-6 text-primary flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="font-semibold mb-1">Telefone</h3>
-                    <p className="text-muted-foreground">(32) 98848-4644</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <Mail className="size-6 text-primary flex-shrink-0 mt-1" />
-                  <div>
-                    <h3 className="font-semibold mb-1">E-mail</h3>
-                    <p className="text-muted-foreground">contato@docessaofidelis.com.br</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-primary/5 rounded-lg p-6">
-              <h3 className="font-semibold text-lg mb-4">Atendimento via WhatsApp</h3>
-              <p className="text-muted-foreground mb-4">
-                Fale diretamente conosco pelo WhatsApp para um atendimento mais rápido!
+          <div className="bg-primary text-white rounded-lg p-8 lg:p-12">
+            <div className="mb-8">
+              <h2 className="font-serif text-3xl lg:text-4xl font-bold mb-4">Receba Nossas Novidades</h2>
+              <p className="text-white/90">
+                Cadastre-se em nossa newsletter e fique por dentro de promoções, novos produtos e receitas exclusivas!
               </p>
-              <Button asChild className="w-full" size="lg">
-                <a href="https://wa.me/5532988484644" target="_blank" rel="noopener noreferrer">
-                  <MessageCircle className="size-5 mr-2" />
-                  Conversar no WhatsApp
-                </a>
+            </div>
+            
+            <form className="space-y-4">
+              <Input
+                type="text"
+                placeholder="SEU NOME COMPLETO *"
+                className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
+              />
+              <Input
+                type="email"
+                placeholder="SEU E-MAIL *"
+                className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
+              />
+              <Input
+                type="tel"
+                placeholder="SEU WHATSAPP (XX-XXXXXXXXX) *"
+                className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
+              />
+              <Input
+                type="text"
+                placeholder="SUA CIDADE *"
+                className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
+              />
+              <Button 
+                type="submit" 
+                className="w-full bg-white text-primary hover:bg-white/90 font-semibold uppercase tracking-wide" 
+                size="lg"
+              >
+                Cadastrar
               </Button>
-            </div>
-
-            <div className="bg-secondary/30 rounded-lg p-6">
-              <h3 className="font-semibold text-lg mb-2">Horário de Atendimento</h3>
-              <p className="text-muted-foreground">
-                Segunda a Sexta: 8h às 18h<br />
-                Sábado: 8h às 12h
-              </p>
-            </div>
+            </form>
           </div>
         </div>
       </div>
