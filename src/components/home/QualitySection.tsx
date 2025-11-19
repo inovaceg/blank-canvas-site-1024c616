@@ -33,16 +33,16 @@ export function QualitySection() {
           />
         </div>
 
-        <div className="grid md:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-3 gap-8 lg:gap-10">
           {benefits.map((benefit, index) => {
           const Icon = benefit.icon;
-          return <div key={index} className="bg-white p-8 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-                <div className="flex flex-col items-center text-center space-y-4">
-                  <div className="p-3 bg-primary/10 rounded-full">
-                    <Icon className="size-8 text-primary" />
+          return <div key={index} className="bg-card border border-border/50 p-10 rounded-2xl shadow-lg hover:shadow-xl hover:border-primary/30 transition-all duration-300">
+                <div className="flex flex-col items-center text-center space-y-5">
+                  <div className="p-4 bg-primary/5 rounded-full border-2 border-primary/20">
+                    <Icon className="size-10 text-primary" strokeWidth={2.5} />
                   </div>
-                  <h3 className="text-xl font-semibold">{benefit.title}</h3>
-                  <p className="text-muted-foreground">{benefit.description}</p>
+                  <h3 className="text-xl font-bold text-foreground">{benefit.title}</h3>
+                  <p className="text-muted-foreground leading-relaxed">{benefit.description}</p>
                 </div>
               </div>;
         })}
