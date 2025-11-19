@@ -29,6 +29,7 @@ interface ClientProductPrice {
   price: number;
   products: { name: string; price: number | null };
   is_custom?: boolean; // Flag para indicar se é preço personalizado ou padrão
+  custom_price_id?: string; // ID do registro em client_product_prices quando is_custom=true
 }
 
 export default function ClientPricesManagement() {
@@ -116,12 +117,13 @@ export default function ClientPricesManagement() {
       return allProducts.map(product => {
         const customPrice = customPricesMap.get(product.id);
         return {
-          id: customPrice?.id || product.id, // ID do registro de preço personalizado ou do produto
+          id: product.id, // Sempre usa o ID do produto para manter consistência
           client_id: selectedClientId,
           product_id: product.id,
           price: customPrice?.price || product.price || 0,
           products: { name: product.name, price: product.price },
-          is_custom: !!customPrice // Flag para saber se é preço personalizado ou padrão
+          is_custom: !!customPrice, // Flag para saber se é preço personalizado ou padrão
+          custom_price_id: customPrice?.id // ID real do registro em client_product_prices
         };
       }) as ClientProductPrice[];
     }
@@ -129,31 +131,32 @@ export default function ClientPricesManagement() {
 
   // Mutation para atualizar ou criar preço
   const updatePriceMutation = useMutation({
-    mutationFn: async ({ id, price, isDefault, productId, clientId, isCustom }: { 
-      id: string; 
+    mutationFn: async ({ price, isDefault, productId, clientId, isCustom, customPriceId }: { 
       price: number; 
       isDefault: boolean;
       productId: string;
       clientId: string;
       isCustom: boolean;
+      customPriceId?: string;
     }) => {
       if (isDefault) {
-        // Atualiza o preço padrão na tabela products
+        // Atualiza o preço padrão na tabela products usando o product_id
         const { error } = await supabase
           .from('products')
           .update({ price })
-          .eq('id', id);
+          .eq('id', productId);
         if (error) throw error;
       } else {
-        // Se já existe preço personalizado, atualiza
-        if (isCustom) {
+        // Para clientes específicos, sempre opera na tabela client_product_prices
+        if (isCustom && customPriceId) {
+          // Já existe preço personalizado, atualiza ele
           const { error } = await supabase
             .from('client_product_prices')
             .update({ price })
-            .eq('id', id);
+            .eq('id', customPriceId);
           if (error) throw error;
         } else {
-          // Se não existe, cria um novo preço personalizado
+          // Não existe preço personalizado, cria um novo
           const { error } = await supabase
             .from('client_product_prices')
             .insert({ client_id: clientId, product_id: productId, price });
@@ -167,8 +170,9 @@ export default function ClientPricesManagement() {
       toast.success("Preço atualizado com sucesso!");
       setEditingPriceId(null);
     },
-    onError: () => {
-      toast.error("Erro ao atualizar preço");
+    onError: (error: any) => {
+      console.error('Erro ao atualizar preço:', error);
+      toast.error("Erro ao atualizar preço: " + (error.message || 'Erro desconhecido'));
     }
   });
 
@@ -181,16 +185,16 @@ export default function ClientPricesManagement() {
 
   // Mutation para deletar preço personalizado
   const deletePriceMutation = useMutation({
-    mutationFn: async (id: string) => {
+    mutationFn: async (customPriceId: string) => {
       const { error } = await supabase
         .from('client_product_prices')
         .delete()
-        .eq('id', id);
+        .eq('id', customPriceId);
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['client-prices'] });
-      toast.success("Preço personalizado removido!");
+      toast.success("Preço personalizado removido! Produto voltará a usar o preço padrão.");
     },
     onError: () => {
       toast.error("Erro ao remover preço personalizado");
@@ -203,13 +207,22 @@ export default function ClientPricesManagement() {
       toast.error("Preço inválido");
       return;
     }
+    
+    console.log('Salvando preço:', {
+      isDefault: isDefaultPricing,
+      isCustom: clientPrice.is_custom,
+      productId: clientPrice.product_id,
+      customPriceId: clientPrice.custom_price_id,
+      price
+    });
+    
     updatePriceMutation.mutate({ 
-      id: clientPrice.id, 
       price, 
       isDefault: isDefaultPricing,
       productId: clientPrice.product_id,
       clientId: selectedClientId,
-      isCustom: clientPrice.is_custom || false
+      isCustom: clientPrice.is_custom || false,
+      customPriceId: clientPrice.custom_price_id
     });
   };
 
@@ -346,11 +359,11 @@ export default function ClientPricesManagement() {
                                   >
                                     <Pencil className="h-4 w-4" />
                                   </Button>
-                                  {!isDefaultPricing && clientPrice.is_custom && (
+                                  {!isDefaultPricing && clientPrice.is_custom && clientPrice.custom_price_id && (
                                     <Button
                                       variant="ghost"
                                       size="icon"
-                                      onClick={() => deletePriceMutation.mutate(clientPrice.id)}
+                                      onClick={() => deletePriceMutation.mutate(clientPrice.custom_price_id!)}
                                       disabled={deletePriceMutation.isPending}
                                       title="Remover preço personalizado (voltará ao padrão)"
                                     >
