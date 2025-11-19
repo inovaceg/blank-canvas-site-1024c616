@@ -13,21 +13,12 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50">
-      {/* Nova barra superior com slogan */}
-      <div className="bg-accent text-accent-foreground py-1">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center text-xs sm:text-sm font-medium">
-            Doces São Fidélis – Tradição e Qualidade Desde 2000
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-primary text-primary-foreground hidden sm:block">
+      <div className="bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-10 items-center justify-center text-sm">
             <div className="flex items-center gap-2 font-medium">
               <Store className="size-4" />
-              <span>Vendas Exclusivas para Lojistas e Grandes Redes de Varejo</span>
+              <span>Doces São Fidélis – Tradição e Qualidade Desde 2000</span>
             </div>
           </div>
         </div>
