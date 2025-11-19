@@ -2,6 +2,8 @@ import { LoginForm } from "@/components/admin/login-form"
 import Image from "next/image"
 
 export default function AdminLoginPage() {
+  console.log("[AdminLoginPage] Rendering server component."); // Log para depuração
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f5f1ed] p-4">
       <div className="w-full max-w-md">
