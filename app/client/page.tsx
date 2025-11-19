@@ -1,11 +1,12 @@
 import { createClient } from "@/lib/supabase/server"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Package, ShoppingCart, History, User } from "lucide-react"
+import { Package, ShoppingCart, History, User } from "lucide-react" // Adicionado User para 'Meu Perfil'
 import Link from "next/link"
 import { unstable_noStore } from 'next/cache'; // Importar unstable_noStore
 
 export default async function ClientDashboardPage() {
   unstable_noStore(); // Garante que esta página seja renderizada dinamicamente
+  console.log("[ClientDashboardPage] Rendering started.");
 
   const supabase = await createClient()
   const { data: { user }, error: userError } = await supabase.auth.getUser()
@@ -16,6 +17,8 @@ export default async function ClientDashboardPage() {
     // Em um componente de página, você pode lançar um erro ou retornar um fallback.
     return <div className="text-center py-12 text-red-500">Erro: Usuário não autenticado.</div>;
   }
+  console.log(`[ClientDashboardPage] User ID: ${user.id}`);
+
 
   let clientName = "Cliente";
   try {
@@ -32,6 +35,8 @@ export default async function ClientDashboardPage() {
   } catch (e) {
     console.error("[ClientDashboardPage] Exceção ao buscar first_name do perfil:", e);
   }
+  console.log(`[ClientDashboardPage] Client Name: ${clientName}`);
+
 
   // Fetch last order (example)
   let lastOrderDate = 'Nenhum pedido recente';
@@ -52,6 +57,7 @@ export default async function ClientDashboardPage() {
   } catch (e) {
     console.error("[ClientDashboardPage] Exceção ao buscar último pedido:", e);
   }
+  console.log(`[ClientDashboardPage] Last Order Date: ${lastOrderDate}`);
 
 
   return (
