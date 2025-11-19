@@ -72,6 +72,13 @@ export type Database = {
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "client_product_prices_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products_with_client_prices"
+            referencedColumns: ["id"]
+          },
         ]
       }
       clients: {
@@ -399,9 +406,41 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      products_with_client_prices: {
+        Row: {
+          category: string | null
+          client_id: string | null
+          created_at: string | null
+          custom_price: number | null
+          default_price: number | null
+          description: string | null
+          display_order: number | null
+          final_price: number | null
+          id: string | null
+          image_url: string | null
+          is_active: boolean | null
+          is_featured: boolean | null
+          name: string | null
+          units_per_package: number | null
+          updated_at: string | null
+          weight: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "client_product_prices_client_id_fkey"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
+      get_product_price_for_client: {
+        Args: { p_client_id?: string; p_product_id: string }
+        Returns: number
+      }
       is_admin: { Args: { user_id: string }; Returns: boolean }
     }
     Enums: {
