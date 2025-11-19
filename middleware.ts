@@ -28,6 +28,10 @@ export async function middleware(request: NextRequest) {
     },
   )
 
+  // **Adicionado:** Refrescar a sessão e atualizar as cookies na resposta.
+  // Isso é crucial para `supabase/ssr` manter a sessão viva entre as requisições.
+  await supabase.auth.getSession();
+
   const {
     data: { user },
     error: authError,

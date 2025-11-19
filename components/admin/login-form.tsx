@@ -38,7 +38,7 @@ export function LoginForm() {
 
     try {
       console.log("Attempting signInWithPassword for email:", data.email);
-      const { error: signInError } = await supabase.auth.signInWithPassword({
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
       })
@@ -57,8 +57,14 @@ export function LoginForm() {
         return
       }
 
-      // Login bem-sucedido. Agora, apenas redirecionamos e deixamos o middleware/layout
-      // lidar com a busca do papel do usuário e o redirecionamento final.
+      // **Adicionado:** Log para confirmar a sessão após o login bem-sucedido
+      if (signInData.session) {
+        console.log("[LoginForm] Login successful, session received:", signInData.session);
+        console.log("[LoginForm] User ID:", signInData.user?.id);
+      } else {
+        console.warn("[LoginForm] Login successful, but no session data returned.");
+      }
+
       toast.success("Login realizado com sucesso!")
       router.push("/admin"); // Redireciona para o caminho base do admin
       router.refresh(); // Força um refresh para reavaliar o middleware e o layout
