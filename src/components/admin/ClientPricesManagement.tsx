@@ -28,14 +28,13 @@ interface ClientProductPrice {
   product_id: string;
   price: number;
   products: { name: string; price: number | null };
+  is_custom?: boolean; // Flag para indicar se é preço personalizado ou padrão
 }
 
 export default function ClientPricesManagement() {
   const [selectedClientId, setSelectedClientId] = useState<string>("default");
   const [editingPriceId, setEditingPriceId] = useState<string | null>(null);
   const [editPrice, setEditPrice] = useState<string>("");
-  const [newProductId, setNewProductId] = useState<string>("");
-  const [newPrice, setNewPrice] = useState<string>("");
   
   const queryClient = useQueryClient();
   const isDefaultPricing = selectedClientId === "default";
@@ -68,7 +67,7 @@ export default function ClientPricesManagement() {
     }
   });
 
-  // Busca preços personalizados do cliente selecionado OU preços padrão
+  // Busca preços do cliente selecionado (ou todos produtos para default)
   const { data: clientPrices = [], isLoading } = useQuery({
     queryKey: ['client-prices', selectedClientId],
     enabled: !!selectedClientId,
@@ -87,24 +86,57 @@ export default function ClientPricesManagement() {
           client_id: 'default',
           product_id: product.id,
           price: product.price || 0,
-          products: { name: product.name, price: product.price }
+          products: { name: product.name, price: product.price },
+          is_custom: false
         })) as ClientProductPrice[];
       }
       
-      // Caso contrário, busca preços personalizados do cliente
-      const { data, error } = await supabase
+      // Para clientes específicos, busca TODOS os produtos e seus preços (customizados ou padrão)
+      const { data: allProducts, error: productsError } = await supabase
+        .from('products')
+        .select('id, name, price')
+        .eq('is_active', true)
+        .order('name');
+      
+      if (productsError) throw productsError;
+      if (!allProducts) return [];
+
+      // Busca preços personalizados do cliente
+      const { data: customPrices } = await supabase
         .from('client_product_prices')
-        .select('*, products(name, price)')
-        .eq('client_id', selectedClientId)
-        .order('created_at', { ascending: false });
-      if (error) throw error;
-      return data as ClientProductPrice[];
+        .select('id, product_id, price')
+        .eq('client_id', selectedClientId);
+
+      // Cria um mapa de preços personalizados
+      const customPricesMap = new Map(
+        customPrices?.map(cp => [cp.product_id, { id: cp.id, price: cp.price }]) || []
+      );
+
+      // Retorna todos os produtos com preço personalizado (se existir) ou padrão
+      return allProducts.map(product => {
+        const customPrice = customPricesMap.get(product.id);
+        return {
+          id: customPrice?.id || product.id, // ID do registro de preço personalizado ou do produto
+          client_id: selectedClientId,
+          product_id: product.id,
+          price: customPrice?.price || product.price || 0,
+          products: { name: product.name, price: product.price },
+          is_custom: !!customPrice // Flag para saber se é preço personalizado ou padrão
+        };
+      }) as ClientProductPrice[];
     }
   });
 
-  // Mutation para atualizar preço
+  // Mutation para atualizar ou criar preço
   const updatePriceMutation = useMutation({
-    mutationFn: async ({ id, price, isDefault }: { id: string; price: number; isDefault: boolean }) => {
+    mutationFn: async ({ id, price, isDefault, productId, clientId, isCustom }: { 
+      id: string; 
+      price: number; 
+      isDefault: boolean;
+      productId: string;
+      clientId: string;
+      isCustom: boolean;
+    }) => {
       if (isDefault) {
         // Atualiza o preço padrão na tabela products
         const { error } = await supabase
@@ -113,12 +145,20 @@ export default function ClientPricesManagement() {
           .eq('id', id);
         if (error) throw error;
       } else {
-        // Atualiza o preço personalizado
-        const { error } = await supabase
-          .from('client_product_prices')
-          .update({ price })
-          .eq('id', id);
-        if (error) throw error;
+        // Se já existe preço personalizado, atualiza
+        if (isCustom) {
+          const { error } = await supabase
+            .from('client_product_prices')
+            .update({ price })
+            .eq('id', id);
+          if (error) throw error;
+        } else {
+          // Se não existe, cria um novo preço personalizado
+          const { error } = await supabase
+            .from('client_product_prices')
+            .insert({ client_id: clientId, product_id: productId, price });
+          if (error) throw error;
+        }
       }
     },
     onSuccess: () => {
@@ -132,27 +172,11 @@ export default function ClientPricesManagement() {
     }
   });
 
-  // Mutation para adicionar novo preço personalizado
+  // Mutation para adicionar novo preço personalizado (removido - agora todos produtos aparecem na lista)
+  // Mantido apenas para evitar quebrar referências legadas
   const addPriceMutation = useMutation({
-    mutationFn: async ({ client_id, product_id, price }: { client_id: string; product_id: string; price: number }) => {
-      const { error } = await supabase
-        .from('client_product_prices')
-        .insert({ client_id, product_id, price });
-      if (error) throw error;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['client-prices'] });
-      toast.success("Preço personalizado adicionado!");
-      setNewProductId("");
-      setNewPrice("");
-    },
-    onError: (error: any) => {
-      if (error.code === '23505') {
-        toast.error("Já existe um preço personalizado para este produto");
-      } else {
-        toast.error("Erro ao adicionar preço personalizado");
-      }
-    }
+    mutationFn: async () => Promise.resolve(),
+    onSuccess: () => {},
   });
 
   // Mutation para deletar preço personalizado
@@ -173,35 +197,21 @@ export default function ClientPricesManagement() {
     }
   });
 
-  const handleSaveEdit = (id: string) => {
+  const handleSaveEdit = (clientPrice: ClientProductPrice) => {
     const price = parseFloat(editPrice);
     if (isNaN(price) || price < 0) {
       toast.error("Preço inválido");
       return;
     }
-    updatePriceMutation.mutate({ id, price, isDefault: isDefaultPricing });
-  };
-
-  const handleAddPrice = () => {
-    if (!newProductId || !newPrice) {
-      toast.error("Selecione um produto e informe o preço");
-      return;
-    }
-    const price = parseFloat(newPrice);
-    if (isNaN(price) || price < 0) {
-      toast.error("Preço inválido");
-      return;
-    }
-    addPriceMutation.mutate({
-      client_id: selectedClientId,
-      product_id: newProductId,
-      price
+    updatePriceMutation.mutate({ 
+      id: clientPrice.id, 
+      price, 
+      isDefault: isDefaultPricing,
+      productId: clientPrice.product_id,
+      clientId: selectedClientId,
+      isCustom: clientPrice.is_custom || false
     });
   };
-
-  const availableProducts = products.filter(
-    product => !clientPrices.some(cp => cp.product_id === product.id)
-  );
 
   return (
     <div className="space-y-6">
@@ -209,7 +219,7 @@ export default function ClientPricesManagement() {
         <CardHeader>
           <CardTitle>Gerenciar Preços por Cliente</CardTitle>
           <CardDescription>
-            Defina preços personalizados para produtos específicos de cada cliente
+            Selecione "Preços Padrão" para definir preços base de todos os produtos, ou escolha um cliente específico para personalizar preços individuais
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -234,39 +244,6 @@ export default function ClientPricesManagement() {
 
           {selectedClientId && (
             <>
-              {/* Adicionar novo preço personalizado - só para clientes específicos */}
-              {!isDefaultPricing && (
-                <div className="border rounded-lg p-4 space-y-4 bg-muted/20">
-                  <h3 className="text-sm font-medium">Adicionar Preço Personalizado</h3>
-                  <div className="grid md:grid-cols-3 gap-4">
-                    <Select value={newProductId} onValueChange={setNewProductId}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione o produto" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {availableProducts.map(product => (
-                          <SelectItem key={product.id} value={product.id}>
-                            {product.name} (Padrão: R$ {product.price?.toFixed(2) || '0.00'})
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      placeholder="Preço personalizado"
-                      value={newPrice}
-                      onChange={(e) => setNewPrice(e.target.value)}
-                    />
-                    <Button onClick={handleAddPrice} disabled={addPriceMutation.isPending}>
-                      <Plus className="h-4 w-4 mr-2" />
-                      Adicionar
-                    </Button>
-                  </div>
-                </div>
-              )}
-
               {/* Lista de preços - aparece tanto para default quanto para clientes */}
               {isLoading ? (
                 <div className="flex justify-center p-8">
@@ -274,9 +251,7 @@ export default function ClientPricesManagement() {
                 </div>
               ) : clientPrices.length === 0 ? (
                 <div className="text-center p-8 text-muted-foreground border rounded-lg">
-                  {isDefaultPricing 
-                    ? "Nenhum produto cadastrado. Cadastre produtos na aba 'Produtos' primeiro." 
-                    : "Nenhum preço personalizado configurado para este cliente"}
+                  Nenhum produto cadastrado. Cadastre produtos na aba 'Produtos' primeiro.
                 </div>
               ) : (
                 <div className="border rounded-lg">
@@ -291,9 +266,12 @@ export default function ClientPricesManagement() {
                     </TableHeader>
                     <TableBody>
                       {clientPrices.map((clientPrice) => (
-                        <TableRow key={clientPrice.id}>
+                        <TableRow key={`${clientPrice.product_id}-${clientPrice.client_id}`}>
                           <TableCell className="font-medium">
                             {clientPrice.products.name}
+                            {!isDefaultPricing && !clientPrice.is_custom && (
+                              <span className="ml-2 text-xs text-muted-foreground">(usando padrão)</span>
+                            )}
                           </TableCell>
                           {!isDefaultPricing && (
                             <TableCell>
@@ -313,12 +291,16 @@ export default function ClientPricesManagement() {
                                 className="w-32"
                               />
                             ) : (
-                              <Badge variant={isDefaultPricing ? (clientPrice.price > 0 ? "default" : "secondary") : "secondary"}>
+                              <Badge variant={
+                                isDefaultPricing 
+                                  ? (clientPrice.price > 0 ? "default" : "secondary")
+                                  : (clientPrice.is_custom ? "default" : "secondary")
+                              }>
                                 {clientPrice.price > 0 
                                   ? `R$ ${clientPrice.price.toFixed(2)}`
                                   : isDefaultPricing 
                                     ? "Sem preço" 
-                                    : "R$ 0.00"}
+                                    : `R$ ${clientPrice.products.price?.toFixed(2) || '0.00'}`}
                               </Badge>
                             )}
                           </TableCell>
@@ -329,7 +311,7 @@ export default function ClientPricesManagement() {
                                   <Button
                                     variant="ghost"
                                     size="icon"
-                                    onClick={() => handleSaveEdit(clientPrice.id)}
+                                    onClick={() => handleSaveEdit(clientPrice)}
                                     disabled={updatePriceMutation.isPending}
                                   >
                                     <Save className="h-4 w-4" />
@@ -354,16 +336,23 @@ export default function ClientPricesManagement() {
                                       setEditingPriceId(clientPrice.id);
                                       setEditPrice(clientPrice.price > 0 ? clientPrice.price.toString() : "");
                                     }}
-                                    title={isDefaultPricing ? "Definir/Editar preço padrão" : "Editar preço personalizado"}
+                                    title={
+                                      isDefaultPricing 
+                                        ? "Definir/Editar preço padrão" 
+                                        : clientPrice.is_custom
+                                          ? "Editar preço personalizado"
+                                          : "Criar preço personalizado para este cliente"
+                                    }
                                   >
                                     <Pencil className="h-4 w-4" />
                                   </Button>
-                                  {!isDefaultPricing && (
+                                  {!isDefaultPricing && clientPrice.is_custom && (
                                     <Button
                                       variant="ghost"
                                       size="icon"
                                       onClick={() => deletePriceMutation.mutate(clientPrice.id)}
                                       disabled={deletePriceMutation.isPending}
+                                      title="Remover preço personalizado (voltará ao padrão)"
                                     >
                                       <Trash2 className="h-4 w-4" />
                                     </Button>
