@@ -2,13 +2,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
-import { useCart } from "@/contexts/CartContext";
 import { useInView } from "@/hooks/useInView";
 import { LazyImage } from "@/components/LazyImage";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { useState } from "react";
-import { toast } from "sonner";
 
 // Remove HTML tags from description
 const stripHtml = (html: string) => {
@@ -30,23 +25,8 @@ interface ProductsSectionProps {
 }
 
 export function ProductsSection({ products }: ProductsSectionProps) {
-  const { addItem } = useCart();
   const { ref: titleRef, isInView: titleInView } = useInView();
   const { ref: cardsRef, isInView: cardsInView } = useInView();
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [quantity, setQuantity] = useState(1);
-
-  const handleAddToCart = (product: Product, qty: number) => {
-    addItem({ 
-      id: product.id, 
-      name: product.name, 
-      price: product.price || 0, 
-      image_url: product.image_url 
-    }, qty);
-    toast.success(`${qty}x ${product.name} adicionado ao orçamento`);
-    setSelectedProduct(null);
-    setQuantity(1);
-  };
 
   return (
     <section className="py-20 lg:py-32">
@@ -91,12 +71,14 @@ export function ProductsSection({ products }: ProductsSectionProps) {
                   </p>
                 )}
                 <Button 
-                  onClick={() => setSelectedProduct(product)}
                   className="w-full" 
                   size="sm"
+                  asChild
                 >
-                  <ShoppingCart className="size-4 mr-2" />
-                  Solicitar Orçamento
+                  <Link to="/auth">
+                    <ShoppingCart className="size-4 mr-2" />
+                    Solicitar Orçamento
+                  </Link>
                 </Button>
               </CardContent>
             </Card>
@@ -109,79 +91,6 @@ export function ProductsSection({ products }: ProductsSectionProps) {
           </Button>
         </div>
       </div>
-
-      {/* Modal de Quantidade */}
-      <Dialog open={!!selectedProduct} onOpenChange={(open) => {
-        if (!open) {
-          setSelectedProduct(null);
-          setQuantity(1);
-        }
-      }}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>{selectedProduct?.name}</DialogTitle>
-          </DialogHeader>
-          
-          {selectedProduct && (
-            <div className="space-y-6">
-              {selectedProduct.image_url && (
-                <div className="aspect-square w-full overflow-hidden rounded-lg bg-muted">
-                  <img
-                    src={selectedProduct.image_url}
-                    alt={selectedProduct.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-              )}
-
-              <div className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium mb-2 block">Quantidade</label>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    >
-                      -
-                    </Button>
-                    <Input
-                      type="number"
-                      min="1"
-                      value={quantity}
-                      onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                      className="w-20 text-center"
-                    />
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      onClick={() => setQuantity(quantity + 1)}
-                    >
-                      +
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between pt-4 border-t">
-                  <div>
-                    <p className="text-sm text-muted-foreground">Total</p>
-                    <p className="text-2xl font-bold text-primary">
-                      R$ {((selectedProduct.price || 0) * quantity).toFixed(2)}
-                    </p>
-                  </div>
-                  <Button 
-                    onClick={() => handleAddToCart(selectedProduct, quantity)}
-                    size="lg"
-                  >
-                    <ShoppingCart className="h-5 w-5 mr-2" />
-                    Adicionar
-                  </Button>
-                </div>
-              </div>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
     </section>
   );
 }
