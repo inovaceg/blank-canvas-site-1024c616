@@ -73,11 +73,11 @@ export default function ClientPricesManagement() {
     queryKey: ['client-prices', selectedClientId],
     enabled: !!selectedClientId,
     queryFn: async () => {
-      // Se for "default", retorna os preços padrão da tabela products
+      // Se for "default", retorna TODOS os produtos (com ou sem preço)
       if (selectedClientId === 'default') {
         const { data, error } = await supabase
           .from('products')
-          .select('id, name, price')
+          .select('id, name, price, category')
           .eq('is_active', true)
           .order('name');
         if (error) throw error;
@@ -272,7 +272,9 @@ export default function ClientPricesManagement() {
                 </div>
               ) : clientPrices.length === 0 ? (
                 <div className="text-center p-8 text-muted-foreground border rounded-lg">
-                  {isDefaultPricing ? "Nenhum produto cadastrado" : "Nenhum preço personalizado configurado para este cliente"}
+                  {isDefaultPricing 
+                    ? "Nenhum produto cadastrado. Cadastre produtos na aba 'Produtos' primeiro." 
+                    : "Nenhum preço personalizado configurado para este cliente"}
                 </div>
               ) : (
                 <div className="border rounded-lg">
@@ -309,8 +311,12 @@ export default function ClientPricesManagement() {
                                 className="w-32"
                               />
                             ) : (
-                              <Badge variant={isDefaultPricing ? "default" : "secondary"}>
-                                R$ {clientPrice.price.toFixed(2)}
+                              <Badge variant={isDefaultPricing ? (clientPrice.price > 0 ? "default" : "secondary") : "secondary"}>
+                                {clientPrice.price > 0 
+                                  ? `R$ ${clientPrice.price.toFixed(2)}`
+                                  : isDefaultPricing 
+                                    ? "Sem preço" 
+                                    : "R$ 0.00"}
                               </Badge>
                             )}
                           </TableCell>
@@ -344,8 +350,9 @@ export default function ClientPricesManagement() {
                                     size="icon"
                                     onClick={() => {
                                       setEditingPriceId(clientPrice.id);
-                                      setEditPrice(clientPrice.price.toString());
+                                      setEditPrice(clientPrice.price > 0 ? clientPrice.price.toString() : "");
                                     }}
+                                    title={isDefaultPricing ? "Definir/Editar preço padrão" : "Editar preço personalizado"}
                                   >
                                     <Pencil className="h-4 w-4" />
                                   </Button>
