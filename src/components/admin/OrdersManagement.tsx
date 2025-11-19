@@ -9,6 +9,14 @@ import { toast } from "sonner";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
+interface OrderProduct {
+  id: string;
+  name: string;
+  quantity: number;
+  price: number;
+  image_url?: string;
+}
+
 interface Order {
   id: string;
   created_at: string;
@@ -21,7 +29,7 @@ interface Order {
   state: string | null;
   status: string;
   total_price: number | null;
-  product_details: any;
+  product_details: OrderProduct[] | null;
   message: string | null;
 }
 
@@ -57,7 +65,7 @@ export default function OrdersManagement() {
       
       const { data, error } = await query;
       if (error) throw error;
-      return data as Order[];
+      return data;
     }
   });
 
@@ -169,14 +177,31 @@ export default function OrdersManagement() {
                 {order.message && (
                   <div>
                     <h4 className="font-semibold mb-2">Mensagem</h4>
-                    <p className="text-sm text-muted-foreground">{order.message}</p>
+                    <p className="text-sm bg-muted/50 p-3 rounded-md whitespace-pre-wrap">{order.message}</p>
                   </div>
                 )}
-                {order.product_details && (
+                {order.product_details && Array.isArray(order.product_details) && order.product_details.length > 0 && (
                   <div>
                     <h4 className="font-semibold mb-2">Produtos</h4>
-                    <div className="text-sm text-muted-foreground">
-                      {JSON.stringify(order.product_details)}
+                    <div className="space-y-2">
+                      {(order.product_details as unknown as OrderProduct[]).map((product, index) => (
+                        <div key={`${product.id}-${index}`} className="flex items-center justify-between bg-muted/50 p-3 rounded-md">
+                          <div className="flex items-center gap-3">
+                            {product.image_url && (
+                              <img 
+                                src={product.image_url} 
+                                alt={product.name} 
+                                className="w-12 h-12 object-cover rounded"
+                              />
+                            )}
+                            <div>
+                              <p className="font-medium">{product.name}</p>
+                              <p className="text-sm text-muted-foreground">Quantidade: {product.quantity}</p>
+                            </div>
+                          </div>
+                          <p className="font-semibold">R$ {(product.price * product.quantity).toFixed(2)}</p>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 )}
