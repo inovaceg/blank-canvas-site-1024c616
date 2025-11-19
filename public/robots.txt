@@ -1,4 +1,21 @@
-User-agent: *
+User-agent: Googlebot
 Allow: /
 
-Sitemap: /sitemap.xml
+User-agent: Bingbot
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /area-do-cliente
+Disallow: /auth
+Disallow: /carrinho
+
+Sitemap: https://docessaofidelis.com.br/sitemap.xml
+

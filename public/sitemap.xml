@@ -1,42 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.docessaofidelis.com.br/</loc>
-    <lastmod>2025-11-14</lastmod>
+    <loc>https://docessaofidelis.com.br/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://www.docessaofidelis.com.br/nossa-historia</loc>
-    <lastmod>2025-11-14</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://www.docessaofidelis.com.br/produtos</loc>
-    <lastmod>2025-11-14</lastmod>
-    <changefreq>weekly</changefreq>
+    <loc>https://docessaofidelis.com.br/produtos</loc>
+    <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.docessaofidelis.com.br/qualidade</loc>
-    <lastmod>2025-11-14</lastmod>
+    <loc>https://docessaofidelis.com.br/nossa-historia</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://www.docessaofidelis.com.br/contato</loc>
-    <lastmod>2025-11-14</lastmod>
+    <loc>https://docessaofidelis.com.br/qualidade</loc>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <!-- Adicione aqui URLs para páginas de produtos individuais se elas tiverem rotas estáticas -->
-  <!-- Exemplo:
-  <url>
-    <loc>https://www.docessaofidelis.com.br/produtos/bananada-tradicional</loc>
-    <lastmod>2025-11-14</lastmod>
-    <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
-  -->
+  <url>
+    <loc>https://docessaofidelis.com.br/contato</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
 </urlset>

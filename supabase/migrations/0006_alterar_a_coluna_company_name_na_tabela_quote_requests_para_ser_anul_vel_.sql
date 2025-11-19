@@ -1,1 +1,0 @@
-ALTER TABLE public.quote_requests ALTER COLUMN company_name DROP NOT NULL;

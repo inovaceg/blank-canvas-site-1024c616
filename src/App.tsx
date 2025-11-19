@@ -1,114 +1,80 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "sonner";
-import { CartProvider } from "@/components/cart-provider";
-import { ThemeProvider } from "@/components/theme-provider";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "next-themes";
+import { HelmetProvider } from "react-helmet-async";
+import { CartProvider } from "@/contexts/CartContext";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
+import { ScrollToTop } from "@/components/ScrollToTop";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { PageTransition } from "@/components/PageTransition";
+import Index from "./pages/Index";
+import Produtos from "./pages/Produtos";
+import NossaHistoria from "./pages/NossaHistoria";
+import Qualidade from "./pages/Qualidade";
+import Contato from "./pages/Contato";
+import Carrinho from "./pages/Carrinho";
+import Auth from "./pages/Auth";
+import Admin from "./pages/Admin";
+import ClientArea from "./pages/ClientArea";
+import NotFound from "./pages/NotFound";
 
-// Pages
-import HomePage from "@/pages/Home";
-import NossaHistoriaPage from "@/pages/NossaHistoria";
-import ProdutosPage from "@/pages/Produtos";
-import ProdutoDetailPage from "@/pages/ProdutoDetail";
-import QualidadePage from "@/pages/Qualidade";
-import ContatoPage from "@/pages/Contato";
-import AdminLoginPage from "@/pages/admin/Login";
-import AdminRegisterPage from "@/pages/admin/Register";
-import AdminDashboard from "@/pages/admin/Dashboard";
-import AdminProductsPage from "@/pages/admin/Products";
-import AdminProductNewPage from "@/pages/admin/ProductNew";
-import AdminProductEditPage from "@/pages/admin/ProductEdit";
-import AdminOrdersPage from "@/pages/admin/Orders";
-import AdminBannerPage from "@/pages/admin/Banner";
-import AdminMessagesPage from "@/pages/admin/Messages";
-import AdminNewsletterPage from "@/pages/admin/Newsletter";
-import ClientDashboard from "@/pages/client/Dashboard";
-import ClientProductsPage from "@/pages/client/Products";
-import ClientProfilePage from "@/pages/client/Profile";
-import ClientCartPage from "@/pages/client/Cart";
-import ClientCheckoutPage from "@/pages/client/Checkout";
-import ClientOrdersPage from "@/pages/client/Orders";
-import ClientOrderDetailPage from "@/pages/client/OrderDetail";
+const queryClient = new QueryClient();
 
-// Layouts
-import AdminLayout from "@/layouts/AdminLayout";
-import ClientLayout from "@/layouts/ClientLayout";
-import ProtectedRoute from "@/components/ProtectedRoute";
-
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 60 * 1000,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
-
-function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <ThemeProvider>
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <HelmetProvider>
+      <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+        <AuthProvider>
           <CartProvider>
-            <Routes>
-              {/* Public routes */}
-              <Route path="/" element={<HomePage />} />
-              <Route path="/nossa-historia" element={<NossaHistoriaPage />} />
-              <Route path="/produtos" element={<ProdutosPage />} />
-              <Route path="/produtos/:id" element={<ProdutoDetailPage />} />
-              <Route path="/qualidade" element={<QualidadePage />} />
-              <Route path="/contato" element={<ContatoPage />} />
-
-              {/* Admin auth routes */}
-              <Route path="/admin/login" element={<AdminLoginPage />} />
-              <Route path="/admin/register" element={<AdminRegisterPage />} />
-
-              {/* Protected admin routes */}
-              <Route
-                path="/admin"
-                element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AdminLayout />
-                  </ProtectedRoute>
-                }
-              >
-                <Route index element={<AdminDashboard />} />
-                <Route path="products" element={<AdminProductsPage />} />
-                <Route path="products/new" element={<AdminProductNewPage />} />
-                <Route path="products/:id" element={<AdminProductEditPage />} />
-                <Route path="orders" element={<AdminOrdersPage />} />
-                <Route path="banner" element={<AdminBannerPage />} />
-                <Route path="messages" element={<AdminMessagesPage />} />
-                <Route path="newsletter" element={<AdminNewsletterPage />} />
-              </Route>
-
-              {/* Protected client routes */}
-              <Route
-                path="/client"
-                element={
-                  <ProtectedRoute requiredRole="client">
-                    <ClientLayout />
-                  </ProtectedRoute>
-                }
-              >
-                <Route index element={<Navigate to="/client/dashboard" replace />} />
-                <Route path="dashboard" element={<ClientDashboard />} />
-                <Route path="products" element={<ClientProductsPage />} />
-                <Route path="profile" element={<ClientProfilePage />} />
-                <Route path="cart" element={<ClientCartPage />} />
-                <Route path="checkout" element={<ClientCheckoutPage />} />
-                <Route path="orders" element={<ClientOrdersPage />} />
-                <Route path="orders/:id" element={<ClientOrderDetailPage />} />
-              </Route>
-
-              {/* 404 fallback */}
-              <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-            <Toaster position="top-center" />
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <Header />
+                <Breadcrumbs />
+                <PageTransition>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/produtos" element={<Produtos />} />
+                    <Route path="/nossa-historia" element={<NossaHistoria />} />
+                    <Route path="/qualidade" element={<Qualidade />} />
+                    <Route path="/contato" element={<Contato />} />
+                    <Route path="/carrinho" element={<Carrinho />} />
+                    <Route path="/auth" element={<Auth />} />
+                    <Route 
+                      path="/admin" 
+                      element={
+                        <ProtectedRoute requireAdmin>
+                          <Admin />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route 
+                      path="/area-do-cliente" 
+                      element={
+                        <ProtectedRoute>
+                          <ClientArea />
+                        </ProtectedRoute>
+                      } 
+                    />
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </PageTransition>
+                <Footer />
+                <ScrollToTop />
+              </BrowserRouter>
+            </TooltipProvider>
           </CartProvider>
-        </ThemeProvider>
-      </BrowserRouter>
-    </QueryClientProvider>
-  );
-}
+        </AuthProvider>
+      </ThemeProvider>
+    </HelmetProvider>
+  </QueryClientProvider>
+);
 
 export default App;
