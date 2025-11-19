@@ -14,6 +14,59 @@ export type Database = {
   }
   public: {
     Tables: {
+      addresses: {
+        Row: {
+          address_line1: string
+          address_line2: string | null
+          cep: string
+          city: string
+          client_id: string
+          created_at: string | null
+          id: string
+          is_default: boolean | null
+          label: string
+          neighborhood: string | null
+          state: string
+          updated_at: string | null
+        }
+        Insert: {
+          address_line1: string
+          address_line2?: string | null
+          cep: string
+          city: string
+          client_id: string
+          created_at?: string | null
+          id?: string
+          is_default?: boolean | null
+          label: string
+          neighborhood?: string | null
+          state: string
+          updated_at?: string | null
+        }
+        Update: {
+          address_line1?: string
+          address_line2?: string | null
+          cep?: string
+          city?: string
+          client_id?: string
+          created_at?: string | null
+          id?: string
+          is_default?: boolean | null
+          label?: string
+          neighborhood?: string | null
+          state?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "fk_client"
+            columns: ["client_id"]
+            isOneToOne: false
+            referencedRelation: "clients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       categories: {
         Row: {
           created_at: string
@@ -179,7 +232,9 @@ export type Database = {
           company_name: string | null
           contact_name: string
           created_at: string | null
+          delivered_at: string | null
           email: string
+          estimated_delivery: string | null
           id: string
           message: string | null
           phone: string
@@ -187,6 +242,8 @@ export type Database = {
           state: string | null
           status: string
           total_price: number | null
+          tracking_code: string | null
+          tracking_status: string | null
           updated_at: string | null
           user_id: string | null
         }
@@ -197,7 +254,9 @@ export type Database = {
           company_name?: string | null
           contact_name: string
           created_at?: string | null
+          delivered_at?: string | null
           email: string
+          estimated_delivery?: string | null
           id?: string
           message?: string | null
           phone: string
@@ -205,6 +264,8 @@ export type Database = {
           state?: string | null
           status?: string
           total_price?: number | null
+          tracking_code?: string | null
+          tracking_status?: string | null
           updated_at?: string | null
           user_id?: string | null
         }
@@ -215,7 +276,9 @@ export type Database = {
           company_name?: string | null
           contact_name?: string
           created_at?: string | null
+          delivered_at?: string | null
           email?: string
+          estimated_delivery?: string | null
           id?: string
           message?: string | null
           phone?: string
@@ -223,6 +286,8 @@ export type Database = {
           state?: string | null
           status?: string
           total_price?: number | null
+          tracking_code?: string | null
+          tracking_status?: string | null
           updated_at?: string | null
           user_id?: string | null
         }

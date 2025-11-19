@@ -6,6 +6,7 @@ import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { NewsletterSection } from "@/components/home/NewsletterSection";
 import { ContactCTASection } from "@/components/home/ContactCTASection";
 import { VisitFactorySection } from "@/components/home/VisitFactorySection";
+import { SEO } from "@/components/SEO";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -38,17 +39,34 @@ const Index = () => {
     },
   });
 
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "Doces São Fidélis",
+    "url": "https://docessaofidelis.com.br",
+    "logo": "https://docessaofidelis.com.br/logo-doces-sao-fidelis.png",
+    "description": "Fornecemos bananadas e gomas de amido artesanais de alta qualidade para lojistas e grandes redes em todo o Brasil.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "BR"
+    },
+    "sameAs": []
+  };
+
   return (
-    <div className="min-h-screen">
-      <HeroSection bannerUrl={bannerUrl} />
-      <AboutSection />
-      <QualitySection />
-      <ProductsSection products={products} />
-      <TestimonialsSection />
-      <NewsletterSection />
-      <ContactCTASection />
-      <VisitFactorySection />
-    </div>
+    <>
+      <SEO jsonLd={organizationSchema} />
+      <div className="min-h-screen">
+        <HeroSection bannerUrl={bannerUrl} />
+        <AboutSection />
+        <QualitySection />
+        <ProductsSection products={products} />
+        <TestimonialsSection />
+        <NewsletterSection />
+        <ContactCTASection />
+        <VisitFactorySection />
+      </div>
+    </>
   );
 };
 

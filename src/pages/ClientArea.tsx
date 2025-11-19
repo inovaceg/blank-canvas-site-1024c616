@@ -4,10 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { ProductCatalog } from "@/components/client/ProductCatalog";
 import { QuoteCart } from "@/components/client/QuoteCart";
 import { ClientProfileForm } from "@/components/client/ClientProfileForm";
+import { AddressManagement } from "@/components/client/AddressManagement";
+import { OrderHistory } from "@/components/client/OrderHistory";
 import { useCart } from "@/contexts/CartContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { ShoppingCart, Package, History, User } from "lucide-react";
+import { ShoppingCart, Package, History, User, MapPin } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export default function ClientArea() {
@@ -141,65 +143,12 @@ export default function ClientArea() {
             </TabsContent>
 
             <TabsContent value="orders" className="space-y-6">
+              <OrderHistory clientId={clientData?.id || ""} />
+            </TabsContent>
+
+            <TabsContent value="addresses" className="space-y-6">
               <div className="bg-card rounded-lg shadow-sm border border-border p-8">
-                <h2 className="text-2xl font-semibold mb-6">Meus Orçamentos</h2>
-                {orders.length === 0 ? (
-                  <p className="text-muted-foreground text-center py-8">
-                    Você ainda não solicitou nenhum orçamento.
-                  </p>
-                ) : (
-                  <div className="space-y-4">
-                    {orders.map((order) => (
-                      <div
-                        key={order.id}
-                        className="border border-border rounded-lg p-6 hover:bg-muted/50 transition-colors"
-                      >
-                        <div className="flex justify-between items-start mb-4">
-                          <div>
-                            <p className="font-semibold text-lg">
-                              Orçamento #{order.id.slice(0, 8)}
-                            </p>
-                            <p className="text-sm text-muted-foreground">
-                              {new Date(order.created_at!).toLocaleDateString("pt-BR", {
-                                day: "2-digit",
-                                month: "long",
-                                year: "numeric",
-                              })}
-                            </p>
-                          </div>
-                          <Badge
-                            variant={
-                              order.status === "pending"
-                                ? "secondary"
-                                : order.status === "completed"
-                                ? "default"
-                                : "outline"
-                            }
-                          >
-                            {order.status === "pending"
-                              ? "Pendente"
-                              : order.status === "completed"
-                              ? "Concluído"
-                              : order.status}
-                          </Badge>
-                        </div>
-                        {order.product_details && (
-                          <div className="mb-4 text-sm text-muted-foreground">
-                            {Array.isArray(order.product_details) &&
-                              `${order.product_details.length} ${
-                                order.product_details.length === 1 ? "produto" : "produtos"
-                              }`}
-                          </div>
-                        )}
-                        {order.total_price && (
-                          <p className="text-2xl font-bold text-primary">
-                            R$ {Number(order.total_price).toFixed(2)}
-                          </p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                )}
+                <AddressManagement clientId={clientData?.id || ""} />
               </div>
             </TabsContent>
 

@@ -12,3 +12,10 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /area-do-cliente
+Disallow: /auth
+Disallow: /carrinho
+
+Sitemap: https://docessaofidelis.com.br/sitemap.xml
+
