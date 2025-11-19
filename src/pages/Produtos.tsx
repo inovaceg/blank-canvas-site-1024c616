@@ -10,6 +10,7 @@ import { ShoppingCart, Search } from "lucide-react";
 import { SEO } from "@/components/SEO";
 import { LazyImage } from "@/components/LazyImage";
 import { Link } from "react-router-dom";
+import { formatCurrency } from "@/lib/utils";
 
 const Produtos = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -135,7 +136,7 @@ const Produtos = () => {
                 )}
                 {product.price && (
                   <p className="text-lg font-bold text-primary">
-                    R$ {product.price.toFixed(2)}
+                    {formatCurrency(product.price)}
                   </p>
                 )}
                 <Button 

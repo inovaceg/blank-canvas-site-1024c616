@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Package, Truck, CheckCircle, XCircle, Clock } from "lucide-react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { formatCurrency } from "@/lib/utils";
 
 interface Order {
   id: string;
@@ -170,7 +171,7 @@ export function OrderHistory({ clientId }: OrderHistoryProps) {
                 <div className="flex items-center justify-between pt-4 border-t">
                   <span className="text-sm text-muted-foreground">Total</span>
                   <span className="text-lg font-bold">
-                    R$ {order.total_price.toFixed(2)}
+                    {formatCurrency(order.total_price)}
                   </span>
                 </div>
               )}

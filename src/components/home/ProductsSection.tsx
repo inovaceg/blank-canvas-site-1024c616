@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
 import { useInView } from "@/hooks/useInView";
 import { LazyImage } from "@/components/LazyImage";
+import { formatCurrency } from "@/lib/utils";
 
 // Remove HTML tags from description
 const stripHtml = (html: string) => {
@@ -67,7 +68,7 @@ export function ProductsSection({ products }: ProductsSectionProps) {
                 )}
                 {product.price && (
                   <p className="text-lg font-bold text-primary">
-                    R$ {product.price.toFixed(2)}
+                    {formatCurrency(product.price)}
                   </p>
                 )}
                 <Button 

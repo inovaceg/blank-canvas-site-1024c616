@@ -10,6 +10,7 @@ import { Plus, Search, X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
+import { formatCurrency } from "@/lib/utils";
 
 interface ProductCatalogProps {
   clientId?: string | null;
@@ -192,11 +193,11 @@ export function ProductCatalog({ clientId }: ProductCatalogProps) {
                 <div className="w-full flex justify-between items-center">
                   <div>
                     <p className="text-2xl font-bold text-primary">
-                      R$ {(product.final_price || 0).toFixed(2)}
+                      {formatCurrency(product.final_price || 0)}
                     </p>
                     {product.custom_price && product.default_price !== product.custom_price && (
                       <p className="text-xs text-muted-foreground line-through">
-                        R$ {(product.default_price || 0).toFixed(2)}
+                        {formatCurrency(product.default_price || 0)}
                       </p>
                     )}
                   </div>
@@ -325,11 +326,11 @@ export function ProductCatalog({ clientId }: ProductCatalogProps) {
                     <div>
                       <p className="text-sm text-muted-foreground mb-2">Preço unitário</p>
                       <p className="text-2xl font-bold text-primary">
-                        R$ {(selectedProduct.final_price || 0).toFixed(2)}
+                        {formatCurrency(selectedProduct.final_price || 0)}
                       </p>
                       {selectedProduct.custom_price && selectedProduct.default_price !== selectedProduct.custom_price && (
                         <p className="text-xs text-muted-foreground line-through">
-                          R$ {(selectedProduct.default_price || 0).toFixed(2)}
+                          {formatCurrency(selectedProduct.default_price || 0)}
                         </p>
                       )}
                     </div>
@@ -338,7 +339,7 @@ export function ProductCatalog({ clientId }: ProductCatalogProps) {
                     <div>
                       <p className="text-sm text-muted-foreground">Total</p>
                       <p className="text-3xl font-bold text-primary">
-                        R$ {((selectedProduct.final_price || 0) * quantity).toFixed(2)}
+                        {formatCurrency((selectedProduct.final_price || 0) * quantity)}
                       </p>
                     </div>
                     <Button 

@@ -9,6 +9,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Pencil, Save, X, Plus, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { formatCurrency } from "@/lib/utils";
 
 interface Client {
   id: string;
@@ -289,7 +290,7 @@ export default function ClientPricesManagement() {
                           {!isDefaultPricing && (
                             <TableCell>
                               <Badge variant="outline">
-                                R$ {clientPrice.products.price?.toFixed(2) || '0.00'}
+                                {formatCurrency(clientPrice.products.price || 0)}
                               </Badge>
                             </TableCell>
                           )}
@@ -310,10 +311,10 @@ export default function ClientPricesManagement() {
                                   : (clientPrice.is_custom ? "default" : "secondary")
                               }>
                                 {clientPrice.price > 0 
-                                  ? `R$ ${clientPrice.price.toFixed(2)}`
+                                  ? formatCurrency(clientPrice.price)
                                   : isDefaultPricing 
                                     ? "Sem preço" 
-                                    : `R$ ${clientPrice.products.price?.toFixed(2) || '0.00'}`}
+                                    : formatCurrency(clientPrice.products.price || 0)}
                               </Badge>
                             )}
                           </TableCell>

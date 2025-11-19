@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import { formatCurrency } from "@/lib/utils";
 
 interface QuoteCartProps {
   onRequestQuote: () => void;
@@ -53,7 +54,7 @@ export function QuoteCart({ onRequestQuote, isLoading = false }: QuoteCartProps)
             <div className="flex-1 min-w-0">
               <h4 className="font-medium truncate">{item.name}</h4>
               <p className="text-sm text-muted-foreground">
-                R$ {item.price.toFixed(2)} / unidade
+                {formatCurrency(item.price)} / unidade
               </p>
               <div className="flex items-center gap-2 mt-2">
                 <Button
@@ -94,7 +95,7 @@ export function QuoteCart({ onRequestQuote, isLoading = false }: QuoteCartProps)
             </div>
             <div className="text-right">
               <p className="font-semibold">
-                R$ {(item.price * item.quantity).toFixed(2)}
+                {formatCurrency(item.price * item.quantity)}
               </p>
             </div>
           </div>
@@ -105,7 +106,7 @@ export function QuoteCart({ onRequestQuote, isLoading = false }: QuoteCartProps)
         <div className="w-full flex justify-between items-center">
           <span className="text-lg font-semibold">Total</span>
           <span className="text-2xl font-bold text-primary">
-            R$ {getTotalPrice().toFixed(2)}
+            {formatCurrency(getTotalPrice())}
           </span>
         </div>
         <Button 
