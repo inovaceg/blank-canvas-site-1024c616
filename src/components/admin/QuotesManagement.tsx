@@ -176,7 +176,9 @@ export default function QuotesManagement() {
               {selectedQuote.message && (
                 <div>
                   <p className="text-sm font-medium">Mensagem</p>
-                  <p className="text-sm text-muted-foreground">{selectedQuote.message}</p>
+                  <div className="text-sm text-muted-foreground whitespace-pre-line bg-muted/30 p-3 rounded-md">
+                    {selectedQuote.message}
+                  </div>
                 </div>
               )}
             </div>
