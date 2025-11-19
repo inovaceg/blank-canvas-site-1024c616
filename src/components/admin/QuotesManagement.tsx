@@ -31,10 +31,15 @@ interface Product {
   image_url: string | null;
 }
 
+interface ProductMatch {
+  product: Product;
+  quantity: string;
+}
+
 export default function QuotesManagement() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedQuote, setSelectedQuote] = useState<QuoteRequest | null>(null);
-  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
+  const [matchedProducts, setMatchedProducts] = useState<ProductMatch[]>([]);
 
   const { data: quotes = [], isLoading } = useQuery({
     queryKey: ['quote-requests'],
@@ -57,7 +62,7 @@ export default function QuotesManagement() {
   useEffect(() => {
     const fetchRelatedProducts = async () => {
       if (!selectedQuote?.product_interest) {
-        setRelatedProducts([]);
+        setMatchedProducts([]);
         return;
       }
 
@@ -67,11 +72,30 @@ export default function QuotesManagement() {
         .eq('is_active', true);
 
       if (products) {
-        // Match products mentioned in the interest text
-        const matchedProducts = products.filter(product =>
-          selectedQuote.product_interest?.toLowerCase().includes(product.name.toLowerCase())
-        );
-        setRelatedProducts(matchedProducts);
+        const matches: ProductMatch[] = [];
+        const interestText = selectedQuote.product_interest.toLowerCase();
+        
+        // Parse the product interest text to extract products and quantities
+        // Format example: "Bananada Tradicional (x1); Bananada Banacaxi (x1)"
+        const items = selectedQuote.product_interest.split(/[;,]/);
+        
+        items.forEach(item => {
+          const trimmedItem = item.trim();
+          // Extract quantity from patterns like (x1), (x2), etc.
+          const quantityMatch = trimmedItem.match(/\(x(\d+)\)/i);
+          const quantity = quantityMatch ? `x${quantityMatch[1]}` : '1';
+          
+          // Find matching product
+          const matchedProduct = products.find(product => 
+            trimmedItem.toLowerCase().includes(product.name.toLowerCase())
+          );
+          
+          if (matchedProduct) {
+            matches.push({ product: matchedProduct, quantity });
+          }
+        });
+        
+        setMatchedProducts(matches);
       }
     };
 
@@ -193,32 +217,33 @@ export default function QuotesManagement() {
               {selectedQuote.product_interest && (
                 <div className="space-y-3">
                   <div>
-                    <p className="text-sm font-medium">Produto de Interesse</p>
-                    <p className="text-sm text-muted-foreground">{selectedQuote.product_interest}</p>
+                    <p className="text-sm font-medium">Produtos de Interesse</p>
                   </div>
                   
-                  {relatedProducts.length > 0 && (
-                    <div>
-                      <p className="text-sm font-medium mb-2">Produtos Relacionados</p>
-                      <div className="flex gap-2 flex-wrap">
-                        {relatedProducts.map(product => (
-                          <div key={product.id} className="flex flex-col items-center gap-1">
-                            {product.image_url ? (
-                              <img 
-                                src={product.image_url} 
-                                alt={product.name}
-                                className="w-20 h-20 object-cover rounded-md border border-border"
-                              />
-                            ) : (
-                              <div className="w-20 h-20 bg-muted rounded-md flex items-center justify-center border border-border">
-                                <span className="text-xs text-muted-foreground">Sem foto</span>
-                              </div>
-                            )}
-                            <span className="text-xs text-center max-w-[80px] truncate">{product.name}</span>
+                  {matchedProducts.length > 0 ? (
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                      {matchedProducts.map((match, index) => (
+                        <div key={`${match.product.id}-${index}`} className="flex flex-col gap-2 p-3 border border-border rounded-lg bg-muted/20">
+                          {match.product.image_url ? (
+                            <img 
+                              src={match.product.image_url} 
+                              alt={match.product.name}
+                              className="w-full h-24 object-cover rounded-md"
+                            />
+                          ) : (
+                            <div className="w-full h-24 bg-muted rounded-md flex items-center justify-center">
+                              <span className="text-xs text-muted-foreground">Sem foto</span>
+                            </div>
+                          )}
+                          <div className="space-y-1">
+                            <p className="text-sm font-medium leading-tight">{match.product.name}</p>
+                            <p className="text-xs text-muted-foreground">Quantidade: {match.quantity}</p>
                           </div>
-                        ))}
-                      </div>
+                        </div>
+                      ))}
                     </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">{selectedQuote.product_interest}</p>
                   )}
                 </div>
               )}
