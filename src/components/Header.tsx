@@ -1,61 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { Store, Menu, X, ShoppingCart, User } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Store, Menu, X, ShoppingCart, User, LogOut } from "lucide-react";
+import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
-import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/contexts/AuthContext";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userRole, setUserRole] = useState<string | null>(null);
   const { getTotalItems } = useCart();
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        setIsLoggedIn(true);
-        const { data: profile } = await supabase
-          .from('profiles')
-          .select('role')
-          .eq('id', user.id)
-          .maybeSingle();
-        
-        if (profile) {
-          setUserRole(profile.role);
-        }
-      } else {
-        setIsLoggedIn(false);
-        setUserRole(null);
-      }
-    };
-    
-    checkAuth();
-
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session?.user) {
-        setIsLoggedIn(true);
-        setTimeout(() => {
-          supabase
-            .from('profiles')
-            .select('role')
-            .eq('id', session.user.id)
-            .maybeSingle()
-            .then(({ data }) => {
-              if (data) setUserRole(data.role);
-            });
-        }, 0);
-      } else if (event === 'SIGNED_OUT') {
-        setIsLoggedIn(false);
-        setUserRole(null);
-      }
-    });
-
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
-  }, []);
+  const { user, userRole, signOut } = useAuth();
 
   return (
     <header className="sticky top-0 z-50">
@@ -105,28 +58,37 @@ export function Header() {
             </nav>
 
             <div className="flex items-center gap-2">
-              {isLoggedIn ? (
+              {user ? (
                 <>
                   {userRole === 'admin' && (
                     <Button variant="ghost" size="sm" asChild className="hidden sm:flex">
                       <Link to="/admin">
                         <User className="size-4 mr-2" />
-                        Admin
+                        ADMIN
                       </Link>
                     </Button>
                   )}
                   {userRole === 'client' && (
                     <Button variant="ghost" size="sm" asChild className="hidden sm:flex">
-                      <Link to="/cliente">
+                      <Link to="/area-do-cliente">
                         <User className="size-4 mr-2" />
-                        Minha Área
+                        ÁREA DO CLIENTE
                       </Link>
                     </Button>
                   )}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={signOut}
+                    className="hidden sm:flex"
+                  >
+                    <LogOut className="size-4 mr-2" />
+                    Sair
+                  </Button>
                 </>
               ) : (
-                <Button variant="ghost" size="sm" asChild className="hidden sm:flex">
-                  <Link to="/login">Login</Link>
+                <Button variant="outline" size="sm" asChild className="hidden sm:flex rounded-full">
+                  <Link to="/auth">LOGIN</Link>
                 </Button>
               )}
               
@@ -192,14 +154,14 @@ export function Header() {
             >
               Contato
             </Link>
-            {!isLoggedIn && (
-              <Link to="/login" onClick={() => setMobileMenuOpen(false)}>
+            {!user && (
+              <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>
                 <Button variant="outline" size="sm" className="w-full">
                   Login
                 </Button>
               </Link>
             )}
-            {isLoggedIn && userRole === 'admin' && (
+            {user && userRole === 'admin' && (
               <Link to="/admin" onClick={() => setMobileMenuOpen(false)}>
                 <Button variant="outline" size="sm" className="w-full">
                   <User className="size-4 mr-2" />
@@ -207,13 +169,27 @@ export function Header() {
                 </Button>
               </Link>
             )}
-            {isLoggedIn && userRole === 'client' && (
-              <Link to="/cliente" onClick={() => setMobileMenuOpen(false)}>
+            {user && userRole === 'client' && (
+              <Link to="/area-do-cliente" onClick={() => setMobileMenuOpen(false)}>
                 <Button variant="outline" size="sm" className="w-full">
                   <User className="size-4 mr-2" />
                   Minha Área
                 </Button>
               </Link>
+            )}
+            {user && (
+              <Button
+                variant="outline"
+                size="sm"
+                className="w-full"
+                onClick={() => {
+                  signOut();
+                  setMobileMenuOpen(false);
+                }}
+              >
+                <LogOut className="size-4 mr-2" />
+                Sair
+              </Button>
             )}
           </nav>
         </div>
