@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useInView } from "@/hooks/useInView";
+import { LazyImage } from "@/components/LazyImage";
 
 // Remove HTML tags from description
 const stripHtml = (html: string) => {
@@ -55,7 +56,7 @@ export function ProductsSection({ products }: ProductsSectionProps) {
               style={{ transitionDelay: `${index * 100}ms` }}
             >
               <div className="aspect-square relative bg-secondary/20 overflow-hidden">
-                <img
+                <LazyImage
                   src={product.image_url || "https://placehold.co/400x400?text=Produto"}
                   alt={product.name}
                   className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"

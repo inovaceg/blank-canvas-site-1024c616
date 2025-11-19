@@ -8,6 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Skeleton } from "@/components/ui/skeleton";
 import { ShoppingCart, Search } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
+import { SEO } from "@/components/SEO";
+import { LazyImage } from "@/components/LazyImage";
 
 const Produtos = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -56,7 +58,13 @@ const Produtos = () => {
   });
 
   return (
-    <div className="min-h-screen py-16">
+    <>
+      <SEO
+        title="Catálogo de Produtos"
+        description="Explore nossa linha completa de bananadas e gomas de amido artesanais de alta qualidade para atacado."
+        keywords="catálogo de doces, bananada atacado, goma de amido preço, comprar doces artesanais"
+      />
+      <div className="min-h-screen py-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">Catálogo de Produtos</h1>
@@ -109,7 +117,7 @@ const Produtos = () => {
             filteredProducts.map((product) => (
               <Card key={product.id} className="group overflow-hidden hover:shadow-xl transition-all duration-300">
                 <div className="aspect-square relative bg-secondary/20 overflow-hidden">
-                  <img
+                  <LazyImage
                     src={product.image_url || "https://placehold.co/400x400?text=Produto"}
                     alt={product.name}
                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
@@ -157,6 +165,7 @@ const Produtos = () => {
         )}
       </div>
     </div>
+    </>
   );
 };
 

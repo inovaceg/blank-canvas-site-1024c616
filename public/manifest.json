@@ -1,0 +1,22 @@
+{
+  "name": "Doces São Fidélis",
+  "short_name": "Doces SF",
+  "description": "Bananadas e gomas de amido artesanais de alta qualidade",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#8B2500",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/logo-doces-sao-fidelis.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/logo-doces-sao-fidelis.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
