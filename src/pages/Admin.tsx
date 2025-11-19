@@ -27,7 +27,7 @@ export default function Admin() {
           <Tabs defaultValue="products" className="space-y-6">
             <TabsList className="grid w-full grid-cols-7">
               <TabsTrigger value="products">Produtos</TabsTrigger>
-              <TabsTrigger value="orders">Pedidos</TabsTrigger>
+              <TabsTrigger value="orders">Orçamentos</TabsTrigger>
               <TabsTrigger value="clients">Clientes</TabsTrigger>
               <TabsTrigger value="prices">Preços</TabsTrigger>
               <TabsTrigger value="newsletter">Newsletter</TabsTrigger>
