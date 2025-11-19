@@ -20,14 +20,14 @@ export function ProductsSection({ products }: ProductsSectionProps) {
   const { addItem } = useCart();
 
   return (
-    <section className="py-16 md:py-24 bg-white">
+    <section className="py-20 lg:py-32">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-            Nossos Produtos em Destaque
+        <div className="text-center space-y-4 mb-16">
+          <h2 className="font-serif text-3xl lg:text-5xl font-bold text-foreground">
+            Nosso Catálogo de Produtos
           </h2>
-          <p className="text-muted-foreground text-lg">
-            Conheça nossa linha de produtos artesanais
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            Conheça a nossa seleção de bananadas e gomas de amido, feitas com o carinho da tradição.
           </p>
         </div>
 

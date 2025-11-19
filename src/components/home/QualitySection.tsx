@@ -20,18 +20,27 @@ export function QualitySection() {
   ];
 
   return (
-    <section className="py-16 md:py-24 bg-secondary/30">
+    <section className="py-20 lg:py-32 bg-primary/10">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+        <div className="text-center space-y-4 mb-16">
+          <h2 className="font-serif text-3xl lg:text-5xl font-bold text-foreground">
             A Qualidade é o Nosso Maior Compromisso
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Usamos apenas ingredientes naturais, processos artesanais e controle rigoroso em cada etapa da produção.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 mt-12">
+        {/* Imagem da produção */}
+        <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-xl mb-12">
+          <img
+            src="/producao-geral.jpg"
+            alt="Equipe Doces São Fidélis trabalhando na produção de doces artesanais"
+            className="absolute inset-0 w-full h-full object-cover"
+          />
+        </div>
+
+        <div className="grid md:grid-cols-4 gap-6">
           {benefits.map((benefit, index) => {
             const Icon = benefit.icon;
             return (
