@@ -22,13 +22,12 @@ export function Header() {
         </div>
       </div>
 
-      <div className="bg-primary text-primary-foreground">
+      <div className="bg-primary text-primary-foreground hidden sm:block">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-10 items-center justify-center text-sm">
             <div className="flex items-center gap-2 font-medium">
               <Store className="size-4" />
-              <span className="hidden sm:inline">Vendas Exclusivas para Lojistas e Grandes Redes de Varejo</span>
-              <span className="sm:hidden">Vendas B2B</span>
+              <span>Vendas Exclusivas para Lojistas e Grandes Redes de Varejo</span>
             </div>
           </div>
         </div>
