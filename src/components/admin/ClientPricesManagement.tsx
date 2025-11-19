@@ -31,13 +31,14 @@ interface ClientProductPrice {
 }
 
 export default function ClientPricesManagement() {
-  const [selectedClientId, setSelectedClientId] = useState<string>("");
+  const [selectedClientId, setSelectedClientId] = useState<string>("default");
   const [editingPriceId, setEditingPriceId] = useState<string | null>(null);
   const [editPrice, setEditPrice] = useState<string>("");
   const [newProductId, setNewProductId] = useState<string>("");
   const [newPrice, setNewPrice] = useState<string>("");
   
   const queryClient = useQueryClient();
+  const isDefaultPricing = selectedClientId === "default";
 
   // Busca clientes
   const { data: clients = [] } = useQuery({
@@ -67,11 +68,30 @@ export default function ClientPricesManagement() {
     }
   });
 
-  // Busca preços personalizados do cliente selecionado
+  // Busca preços personalizados do cliente selecionado OU preços padrão
   const { data: clientPrices = [], isLoading } = useQuery({
     queryKey: ['client-prices', selectedClientId],
     enabled: !!selectedClientId,
     queryFn: async () => {
+      // Se for "default", retorna os preços padrão da tabela products
+      if (selectedClientId === 'default') {
+        const { data, error } = await supabase
+          .from('products')
+          .select('id, name, price')
+          .eq('is_active', true)
+          .order('name');
+        if (error) throw error;
+        // Adapta o formato para ser compatível com ClientProductPrice
+        return (data || []).map(product => ({
+          id: product.id,
+          client_id: 'default',
+          product_id: product.id,
+          price: product.price || 0,
+          products: { name: product.name, price: product.price }
+        })) as ClientProductPrice[];
+      }
+      
+      // Caso contrário, busca preços personalizados do cliente
       const { data, error } = await supabase
         .from('client_product_prices')
         .select('*, products(name, price)')
@@ -84,15 +104,26 @@ export default function ClientPricesManagement() {
 
   // Mutation para atualizar preço
   const updatePriceMutation = useMutation({
-    mutationFn: async ({ id, price }: { id: string; price: number }) => {
-      const { error } = await supabase
-        .from('client_product_prices')
-        .update({ price })
-        .eq('id', id);
-      if (error) throw error;
+    mutationFn: async ({ id, price, isDefault }: { id: string; price: number; isDefault: boolean }) => {
+      if (isDefault) {
+        // Atualiza o preço padrão na tabela products
+        const { error } = await supabase
+          .from('products')
+          .update({ price })
+          .eq('id', id);
+        if (error) throw error;
+      } else {
+        // Atualiza o preço personalizado
+        const { error } = await supabase
+          .from('client_product_prices')
+          .update({ price })
+          .eq('id', id);
+        if (error) throw error;
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['client-prices'] });
+      queryClient.invalidateQueries({ queryKey: ['products'] });
       toast.success("Preço atualizado com sucesso!");
       setEditingPriceId(null);
     },
@@ -148,7 +179,7 @@ export default function ClientPricesManagement() {
       toast.error("Preço inválido");
       return;
     }
-    updatePriceMutation.mutate({ id, price });
+    updatePriceMutation.mutate({ id, price, isDefault: isDefaultPricing });
   };
 
   const handleAddPrice = () => {
@@ -189,6 +220,9 @@ export default function ClientPricesManagement() {
                 <SelectValue placeholder="Escolha um cliente" />
               </SelectTrigger>
               <SelectContent>
+                <SelectItem value="default">
+                  <span className="font-semibold">📋 Preços Padrão (Todos os Clientes)</span>
+                </SelectItem>
                 {clients.map(client => (
                   <SelectItem key={client.id} value={client.id}>
                     {client.company_name || client.contact_person}
@@ -198,7 +232,7 @@ export default function ClientPricesManagement() {
             </Select>
           </div>
 
-          {selectedClientId && (
+          {selectedClientId && !isDefaultPricing && (
             <>
               {/* Adicionar novo preço */}
               <div className="border rounded-lg p-4 space-y-4 bg-muted/20">
@@ -231,14 +265,14 @@ export default function ClientPricesManagement() {
                 </div>
               </div>
 
-              {/* Lista de preços personalizados */}
+              {/* Lista de preços */}
               {isLoading ? (
                 <div className="flex justify-center p-8">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
                 </div>
               ) : clientPrices.length === 0 ? (
                 <div className="text-center p-8 text-muted-foreground border rounded-lg">
-                  Nenhum preço personalizado configurado para este cliente
+                  {isDefaultPricing ? "Nenhum produto cadastrado" : "Nenhum preço personalizado configurado para este cliente"}
                 </div>
               ) : (
                 <div className="border rounded-lg">
@@ -246,8 +280,8 @@ export default function ClientPricesManagement() {
                     <TableHeader>
                       <TableRow>
                         <TableHead>Produto</TableHead>
-                        <TableHead>Preço Padrão</TableHead>
-                        <TableHead>Preço Personalizado</TableHead>
+                        {!isDefaultPricing && <TableHead>Preço Padrão</TableHead>}
+                        <TableHead>{isDefaultPricing ? "Preço" : "Preço Personalizado"}</TableHead>
                         <TableHead className="w-24">Ações</TableHead>
                       </TableRow>
                     </TableHeader>
@@ -257,11 +291,13 @@ export default function ClientPricesManagement() {
                           <TableCell className="font-medium">
                             {clientPrice.products.name}
                           </TableCell>
-                          <TableCell>
-                            <Badge variant="outline">
-                              R$ {clientPrice.products.price?.toFixed(2) || '0.00'}
-                            </Badge>
-                          </TableCell>
+                          {!isDefaultPricing && (
+                            <TableCell>
+                              <Badge variant="outline">
+                                R$ {clientPrice.products.price?.toFixed(2) || '0.00'}
+                              </Badge>
+                            </TableCell>
+                          )}
                           <TableCell>
                             {editingPriceId === clientPrice.id ? (
                               <Input
@@ -273,7 +309,7 @@ export default function ClientPricesManagement() {
                                 className="w-32"
                               />
                             ) : (
-                              <Badge variant="secondary">
+                              <Badge variant={isDefaultPricing ? "default" : "secondary"}>
                                 R$ {clientPrice.price.toFixed(2)}
                               </Badge>
                             )}
@@ -313,14 +349,16 @@ export default function ClientPricesManagement() {
                                   >
                                     <Pencil className="h-4 w-4" />
                                   </Button>
-                                  <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => deletePriceMutation.mutate(clientPrice.id)}
-                                    disabled={deletePriceMutation.isPending}
-                                  >
-                                    <Trash2 className="h-4 w-4" />
-                                  </Button>
+                                  {!isDefaultPricing && (
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      onClick={() => deletePriceMutation.mutate(clientPrice.id)}
+                                      disabled={deletePriceMutation.isPending}
+                                    >
+                                      <Trash2 className="h-4 w-4" />
+                                    </Button>
+                                  )}
                                 </>
                               )}
                             </div>
