@@ -36,7 +36,7 @@ export function Header() {
                   e.currentTarget.src = "https://placehold.co/120x120?text=Logo";
                 }}
               />
-              <span className="text-xl font-bold text-primary">Doces São Fidélis</span>
+              <span className="text-base sm:text-lg font-bold text-primary">Doces São Fidélis</span>
             </Link>
 
             <nav className="hidden md:flex items-center gap-6">
