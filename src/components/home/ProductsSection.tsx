@@ -78,7 +78,7 @@ export function ProductsSection({ products }: ProductsSectionProps) {
                   size="sm"
                 >
                   <ShoppingCart className="size-4 mr-2" />
-                  Adicionar
+                  Solicitar Orçamento
                 </Button>
               </CardContent>
             </Card>
