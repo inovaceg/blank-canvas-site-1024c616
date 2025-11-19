@@ -28,6 +28,7 @@ export default async function ClientLayout({ children }: { children: React.React
   console.log(`[ClientLayout] User ID: ${user.id}`);
 
   // Opcional: Verificar o papel do usuário para garantir que é um 'client' ou 'admin'
+  let userRole: string | null = null;
   try {
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
@@ -40,13 +41,18 @@ export default async function ClientLayout({ children }: { children: React.React
       redirect("/admin/login"); // Redireciona se houver erro ao buscar o perfil
     }
 
-    if (profile?.role !== 'client' && profile?.role !== 'admin') {
-      console.error("[ClientLayout] Usuário não é cliente ou admin, redirecionando:", profile?.role);
-      redirect("/admin/login"); // Redireciona se o papel não for adequado
+    if (profile) {
+      userRole = profile.role;
     }
-    console.log(`[ClientLayout] User role: ${profile?.role}`);
+    console.log(`[ClientLayout] User role: ${userRole}`);
   } catch (e) {
     console.error("[ClientLayout] Exceção ao buscar perfil do usuário:", e);
+    redirect("/admin/login");
+  }
+
+  // Se o usuário não é um cliente nem um admin, redireciona para o login
+  if (userRole !== 'client' && userRole !== 'admin') {
+    console.error(`[ClientLayout] Usuário ${user.id} (role: ${userRole}) não tem permissão para acessar a área do cliente. Redirecionando para login.`);
     redirect("/admin/login");
   }
 
