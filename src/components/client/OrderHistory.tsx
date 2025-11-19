@@ -123,7 +123,7 @@ export function OrderHistory({ clientId }: OrderHistoryProps) {
               <div className="flex items-start justify-between">
                 <div className="space-y-1">
                   <CardTitle className="flex items-center gap-2">
-                    {getStatusIcon(order.tracking_status || order.status)}
+                    {getStatusIcon(order.status)}
                     Pedido #{order.id.slice(0, 8)}
                   </CardTitle>
                   <p className="text-sm text-muted-foreground">
@@ -132,8 +132,8 @@ export function OrderHistory({ clientId }: OrderHistoryProps) {
                     })}
                   </p>
                 </div>
-                <Badge variant={getStatusVariant(order.tracking_status || order.status)}>
-                  {getStatusLabel(order.tracking_status || order.status)}
+                <Badge variant={getStatusVariant(order.status)}>
+                  {getStatusLabel(order.status)}
                 </Badge>
               </div>
             </CardHeader>

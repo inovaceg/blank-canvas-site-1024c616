@@ -85,6 +85,7 @@ export default function OrdersManagement() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-orders'] });
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
       toast.success("Status atualizado com sucesso!");
     },
     onError: (error) => {
