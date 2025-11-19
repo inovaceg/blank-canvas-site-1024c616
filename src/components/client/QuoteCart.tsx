@@ -8,9 +8,10 @@ import { Separator } from "@/components/ui/separator";
 
 interface QuoteCartProps {
   onRequestQuote: () => void;
+  isLoading?: boolean;
 }
 
-export function QuoteCart({ onRequestQuote }: QuoteCartProps) {
+export function QuoteCart({ onRequestQuote, isLoading = false }: QuoteCartProps) {
   const { items, updateQuantity, removeItem, getTotalPrice, getTotalItems, clearCart } = useCart();
 
   if (items.length === 0) {
@@ -107,8 +108,13 @@ export function QuoteCart({ onRequestQuote }: QuoteCartProps) {
             R$ {getTotalPrice().toFixed(2)}
           </span>
         </div>
-        <Button onClick={onRequestQuote} className="w-full" size="lg">
-          Solicitar Orçamento
+        <Button 
+          onClick={onRequestQuote} 
+          className="w-full" 
+          size="lg"
+          disabled={isLoading}
+        >
+          {isLoading ? "Enviando..." : "Solicitar Orçamento"}
         </Button>
       </CardFooter>
     </Card>
