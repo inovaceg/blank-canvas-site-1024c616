@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from "next/server"
 
 export async function middleware(request: NextRequest) {
   console.log(`[Middleware] Path: ${request.nextUrl.pathname}`);
+  console.log(`[Middleware] Raw Cookie Header: ${request.headers.get('cookie') || 'Nenhum cookie recebido'}`); // NOVO LOG
 
   let response = NextResponse.next({
     request: {
@@ -17,7 +18,7 @@ export async function middleware(request: NextRequest) {
       cookies: {
         getAll() {
           const allCookies = request.cookies.getAll();
-          console.log(`[Middleware - getAll] Cookies received:`, allCookies.map(c => `${c.name}=${c.value.substring(0, 10)}...`)); // Log names and first few chars of values
+          console.log(`[Middleware - getAll] Cookies processed:`, allCookies.map(c => `${c.name}=${c.value.substring(0, 10)}...`)); // Log names and first few chars of values
           return allCookies;
         },
         setAll(cookiesToSet) {
@@ -28,9 +29,7 @@ export async function middleware(request: NextRequest) {
     },
   )
 
-  // **Adicionado:** Refrescar a sessão e atualizar as cookies na resposta.
-  // Isso é crucial para `supabase/ssr` manter a sessão viva entre as requisições.
-  await supabase.auth.getSession();
+  await supabase.auth.getSession(); // Refrescar a sessão e atualizar as cookies na resposta.
 
   const {
     data: { user },
@@ -47,19 +46,16 @@ export async function middleware(request: NextRequest) {
   const isLoginPage = request.nextUrl.pathname === "/admin/login"
   const isRegisterPage = request.nextUrl.pathname === "/admin/register"
 
-  // Se o usuário está autenticado e tenta acessar a página de login/registro, redireciona para o dashboard admin (que o middleware resolverá)
   if (user && (isLoginPage || isRegisterPage)) {
     console.log(`[Middleware] Authenticated user trying to access login/register. Redirecting to /admin.`);
     return NextResponse.redirect(new URL("/admin", request.url));
   }
 
-  // Se o usuário NÃO está autenticado e tenta acessar a página de login/registro, permite o acesso
   if (!user && (isLoginPage || isRegisterPage)) {
     console.log(`[Middleware] Unauthenticated user accessing login/register. Allowing.`);
     return response;
   }
 
-  // Para todas as outras rotas (admin ou client)
   let userRole: string | null = null;
   if (user) {
     try {
