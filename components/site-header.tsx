@@ -129,14 +129,15 @@ export function SiteHeader() {
                   </Link>
                 </Button>
               )}
-              {isLoggedIn ? (
+              {isLoggedIn && ( // Botão "Área do Cliente" para qualquer usuário logado
                 <Button asChild size="sm" variant="outline" className="rounded-full bg-transparent">
                   <Link href="/client/dashboard">
                     <User className="size-4 mr-2" />
                     Área do Cliente
                   </Link>
                 </Button>
-              ) : (
+              )}
+              {!isLoggedIn && ( // Botão "Login" apenas se não estiver logado
                 <Button asChild size="sm" variant="outline" className="rounded-full bg-transparent">
                   <Link href="/admin/login">Login</Link>
                 </Button>
@@ -229,7 +230,7 @@ export function SiteHeader() {
                   </Link>
                 </Button>
               )}
-              {isLoggedIn ? (
+              {isLoggedIn && ( // Botão "Área do Cliente" para qualquer usuário logado
                 <Button
                   asChild
                   size="sm"
@@ -242,7 +243,8 @@ export function SiteHeader() {
                     Área do Cliente
                   </Link>
                 </Button>
-              ) : (
+              )}
+              {!isLoggedIn && ( // Botão "Login" apenas se não estiver logado
                 <Button
                   asChild
                   size="sm"
