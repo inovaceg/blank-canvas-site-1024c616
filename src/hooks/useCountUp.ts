@@ -39,5 +39,5 @@ export function useCountUp({ end, duration = 2000, start = 0, isInView }: UseCou
     };
   }, [end, duration, start, isInView]);
 
-  return count;
+  return count.toLocaleString('pt-BR');
 }
