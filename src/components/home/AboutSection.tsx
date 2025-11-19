@@ -2,18 +2,20 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useInView } from "@/hooks/useInView";
 import { useCountUp } from "@/hooks/useCountUp";
-import { Award, Users, Calendar } from "lucide-react";
+import { Award, Package, Users, Calendar } from "lucide-react";
 
 export function AboutSection() {
   const { ref, isInView } = useInView();
   const { ref: statsRef, isInView: statsInView } = useInView();
   
   const yearsCount = useCountUp({ end: 24, isInView: statsInView, duration: 2000 });
-  const clientsCount = useCountUp({ end: 10000, isInView: statsInView, duration: 2500 });
+  const productsCount = useCountUp({ end: 50, isInView: statsInView, duration: 2500 });
+  const clientsCount = useCountUp({ end: 500, isInView: statsInView, duration: 2500 });
   const qualityCount = useCountUp({ end: 100, isInView: statsInView, duration: 2000 });
 
   const stats = [
     { icon: Calendar, value: yearsCount, suffix: "+", label: "Anos de Experiência" },
+    { icon: Package, value: productsCount, suffix: "+", label: "Produtos Diferentes" },
     { icon: Users, value: clientsCount, suffix: "+", label: "Clientes Satisfeitos" },
     { icon: Award, value: qualityCount, suffix: "%", label: "Qualidade Garantida" },
   ];
@@ -47,7 +49,7 @@ export function AboutSection() {
           </Button>
 
           {/* Estatísticas Animadas */}
-          <div ref={statsRef} className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16 pt-16 border-t border-border">
+          <div ref={statsRef} className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16 pt-16 border-t border-border">
             {stats.map((stat, index) => {
               const Icon = stat.icon;
               return (
