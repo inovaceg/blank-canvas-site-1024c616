@@ -68,7 +68,7 @@ export default function ProductsManagement() {
   });
 
   const { data: categories = [] } = useQuery({
-    queryKey: ['categories'],
+    queryKey: ['category-names'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('categories')
