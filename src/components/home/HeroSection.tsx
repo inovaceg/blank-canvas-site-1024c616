@@ -7,7 +7,7 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({ bannerUrl }: HeroSectionProps) {
-  const defaultBanner = "https://images.unsplash.com/photo-1517686469429-8bdb88b9f907?q=80&w=2070";
+  const defaultBanner = "/hero-banner.jpg";
   const imageSrc = bannerUrl || defaultBanner;
 
   return (
