@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { newsletterSchema } from "@/lib/validations";
 
 export function NewsletterSection() {
   const [email, setEmail] = useState("");
@@ -17,9 +18,22 @@ export function NewsletterSection() {
     setLoading(true);
 
     try {
+      // Validate inputs
+      const validatedData = newsletterSchema.parse({
+        name,
+        email,
+        whatsapp,
+        city,
+      });
+
       const { error } = await supabase
         .from('newsletter_subscribers')
-        .insert([{ email, name, whatsapp, city }]);
+        .insert([{
+          name: validatedData.name,
+          email: validatedData.email,
+          whatsapp: validatedData.whatsapp,
+          city: validatedData.city,
+        }]);
 
       if (error) throw error;
 
@@ -32,10 +46,11 @@ export function NewsletterSection() {
       setName("");
       setWhatsapp("");
       setCity("");
-    } catch (error) {
+    } catch (error: any) {
+      const errorMessage = error.errors?.[0]?.message || "Tente novamente mais tarde.";
       toast({
         title: "Erro ao cadastrar",
-        description: "Tente novamente mais tarde.",
+        description: errorMessage,
         variant: "destructive",
       });
     } finally {
