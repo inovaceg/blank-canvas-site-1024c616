@@ -1,6 +1,11 @@
 import { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  import.meta.env.VITE_SUPABASE_URL,
+  import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
+);
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -50,7 +55,7 @@ export default function ProtectedRoute({ children, requiredRole }: ProtectedRout
     checkAuth();
 
     // Listen to auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event: string, session: any) => {
       if (event === "SIGNED_IN" || event === "INITIAL_SESSION") {
         setIsAuthenticated(true);
         if (session?.user) {
@@ -59,7 +64,7 @@ export default function ProtectedRoute({ children, requiredRole }: ProtectedRout
             .select("role")
             .eq("id", session.user.id)
             .single()
-            .then(({ data, error }) => {
+            .then(({ data, error }: { data: any; error: any }) => {
               if (!error && data) {
                 setUserRole(data.role);
               }
