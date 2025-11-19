@@ -1,5 +1,8 @@
 import { CheckCircle, Sparkles, Award } from "lucide-react";
+import { useInView } from "@/hooks/useInView";
+
 export function QualitySection() {
+  const { ref, isInView } = useInView();
   const benefits = [{
     icon: CheckCircle,
     title: "Ingredientes Selecionados",
@@ -33,10 +36,16 @@ export function QualitySection() {
           />
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 lg:gap-10">
+        <div ref={ref} className="grid md:grid-cols-3 gap-8 lg:gap-10">
           {benefits.map((benefit, index) => {
           const Icon = benefit.icon;
-          return <div key={index} className="bg-card border border-border/50 p-10 rounded-2xl shadow-lg hover:shadow-xl hover:border-primary/30 transition-all duration-300">
+          return <div 
+                key={index} 
+                className={`bg-card border border-border/50 p-10 rounded-2xl shadow-lg hover:shadow-xl hover:border-primary/30 transition-all duration-300 ${
+                  isInView ? 'animate-fade-in' : 'opacity-0'
+                }`}
+                style={{ animationDelay: `${index * 150}ms` }}
+              >
                 <div className="flex flex-col items-center text-center space-y-5">
                   <div className="p-4 bg-primary/5 rounded-full border-2 border-primary/20">
                     <Icon className="size-10 text-primary" strokeWidth={2.5} />
