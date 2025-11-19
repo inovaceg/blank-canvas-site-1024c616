@@ -3,10 +3,11 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { ProductCatalog } from "@/components/client/ProductCatalog";
 import { QuoteCart } from "@/components/client/QuoteCart";
+import { ClientProfileForm } from "@/components/client/ClientProfileForm";
 import { useCart } from "@/contexts/CartContext";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { ShoppingCart, Package, History } from "lucide-react";
+import { ShoppingCart, Package, History, User } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 
 export default function ClientArea() {
@@ -107,7 +108,7 @@ export default function ClientArea() {
           </div>
 
           <Tabs defaultValue="products" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="products" className="relative">
                 <Package className="h-4 w-4 mr-2" />
                 Produtos
@@ -124,6 +125,10 @@ export default function ClientArea() {
               <TabsTrigger value="orders">
                 <History className="h-4 w-4 mr-2" />
                 Histórico
+              </TabsTrigger>
+              <TabsTrigger value="profile">
+                <User className="h-4 w-4 mr-2" />
+                Meus Dados
               </TabsTrigger>
             </TabsList>
 
@@ -196,6 +201,10 @@ export default function ClientArea() {
                   </div>
                 )}
               </div>
+            </TabsContent>
+
+            <TabsContent value="profile">
+              <ClientProfileForm clientData={clientData} />
             </TabsContent>
           </Tabs>
         </div>
