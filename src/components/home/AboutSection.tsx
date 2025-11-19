@@ -1,9 +1,24 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useInView } from "@/hooks/useInView";
+import { useCountUp } from "@/hooks/useCountUp";
+import { Award, Package, Users, Calendar } from "lucide-react";
 
 export function AboutSection() {
   const { ref, isInView } = useInView();
+  const { ref: statsRef, isInView: statsInView } = useInView();
+  
+  const yearsCount = useCountUp({ end: 24, isInView: statsInView, duration: 2000 });
+  const productsCount = useCountUp({ end: 50, isInView: statsInView, duration: 2500 });
+  const clientsCount = useCountUp({ end: 500, isInView: statsInView, duration: 2500 });
+  const qualityCount = useCountUp({ end: 100, isInView: statsInView, duration: 2000 });
+
+  const stats = [
+    { icon: Calendar, value: yearsCount, suffix: "+", label: "Anos de Experiência" },
+    { icon: Package, value: productsCount, suffix: "+", label: "Produtos Diferentes" },
+    { icon: Users, value: clientsCount, suffix: "+", label: "Clientes Satisfeitos" },
+    { icon: Award, value: qualityCount, suffix: "%", label: "Qualidade Garantida" },
+  ];
   return (
     <section className="py-20 lg:py-32">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -32,6 +47,32 @@ export function AboutSection() {
           }`}>
             <Link to="/nossa-historia">Saiba mais sobre nossa jornada</Link>
           </Button>
+
+          {/* Estatísticas Animadas */}
+          <div ref={statsRef} className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-16 pt-16 border-t border-border">
+            {stats.map((stat, index) => {
+              const Icon = stat.icon;
+              return (
+                <div 
+                  key={index}
+                  className={`text-center transition-all duration-700 ${
+                    statsInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+                  }`}
+                  style={{ transitionDelay: `${index * 150}ms` }}
+                >
+                  <div className="inline-flex items-center justify-center p-3 bg-primary/10 rounded-full mb-4">
+                    <Icon className="size-6 text-primary" />
+                  </div>
+                  <div className="text-4xl md:text-5xl font-bold text-primary mb-2">
+                    {stat.value}{stat.suffix}
+                  </div>
+                  <div className="text-sm md:text-base text-muted-foreground font-medium">
+                    {stat.label}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>
