@@ -1,5 +1,6 @@
 import { CheckCircle, Sparkles, Award } from "lucide-react";
 import { useInView } from "@/hooks/useInView";
+import { ParallaxSection } from "@/components/ParallaxSection";
 
 export function QualitySection() {
   const { ref, isInView } = useInView();
@@ -27,14 +28,10 @@ export function QualitySection() {
           </p>
         </div>
 
-        {/* Imagem da produção */}
-        <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-xl mb-12">
-          <img 
-            src="/producao-geral.jpg" 
-            alt="Equipe de produção artesanal trabalhando" 
-            className="w-full h-full object-cover"
-          />
-        </div>
+        {/* Imagem da produção com parallax */}
+        <ParallaxSection imageUrl="/producao-geral.jpg" speed={0.3} className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-xl mb-12">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+        </ParallaxSection>
 
         <div ref={ref} className="grid md:grid-cols-3 gap-8 lg:gap-10">
           {benefits.map((benefit, index) => {

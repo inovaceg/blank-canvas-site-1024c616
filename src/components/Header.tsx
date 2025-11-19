@@ -4,6 +4,7 @@ import { Store, Menu, X, ShoppingCart, User, LogOut } from "lucide-react";
 import { useState } from "react";
 import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/contexts/AuthContext";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -58,6 +59,7 @@ export function Header() {
             </nav>
 
             <div className="flex items-center gap-2">
+              <ThemeToggle />
               {user ? (
                 <>
                   {userRole === 'admin' && (
