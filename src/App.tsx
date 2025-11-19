@@ -23,6 +23,7 @@ import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import ClientArea from "./pages/ClientArea";
 import NotFound from "./pages/NotFound";
+import ProductDetail from "./pages/ProductDetail"; // Importar a nova página
 
 const queryClient = new QueryClient();
 
@@ -42,6 +43,7 @@ const App = () => (
                   <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="/produtos" element={<Produtos />} />
+                    <Route path="/produtos/:productId" element={<ProductDetail />} /> {/* Nova rota */}
                     <Route path="/nossa-historia" element={<NossaHistoria />} />
                     <Route path="/qualidade" element={<Qualidade />} />
                     <Route path="/contato" element={<Contato />} />

@@ -7,6 +7,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const routeNames: Record<string, string> = {
   "/": "Home",
@@ -23,6 +25,24 @@ export function Breadcrumbs() {
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
 
+  // Hook para buscar o nome do produto dinamicamente
+  const { data: productName } = useQuery({
+    queryKey: ['product-name', pathnames[1]], // pathnames[1] seria o ID do produto
+    queryFn: async () => {
+      if (pathnames[0] === 'produtos' && pathnames[1]) {
+        const { data, error } = await supabase
+          .from('products')
+          .select('name')
+          .eq('id', pathnames[1])
+          .maybeSingle();
+        if (error) throw error;
+        return data?.name;
+      }
+      return null;
+    },
+    enabled: pathnames[0] === 'produtos' && !!pathnames[1],
+  });
+
   if (location.pathname === "/") return null;
 
   return (
@@ -37,7 +57,13 @@ export function Breadcrumbs() {
           {pathnames.map((pathname, index) => {
             const routeTo = `/${pathnames.slice(0, index + 1).join("/")}`;
             const isLast = index === pathnames.length - 1;
-            const name = routeNames[routeTo] || pathname;
+            
+            let name = routeNames[routeTo] || pathname;
+
+            // Se for a rota de produto e for o último item, usa o nome do produto
+            if (pathnames[0] === 'produtos' && index === 1 && productName) {
+              name = productName;
+            }
 
             return (
               <div key={routeTo} className="flex items-center">

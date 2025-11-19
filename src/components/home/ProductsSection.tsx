@@ -54,34 +54,35 @@ export function ProductsSection({ products }: ProductsSectionProps) {
               }`}
               style={{ transitionDelay: `${index * 100}ms` }}
             >
-              <div className="aspect-square relative bg-secondary/20 overflow-hidden">
-                <LazyImage
-                  src={product.image_url || "https://placehold.co/400x400?text=Produto"}
-                  alt={product.name}
-                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-                />
-              </div>
-              <CardContent className="p-4 space-y-3">
-                <h3 className="font-semibold text-lg line-clamp-2">{product.name}</h3>
-                {product.description && (
-                  <p className="text-sm text-muted-foreground line-clamp-2">{stripHtml(product.description)}</p>
-                )}
-                {product.price && (
-                  <p className="text-lg font-bold text-primary">
-                    {formatCurrency(product.price)}
-                  </p>
-                )}
-                <Button 
-                  className="w-full" 
-                  size="sm"
-                  asChild
-                >
-                  <Link to="/auth">
-                    <ShoppingCart className="size-4 mr-2" />
-                    Solicitar Orçamento
-                  </Link>
-                </Button>
-              </CardContent>
+              <Link to={`/produtos/${product.id}`} className="block"> {/* Link para a página de detalhes */}
+                <div className="aspect-square relative bg-secondary/20 overflow-hidden">
+                  <LazyImage
+                    src={product.image_url || "https://placehold.co/400x400?text=Produto"}
+                    alt={product.name}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                  />
+                </div>
+                <CardContent className="p-4 space-y-3">
+                  <h3 className="font-semibold text-lg line-clamp-2">{product.name}</h3>
+                  {product.description && (
+                    <p className="text-sm text-muted-foreground line-clamp-2">{stripHtml(product.description)}</p>
+                  )}
+                  {product.price && (
+                    <p className="text-lg font-bold text-primary">
+                      {formatCurrency(product.price)}
+                    </p>
+                  )}
+                  <Button 
+                    className="w-full" 
+                    size="sm"
+                    asChild
+                  >
+                    <Link to={`/produtos/${product.id}`}> {/* Botão também linka para a página de detalhes */}
+                      Ver Detalhes
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Link>
             </Card>
           ))}
         </div>
