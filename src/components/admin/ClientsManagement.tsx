@@ -1,9 +1,15 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { useState } from "react";
+import { Eye } from "lucide-react";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
 
 interface Client {
   id: string;
@@ -22,6 +28,7 @@ interface Client {
 
 export default function ClientsManagement() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedClient, setSelectedClient] = useState<Client | null>(null);
 
   const { data: clients = [], isLoading } = useQuery({
     queryKey: ['admin-clients'],
@@ -59,69 +66,131 @@ export default function ClientsManagement() {
         className="max-w-md"
       />
 
-      <div className="grid gap-4">
-        {filteredClients.length === 0 ? (
-          <Card>
-            <CardContent className="p-8 text-center text-muted-foreground">
+      <Card>
+        <CardContent className="p-0">
+          {filteredClients.length === 0 ? (
+            <div className="p-8 text-center text-muted-foreground">
               Nenhum cliente encontrado
-            </CardContent>
-          </Card>
-        ) : (
-          filteredClients.map((client) => (
-            <Card key={client.id}>
-              <CardHeader>
-                <div className="flex justify-between items-start">
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[80px]">#</TableHead>
+                  <TableHead>Nome</TableHead>
+                  <TableHead>Empresa</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="w-[100px]">Ações</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredClients.map((client, index) => (
+                  <TableRow key={client.id}>
+                    <TableCell className="font-medium">#{index + 1}</TableCell>
+                    <TableCell>{client.contact_person}</TableCell>
+                    <TableCell>{client.company_name || "-"}</TableCell>
+                    <TableCell className="text-sm text-muted-foreground">{client.email}</TableCell>
+                    <TableCell>
+                      <Badge variant={client.is_active ? "default" : "secondary"}>
+                        {client.is_active ? "Ativo" : "Inativo"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setSelectedClient(client)}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
+
+      <Dialog open={!!selectedClient} onOpenChange={(open) => !open && setSelectedClient(null)}>
+        <DialogContent className="max-w-2xl">
+          {selectedClient && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  Cliente #{filteredClients.findIndex(c => c.id === selectedClient.id) + 1}
+                  <Badge variant={selectedClient.is_active ? "default" : "secondary"}>
+                    {selectedClient.is_active ? "Ativo" : "Inativo"}
+                  </Badge>
+                </DialogTitle>
+                <p className="text-sm text-muted-foreground">
+                  Cadastrado em {format(new Date(selectedClient.created_at), "dd/MM/yyyy 'às' HH:mm", { locale: ptBR })}
+                </p>
+              </DialogHeader>
+
+              <div className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
                   <div>
-                    <CardTitle className="flex items-center gap-2">
-                      {client.contact_person}
-                      {!client.is_active && <Badge variant="secondary">Inativo</Badge>}
-                    </CardTitle>
-                    <CardDescription>
-                      {client.company_name || "Sem empresa"}
-                    </CardDescription>
+                    <h4 className="font-semibold mb-3">Informações do Contato</h4>
+                    <div className="space-y-2 text-sm">
+                      <div>
+                        <span className="text-muted-foreground">Nome:</span>
+                        <p className="font-medium">{selectedClient.contact_person}</p>
+                      </div>
+                      <div>
+                        <span className="text-muted-foreground">Email:</span>
+                        <p className="font-medium">{selectedClient.email}</p>
+                      </div>
+                      {selectedClient.phone && (
+                        <div>
+                          <span className="text-muted-foreground">Telefone:</span>
+                          <p className="font-medium">{selectedClient.phone}</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold mb-3">Informações da Empresa</h4>
+                    <div className="space-y-2 text-sm">
+                      <div>
+                        <span className="text-muted-foreground">Empresa:</span>
+                        <p className="font-medium">{selectedClient.company_name || "-"}</p>
+                      </div>
+                      {selectedClient.cnpj && (
+                        <div>
+                          <span className="text-muted-foreground">CNPJ:</span>
+                          <p className="font-medium">{selectedClient.cnpj}</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <div>
-                      <p className="text-sm font-medium">Email</p>
-                      <p className="text-sm text-muted-foreground">{client.email}</p>
+
+                {(selectedClient.address || selectedClient.city || selectedClient.state || selectedClient.cep) && (
+                  <div>
+                    <h4 className="font-semibold mb-3">Endereço</h4>
+                    <div className="space-y-2 text-sm bg-muted/50 p-4 rounded-md">
+                      {selectedClient.address && (
+                        <p className="font-medium">{selectedClient.address}</p>
+                      )}
+                      {(selectedClient.city || selectedClient.state) && (
+                        <p>
+                          {selectedClient.city}{selectedClient.city && selectedClient.state && ", "}{selectedClient.state}
+                        </p>
+                      )}
+                      {selectedClient.cep && (
+                        <p>CEP: {selectedClient.cep}</p>
+                      )}
                     </div>
-                    {client.phone && (
-                      <div>
-                        <p className="text-sm font-medium">Telefone</p>
-                        <p className="text-sm text-muted-foreground">{client.phone}</p>
-                      </div>
-                    )}
-                    {client.cnpj && (
-                      <div>
-                        <p className="text-sm font-medium">CNPJ</p>
-                        <p className="text-sm text-muted-foreground">{client.cnpj}</p>
-                      </div>
-                    )}
                   </div>
-                  {(client.address || client.city || client.state || client.cep) && (
-                    <div className="space-y-2">
-                      <div>
-                        <p className="text-sm font-medium">Endereço</p>
-                        {client.address && <p className="text-sm text-muted-foreground">{client.address}</p>}
-                        {(client.city || client.state) && (
-                          <p className="text-sm text-muted-foreground">
-                            {client.city}{client.city && client.state && ", "}{client.state}
-                          </p>
-                        )}
-                        {client.cep && <p className="text-sm text-muted-foreground">CEP: {client.cep}</p>}
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ))
-        )}
-      </div>
+                )}
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
