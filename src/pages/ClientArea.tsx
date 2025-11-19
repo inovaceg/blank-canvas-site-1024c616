@@ -54,6 +54,13 @@ export default function ClientArea() {
   const createOrderMutation = useMutation({
     mutationFn: async () => {
       if (!user) throw new Error("Usuário não autenticado");
+      if (items.length === 0) throw new Error("Carrinho vazio");
+
+      console.log("Criando pedido com:", {
+        clientData,
+        items,
+        user: user.id
+      });
 
       const { data, error } = await supabase
         .from("orders")
@@ -74,7 +81,12 @@ export default function ClientArea() {
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error("Erro do Supabase:", error);
+        throw error;
+      }
+      
+      console.log("Pedido criado:", data);
       return data;
     },
     onSuccess: () => {
@@ -84,7 +96,7 @@ export default function ClientArea() {
     },
     onError: (error: any) => {
       console.error("Erro ao criar pedido:", error);
-      toast.error("Erro ao enviar orçamento. Tente novamente.");
+      toast.error(error.message || "Erro ao enviar orçamento. Tente novamente.");
     },
   });
 
@@ -139,7 +151,10 @@ export default function ClientArea() {
             </TabsContent>
 
             <TabsContent value="cart">
-              <QuoteCart onRequestQuote={handleRequestQuote} />
+              <QuoteCart 
+                onRequestQuote={handleRequestQuote} 
+                isLoading={createOrderMutation.isPending}
+              />
             </TabsContent>
 
             <TabsContent value="orders" className="space-y-6">
