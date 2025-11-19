@@ -109,7 +109,7 @@ const Carrinho = () => {
                   </div>
                 </div>
                 <Button className="w-full" size="lg" asChild>
-                  <Link to="/contato">Solicitar Orçamento</Link>
+                  <Link to="/area-cliente">Solicitar Orçamento</Link>
                 </Button>
                 <Button
                   variant="outline"
