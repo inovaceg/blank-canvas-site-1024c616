@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -25,9 +25,16 @@ interface QuoteRequest {
   created_at: string;
 }
 
+interface Product {
+  id: string;
+  name: string;
+  image_url: string | null;
+}
+
 export default function QuotesManagement() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedQuote, setSelectedQuote] = useState<QuoteRequest | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
 
   const { data: quotes = [], isLoading } = useQuery({
     queryKey: ['quote-requests'],
@@ -46,6 +53,30 @@ export default function QuotesManagement() {
     quote.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     quote.company_name?.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  useEffect(() => {
+    const fetchRelatedProducts = async () => {
+      if (!selectedQuote?.product_interest) {
+        setRelatedProducts([]);
+        return;
+      }
+
+      const { data: products } = await supabase
+        .from('products')
+        .select('id, name, image_url')
+        .eq('is_active', true);
+
+      if (products) {
+        // Match products mentioned in the interest text
+        const matchedProducts = products.filter(product =>
+          selectedQuote.product_interest?.toLowerCase().includes(product.name.toLowerCase())
+        );
+        setRelatedProducts(matchedProducts);
+      }
+    };
+
+    fetchRelatedProducts();
+  }, [selectedQuote]);
 
   if (isLoading) {
     return <div className="flex justify-center p-8"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div></div>;
@@ -160,9 +191,35 @@ export default function QuotesManagement() {
               </div>
 
               {selectedQuote.product_interest && (
-                <div>
-                  <p className="text-sm font-medium">Produto de Interesse</p>
-                  <p className="text-sm text-muted-foreground">{selectedQuote.product_interest}</p>
+                <div className="space-y-3">
+                  <div>
+                    <p className="text-sm font-medium">Produto de Interesse</p>
+                    <p className="text-sm text-muted-foreground">{selectedQuote.product_interest}</p>
+                  </div>
+                  
+                  {relatedProducts.length > 0 && (
+                    <div>
+                      <p className="text-sm font-medium mb-2">Produtos Relacionados</p>
+                      <div className="flex gap-2 flex-wrap">
+                        {relatedProducts.map(product => (
+                          <div key={product.id} className="flex flex-col items-center gap-1">
+                            {product.image_url ? (
+                              <img 
+                                src={product.image_url} 
+                                alt={product.name}
+                                className="w-20 h-20 object-cover rounded-md border border-border"
+                              />
+                            ) : (
+                              <div className="w-20 h-20 bg-muted rounded-md flex items-center justify-center border border-border">
+                                <span className="text-xs text-muted-foreground">Sem foto</span>
+                              </div>
+                            )}
+                            <span className="text-xs text-center max-w-[80px] truncate">{product.name}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
               
