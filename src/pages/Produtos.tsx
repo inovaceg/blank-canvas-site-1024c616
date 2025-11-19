@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Skeleton } from "@/components/ui/skeleton";
 import { ShoppingCart, Search } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 
@@ -20,7 +21,7 @@ const Produtos = () => {
     return tmp.textContent || tmp.innerText || "";
   };
 
-  const { data: products = [] } = useQuery({
+  const { data: products = [], isLoading: productsLoading } = useQuery({
     queryKey: ['products'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -34,7 +35,7 @@ const Produtos = () => {
     },
   });
 
-  const { data: categories = [] } = useQuery({
+  const { data: categories = [], isLoading: categoriesLoading } = useQuery({
     queryKey: ['categories'],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -91,15 +92,29 @@ const Produtos = () => {
         </div>
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {filteredProducts.map((product) => (
-            <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-              <div className="aspect-square relative bg-secondary/20">
-                <img
-                  src={product.image_url || "https://placehold.co/400x400?text=Produto"}
-                  alt={product.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
+          {productsLoading ? (
+            Array.from({ length: 8 }).map((_, index) => (
+              <Card key={index} className="overflow-hidden">
+                <Skeleton className="aspect-square w-full" />
+                <CardContent className="p-4 space-y-3">
+                  <Skeleton className="h-6 w-3/4" />
+                  <Skeleton className="h-4 w-full" />
+                  <Skeleton className="h-4 w-2/3" />
+                  <Skeleton className="h-8 w-20" />
+                  <Skeleton className="h-10 w-full" />
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            filteredProducts.map((product) => (
+              <Card key={product.id} className="group overflow-hidden hover:shadow-xl transition-all duration-300">
+                <div className="aspect-square relative bg-secondary/20 overflow-hidden">
+                  <img
+                    src={product.image_url || "https://placehold.co/400x400?text=Produto"}
+                    alt={product.name}
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                  />
+                </div>
               <CardContent className="p-4 space-y-3">
                 <div>
                   <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded">{product.category}</span>
@@ -131,10 +146,11 @@ const Produtos = () => {
                 </Button>
               </CardContent>
             </Card>
-          ))}
+          ))
+        )}
         </div>
 
-        {filteredProducts.length === 0 && (
+        {!productsLoading && filteredProducts.length === 0 && (
           <div className="text-center py-12">
             <p className="text-muted-foreground">Nenhum produto encontrado.</p>
           </div>

@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useInView } from "@/hooks/useInView";
+import { ParallaxSection } from "@/components/ParallaxSection";
 
 interface HeroSectionProps {
   bannerUrl?: string;
@@ -13,15 +14,8 @@ export function HeroSection({ bannerUrl }: HeroSectionProps) {
   const imageSrc = bannerUrl || defaultBanner;
 
   return (
-    <section className="relative flex items-center justify-center text-center overflow-hidden h-[60vh] md:h-[70vh] lg:h-[80vh] bg-primary">
-      <div className="absolute inset-0 z-0">
-        <img
-          src={imageSrc}
-          alt="Doces São Fidélis"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-black/40" />
-      </div>
+    <ParallaxSection imageUrl={imageSrc} speed={0.5} className="relative flex items-center justify-center text-center h-[60vh] md:h-[70vh] lg:h-[80vh]">
+      <div className="absolute inset-0 bg-black/40 z-0" />
 
       <div ref={ref} className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-8 sm:py-16 md:py-24 lg:py-32">
         <div className="max-w-3xl space-y-6 mx-auto">
@@ -57,6 +51,6 @@ export function HeroSection({ bannerUrl }: HeroSectionProps) {
           </div>
         </div>
       </div>
-    </section>
+    </ParallaxSection>
   );
 }

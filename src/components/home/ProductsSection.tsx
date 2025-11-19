@@ -49,16 +49,16 @@ export function ProductsSection({ products }: ProductsSectionProps) {
           {products.slice(0, 8).map((product, index) => (
             <Card 
               key={product.id} 
-              className={`overflow-hidden hover:shadow-lg transition-all duration-500 ${
+              className={`group overflow-hidden hover:shadow-xl transition-all duration-500 ${
                 cardsInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`}
               style={{ transitionDelay: `${index * 100}ms` }}
             >
-              <div className="aspect-square relative bg-secondary/20">
+              <div className="aspect-square relative bg-secondary/20 overflow-hidden">
                 <img
                   src={product.image_url || "https://placehold.co/400x400?text=Produto"}
                   alt={product.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
                 />
               </div>
               <CardContent className="p-4 space-y-3">
