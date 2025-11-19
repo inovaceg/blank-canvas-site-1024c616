@@ -26,7 +26,7 @@ export function VisitFactorySection() {
             mapInView ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
           }`}>
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3721.584738648679!2d-41.732340!3d-21.637652!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMjHCsDM4JzE1LjYiUyA0McKwNDMnNTYuNCJX!5e1!3m2!1spt-BR!2sbr!4v1234567890"
+              src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3721.584738648679!2d-41.732340!3d-21.637652!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMjHCsDM4JzE1LjYiUyA0McKwNDMnNTYuNCJX!5e1!3m2!1spt-BR!2sbr!4v1234567890&z=18"
               width="100%"
               height="100%"
               style={{ border: 0 }}
