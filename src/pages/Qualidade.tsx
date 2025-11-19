@@ -27,8 +27,12 @@ const Qualidade = () => {
             </p>
           </div>
 
-          <div className="aspect-video bg-secondary/20 rounded-lg overflow-hidden mb-12">
-            
+          <div className="aspect-video rounded-lg overflow-hidden mb-12">
+            <img 
+              src="/qualidade-producao.jpg" 
+              alt="Produção artesanal de doces" 
+              className="w-full h-full object-cover"
+            />
           </div>
 
           <div className="space-y-8 mb-12">
