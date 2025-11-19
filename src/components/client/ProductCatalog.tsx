@@ -20,7 +20,14 @@ export function ProductCatalog({ clientId }: ProductCatalogProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [quantity, setQuantity] = useState(1);
+  const [productQuantities, setProductQuantities] = useState<Record<string, number>>({});
   const { addItem } = useCart();
+
+  const getProductQuantity = (productId: string) => productQuantities[productId] || 1;
+  
+  const setProductQuantity = (productId: string, qty: number) => {
+    setProductQuantities(prev => ({ ...prev, [productId]: Math.max(1, qty) }));
+  };
 
   const { data: products = [], isLoading: isLoadingProducts } = useQuery({
     queryKey: ["client-products", clientId],
@@ -139,10 +146,12 @@ export function ProductCatalog({ clientId }: ProductCatalogProps) {
           {filteredProducts.map((product) => (
             <Card 
               key={product.id} 
-              className="flex flex-col cursor-pointer hover:shadow-lg transition-shadow"
-              onClick={() => setSelectedProduct(product)}
+              className="flex flex-col hover:shadow-lg transition-shadow"
             >
-              <CardHeader className="p-0">
+              <CardHeader 
+                className="p-0 cursor-pointer"
+                onClick={() => setSelectedProduct(product)}
+              >
                 {product.image_url && (
                   <div className="aspect-video w-full overflow-hidden rounded-t-lg bg-muted">
                     <img
@@ -154,7 +163,12 @@ export function ProductCatalog({ clientId }: ProductCatalogProps) {
                 )}
               </CardHeader>
               <CardContent className="flex-1 pt-6">
-                <CardTitle className="text-lg mb-2">{product.name}</CardTitle>
+                <CardTitle 
+                  className="text-lg mb-2 cursor-pointer hover:text-primary transition-colors"
+                  onClick={() => setSelectedProduct(product)}
+                >
+                  {product.name}
+                </CardTitle>
                 {product.description && (
                   <div 
                     className="text-sm text-muted-foreground line-clamp-3 mb-3"
@@ -174,27 +188,54 @@ export function ProductCatalog({ clientId }: ProductCatalogProps) {
                   )}
                 </div>
               </CardContent>
-              <CardFooter className="flex justify-between items-center pt-0">
-                <div>
-                  <p className="text-2xl font-bold text-primary">
-                    R$ {(product.final_price || 0).toFixed(2)}
-                  </p>
-                  {product.custom_price && product.default_price !== product.custom_price && (
-                    <p className="text-xs text-muted-foreground line-through">
-                      R$ {(product.default_price || 0).toFixed(2)}
+              <CardFooter className="flex-col gap-3 pt-0">
+                <div className="w-full flex justify-between items-center">
+                  <div>
+                    <p className="text-2xl font-bold text-primary">
+                      R$ {(product.final_price || 0).toFixed(2)}
                     </p>
-                  )}
+                    {product.custom_price && product.default_price !== product.custom_price && (
+                      <p className="text-xs text-muted-foreground line-through">
+                        R$ {(product.default_price || 0).toFixed(2)}
+                      </p>
+                    )}
+                  </div>
                 </div>
-                <Button 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleAddToCart(product);
-                  }} 
-                  size="sm"
-                >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Realizar Pedido
-                </Button>
+                <div className="w-full flex items-center gap-2">
+                  <div className="flex items-center gap-1 flex-1">
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => setProductQuantity(product.id, getProductQuantity(product.id) - 1)}
+                    >
+                      -
+                    </Button>
+                    <Input
+                      type="number"
+                      min="1"
+                      value={getProductQuantity(product.id)}
+                      onChange={(e) => setProductQuantity(product.id, parseInt(e.target.value) || 1)}
+                      className="h-8 w-16 text-center"
+                    />
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() => setProductQuantity(product.id, getProductQuantity(product.id) + 1)}
+                    >
+                      +
+                    </Button>
+                  </div>
+                  <Button 
+                    onClick={() => handleAddToCart(product, getProductQuantity(product.id))}
+                    className="flex-1"
+                    size="sm"
+                  >
+                    <Plus className="h-4 w-4 mr-2" />
+                    Adicionar
+                  </Button>
+                </div>
               </CardFooter>
             </Card>
           ))}
