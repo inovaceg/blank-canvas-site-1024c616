@@ -200,6 +200,13 @@ export function ProductCatalog({ clientId }: ProductCatalogProps) {
                       </p>
                     )}
                   </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setSelectedProduct(product)}
+                  >
+                    Ver Detalhes
+                  </Button>
                 </div>
                 <div className="w-full flex items-center gap-2">
                   <div className="flex items-center gap-1 flex-1">
