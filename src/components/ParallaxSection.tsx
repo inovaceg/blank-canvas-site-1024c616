@@ -36,7 +36,7 @@ export function ParallaxSection({
   }, [speed]);
 
   return (
-    <div ref={ref} className={cn("relative overflow-hidden", className)}>
+    <div ref={ref} className={cn("relative overflow-hidden bg-black", className)}>
       <div
         className="absolute inset-0"
         style={{
