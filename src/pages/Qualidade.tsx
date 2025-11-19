@@ -1,31 +1,23 @@
 import { CheckCircle, Sparkles, Award, Shield } from "lucide-react";
-
 const Qualidade = () => {
-  const qualityPoints = [
-    {
-      icon: CheckCircle,
-      title: "Ingredientes Selecionados",
-      description: "Utilizamos apenas ingredientes frescos e naturais, cuidadosamente selecionados de fornecedores certificados. Sem aditivos artificiais ou conservantes prejudiciais à saúde."
-    },
-    {
-      icon: Sparkles,
-      title: "Processo Artesanal",
-      description: "Nossos doces são produzidos artesanalmente, seguindo receitas tradicionais que preservam o sabor e a textura únicos. Cada lote é preparado com dedicação e cuidado."
-    },
-    {
-      icon: Award,
-      title: "Controle de Qualidade Rigoroso",
-      description: "Cada lote passa por rigoroso controle de qualidade em todas as etapas de produção. Garantimos que apenas os melhores produtos cheguem até você."
-    },
-    {
-      icon: Shield,
-      title: "Certificações e Segurança",
-      description: "Nossa produção segue todas as normas sanitárias e de segurança alimentar vigentes. Trabalhamos constantemente para manter os mais altos padrões de qualidade."
-    }
-  ];
-
-  return (
-    <div className="min-h-screen py-16">
+  const qualityPoints = [{
+    icon: CheckCircle,
+    title: "Ingredientes Selecionados",
+    description: "Utilizamos apenas ingredientes frescos e naturais, cuidadosamente selecionados de fornecedores certificados. Sem aditivos artificiais ou conservantes prejudiciais à saúde."
+  }, {
+    icon: Sparkles,
+    title: "Processo Artesanal",
+    description: "Nossos doces são produzidos artesanalmente, seguindo receitas tradicionais que preservam o sabor e a textura únicos. Cada lote é preparado com dedicação e cuidado."
+  }, {
+    icon: Award,
+    title: "Controle de Qualidade Rigoroso",
+    description: "Cada lote passa por rigoroso controle de qualidade em todas as etapas de produção. Garantimos que apenas os melhores produtos cheguem até você."
+  }, {
+    icon: Shield,
+    title: "Certificações e Segurança",
+    description: "Nossa produção segue todas as normas sanitárias e de segurança alimentar vigentes. Trabalhamos constantemente para manter os mais altos padrões de qualidade."
+  }];
+  return <div className="min-h-screen py-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
@@ -36,18 +28,13 @@ const Qualidade = () => {
           </div>
 
           <div className="aspect-video bg-secondary/20 rounded-lg overflow-hidden mb-12">
-            <img
-              src="/producao-geral.jpg"
-              alt="Equipe Doces São Fidélis trabalhando na produção de doces artesanais"
-              className="w-full h-full object-cover"
-            />
+            
           </div>
 
           <div className="space-y-8 mb-12">
             {qualityPoints.map((point, index) => {
-              const Icon = point.icon;
-              return (
-                <div key={index} className="bg-white border rounded-lg p-6 hover:shadow-md transition-shadow">
+            const Icon = point.icon;
+            return <div key={index} className="bg-white border rounded-lg p-6 hover:shadow-md transition-shadow">
                   <div className="flex gap-4">
                     <div className="flex-shrink-0">
                       <div className="p-3 bg-primary/10 rounded-full">
@@ -59,9 +46,8 @@ const Qualidade = () => {
                       <p className="text-muted-foreground leading-relaxed">{point.description}</p>
                     </div>
                   </div>
-                </div>
-              );
-            })}
+                </div>;
+          })}
           </div>
 
           <div className="bg-primary/5 rounded-lg p-8">
@@ -78,8 +64,6 @@ const Qualidade = () => {
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default Qualidade;
