@@ -13,6 +13,15 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50">
+      {/* Nova barra superior com slogan */}
+      <div className="bg-accent text-accent-foreground py-1">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-center text-xs sm:text-sm font-medium">
+            Doces São Fidélis – Tradição e Qualidade Desde 2000
+          </div>
+        </div>
+      </div>
+
       <div className="bg-primary text-primary-foreground">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex h-10 items-center justify-center text-sm">
@@ -37,7 +46,7 @@ export function Header() {
                   e.currentTarget.src = "https://placehold.co/120x120?text=Logo";
                 }}
               />
-              <span className="text-xl font-bold text-primary hidden sm:inline">Doces São Fidélis</span>
+              <span className="text-xl font-bold text-primary">Doces São Fidélis</span>
             </Link>
 
             <nav className="hidden md:flex items-center gap-6">
