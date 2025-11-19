@@ -4,8 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useCart } from "@/contexts/CartContext";
-import { Plus, Search } from "lucide-react";
+import { Plus, Search, X } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -17,6 +18,7 @@ interface ProductCatalogProps {
 export function ProductCatalog({ clientId }: ProductCatalogProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const { addItem } = useCart();
 
   const { data: products = [], isLoading: isLoadingProducts } = useQuery({
@@ -80,6 +82,7 @@ export function ProductCatalog({ clientId }: ProductCatalogProps) {
       image_url: product.image_url || undefined,
     });
     toast.success(`${product.name} adicionado ao orçamento`);
+    setSelectedProduct(null);
   };
 
   return (
@@ -132,7 +135,11 @@ export function ProductCatalog({ clientId }: ProductCatalogProps) {
       ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredProducts.map((product) => (
-            <Card key={product.id} className="flex flex-col">
+            <Card 
+              key={product.id} 
+              className="flex flex-col cursor-pointer hover:shadow-lg transition-shadow"
+              onClick={() => setSelectedProduct(product)}
+            >
               <CardHeader className="p-0">
                 {product.image_url && (
                   <div className="aspect-video w-full overflow-hidden rounded-t-lg bg-muted">
@@ -176,7 +183,13 @@ export function ProductCatalog({ clientId }: ProductCatalogProps) {
                     </p>
                   )}
                 </div>
-                <Button onClick={() => handleAddToCart(product)} size="sm">
+                <Button 
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleAddToCart(product);
+                  }} 
+                  size="sm"
+                >
                   <Plus className="h-4 w-4 mr-2" />
                   Adicionar
                 </Button>
@@ -185,6 +198,76 @@ export function ProductCatalog({ clientId }: ProductCatalogProps) {
           ))}
         </div>
       )}
+
+      {/* Modal de Detalhes do Produto */}
+      <Dialog open={!!selectedProduct} onOpenChange={(open) => !open && setSelectedProduct(null)}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl">{selectedProduct?.name}</DialogTitle>
+          </DialogHeader>
+          
+          {selectedProduct && (
+            <div className="space-y-6">
+              {selectedProduct.image_url && (
+                <div className="aspect-video w-full overflow-hidden rounded-lg bg-muted">
+                  <img
+                    src={selectedProduct.image_url}
+                    alt={selectedProduct.name}
+                    className="w-full h-full object-contain p-8"
+                  />
+                </div>
+              )}
+
+              <div className="space-y-4">
+                {selectedProduct.description && (
+                  <div>
+                    <h3 className="font-semibold text-lg mb-2">Descrição</h3>
+                    <div 
+                      className="prose prose-sm max-w-none text-muted-foreground"
+                      dangerouslySetInnerHTML={{ __html: selectedProduct.description }}
+                    />
+                  </div>
+                )}
+
+                <div className="grid md:grid-cols-2 gap-4 py-4 border-y">
+                  {selectedProduct.weight && (
+                    <div>
+                      <p className="text-sm text-muted-foreground">Peso</p>
+                      <p className="font-medium">{selectedProduct.weight}</p>
+                    </div>
+                  )}
+                  {selectedProduct.units_per_package && (
+                    <div>
+                      <p className="text-sm text-muted-foreground">Unidades por Caixa</p>
+                      <p className="font-medium">{selectedProduct.units_per_package}</p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex items-center justify-between pt-4">
+                  <div>
+                    <p className="text-3xl font-bold text-primary">
+                      R$ {(selectedProduct.final_price || 0).toFixed(2)}
+                    </p>
+                    {selectedProduct.custom_price && selectedProduct.default_price !== selectedProduct.custom_price && (
+                      <p className="text-sm text-muted-foreground line-through">
+                        Preço padrão: R$ {(selectedProduct.default_price || 0).toFixed(2)}
+                      </p>
+                    )}
+                  </div>
+                  <Button 
+                    onClick={() => handleAddToCart(selectedProduct)}
+                    size="lg"
+                  >
+                    <Plus className="h-5 w-5 mr-2" />
+                    Adicionar ao Orçamento
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
