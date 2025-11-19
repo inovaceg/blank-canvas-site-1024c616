@@ -4,6 +4,13 @@ import { Link } from "react-router-dom";
 import { ShoppingCart } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 
+// Remove HTML tags from description
+const stripHtml = (html: string) => {
+  const tmp = document.createElement("div");
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || "";
+};
+
 interface Product {
   id: string;
   name: string;
@@ -44,7 +51,7 @@ export function ProductsSection({ products }: ProductsSectionProps) {
               <CardContent className="p-4 space-y-3">
                 <h3 className="font-semibold text-lg line-clamp-2">{product.name}</h3>
                 {product.description && (
-                  <p className="text-sm text-muted-foreground line-clamp-2">{product.description}</p>
+                  <p className="text-sm text-muted-foreground line-clamp-2">{stripHtml(product.description)}</p>
                 )}
                 {product.price && (
                   <p className="text-lg font-bold text-primary">
