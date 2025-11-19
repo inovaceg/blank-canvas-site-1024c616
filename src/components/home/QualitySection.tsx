@@ -26,7 +26,11 @@ export function QualitySection() {
 
         {/* Imagem da produção */}
         <div className="relative w-full aspect-[16/9] rounded-2xl overflow-hidden shadow-xl mb-12">
-          
+          <img 
+            src="/producao-geral.jpg" 
+            alt="Equipe de produção artesanal trabalhando" 
+            className="w-full h-full object-cover"
+          />
         </div>
 
         <div className="grid md:grid-cols-4 gap-6">
