@@ -1,5 +1,11 @@
 import { CheckCircle, Sparkles, Award, Shield } from "lucide-react";
+import { useInView } from "@/hooks/useInView";
+
 const Qualidade = () => {
+  const { ref: headerRef, isInView: headerInView } = useInView();
+  const { ref: imageRef, isInView: imageInView } = useInView();
+  const { ref: cardsRef, isInView: cardsInView } = useInView();
+  const { ref: promiseRef, isInView: promiseInView } = useInView();
   const qualityPoints = [{
     icon: CheckCircle,
     title: "Ingredientes Selecionados",
@@ -20,14 +26,25 @@ const Qualidade = () => {
   return <div className="min-h-screen py-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">Nosso Compromisso com a Qualidade</h1>
-            <p className="text-xl text-muted-foreground">
+          <div ref={headerRef} className="text-center mb-12">
+            <h1 className={`text-4xl md:text-5xl font-bold mb-6 transition-all duration-700 ${
+              headerInView ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
+            }`}>
+              Nosso Compromisso com a Qualidade
+            </h1>
+            <p className={`text-xl text-muted-foreground transition-all duration-700 delay-150 ${
+              headerInView ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4'
+            }`}>
               A excelência em cada etapa do processo produtivo
             </p>
           </div>
 
-          <div className="aspect-video rounded-lg overflow-hidden mb-12">
+          <div 
+            ref={imageRef}
+            className={`aspect-video rounded-lg overflow-hidden mb-12 transition-all duration-700 ${
+              imageInView ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+            }`}
+          >
             <img 
               src="/qualidade-producao.jpg" 
               alt="Produção artesanal de doces" 
@@ -35,10 +52,16 @@ const Qualidade = () => {
             />
           </div>
 
-          <div className="space-y-8 mb-12">
+          <div ref={cardsRef} className="space-y-8 mb-12">
             {qualityPoints.map((point, index) => {
             const Icon = point.icon;
-            return <div key={index} className="bg-white border rounded-lg p-6 hover:shadow-md transition-shadow">
+            return <div 
+                  key={index} 
+                  className={`bg-white border rounded-lg p-6 hover:shadow-md transition-all duration-500 ${
+                    cardsInView ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-8'
+                  }`}
+                  style={{ transitionDelay: `${index * 100}ms` }}
+                >
                   <div className="flex gap-4">
                     <div className="flex-shrink-0">
                       <div className="p-3 bg-primary/10 rounded-full">
@@ -54,7 +77,12 @@ const Qualidade = () => {
           })}
           </div>
 
-          <div className="bg-primary/5 rounded-lg p-8">
+          <div 
+            ref={promiseRef}
+            className={`bg-primary/5 rounded-lg p-8 transition-all duration-700 ${
+              promiseInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            }`}
+          >
             <h2 className="text-2xl font-bold mb-4">Nossa Promessa</h2>
             <p className="text-muted-foreground leading-relaxed mb-4">
               Desde o início, em 2000, nosso compromisso tem sido claro: produzir doces artesanais de 
