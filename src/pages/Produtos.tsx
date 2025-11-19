@@ -7,14 +7,13 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ShoppingCart, Search } from "lucide-react";
-import { useCart } from "@/contexts/CartContext";
 import { SEO } from "@/components/SEO";
 import { LazyImage } from "@/components/LazyImage";
+import { Link } from "react-router-dom";
 
 const Produtos = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
-  const { addItem } = useCart();
 
   // Remove HTML tags from description
   const stripHtml = (html: string) => {
@@ -140,17 +139,14 @@ const Produtos = () => {
                   </p>
                 )}
                 <Button 
-                  onClick={() => addItem({ 
-                    id: product.id, 
-                    name: product.name, 
-                    price: product.price || 0, 
-                    image_url: product.image_url || undefined 
-                  })}
                   className="w-full" 
                   size="sm"
+                  asChild
                 >
-                  <ShoppingCart className="size-4 mr-2" />
-                  Adicionar ao Carrinho
+                  <Link to="/auth">
+                    <ShoppingCart className="size-4 mr-2" />
+                    Solicitar Orçamento
+                  </Link>
                 </Button>
               </CardContent>
             </Card>
