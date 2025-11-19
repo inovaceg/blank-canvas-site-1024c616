@@ -19,6 +19,7 @@ export function ProductCatalog({ clientId }: ProductCatalogProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [quantity, setQuantity] = useState(1);
   const { addItem } = useCart();
 
   const { data: products = [], isLoading: isLoadingProducts } = useQuery({
@@ -74,15 +75,16 @@ export function ProductCatalog({ clientId }: ProductCatalogProps) {
     return matchesSearch && matchesCategory;
   });
 
-  const handleAddToCart = (product: any) => {
+  const handleAddToCart = (product: any, qty: number = 1) => {
     addItem({
       id: product.id!,
       name: product.name!,
       price: product.final_price || 0,
       image_url: product.image_url || undefined,
-    });
-    toast.success(`${product.name} adicionado ao orçamento`);
+    }, qty);
+    toast.success(`${qty}x ${product.name} adicionado ao orçamento`);
     setSelectedProduct(null);
+    setQuantity(1);
   };
 
   return (
@@ -244,24 +246,61 @@ export function ProductCatalog({ clientId }: ProductCatalogProps) {
                   )}
                 </div>
 
-                <div className="flex items-center justify-between pt-4">
-                  <div>
-                    <p className="text-3xl font-bold text-primary">
-                      R$ {(selectedProduct.final_price || 0).toFixed(2)}
-                    </p>
-                    {selectedProduct.custom_price && selectedProduct.default_price !== selectedProduct.custom_price && (
-                      <p className="text-sm text-muted-foreground line-through">
-                        Preço padrão: R$ {(selectedProduct.default_price || 0).toFixed(2)}
+                <div className="space-y-4 pt-4">
+                  <div className="flex items-center gap-4">
+                    <div className="flex-1">
+                      <label className="text-sm font-medium mb-2 block">Quantidade</label>
+                      <div className="flex items-center gap-2">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                        >
+                          -
+                        </Button>
+                        <Input
+                          type="number"
+                          min="1"
+                          value={quantity}
+                          onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                          className="w-20 text-center"
+                        />
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => setQuantity(quantity + 1)}
+                        >
+                          +
+                        </Button>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-sm text-muted-foreground mb-2">Preço unitário</p>
+                      <p className="text-2xl font-bold text-primary">
+                        R$ {(selectedProduct.final_price || 0).toFixed(2)}
                       </p>
-                    )}
+                      {selectedProduct.custom_price && selectedProduct.default_price !== selectedProduct.custom_price && (
+                        <p className="text-xs text-muted-foreground line-through">
+                          R$ {(selectedProduct.default_price || 0).toFixed(2)}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                  <Button 
-                    onClick={() => handleAddToCart(selectedProduct)}
-                    size="lg"
-                  >
-                    <Plus className="h-5 w-5 mr-2" />
-                    Adicionar ao Orçamento
-                  </Button>
+                  <div className="flex items-center justify-between pt-2 border-t">
+                    <div>
+                      <p className="text-sm text-muted-foreground">Total</p>
+                      <p className="text-3xl font-bold text-primary">
+                        R$ {((selectedProduct.final_price || 0) * quantity).toFixed(2)}
+                      </p>
+                    </div>
+                    <Button 
+                      onClick={() => handleAddToCart(selectedProduct, quantity)}
+                      size="lg"
+                    >
+                      <Plus className="h-5 w-5 mr-2" />
+                      Realizar Pedido
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
