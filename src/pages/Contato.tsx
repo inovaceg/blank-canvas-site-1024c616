@@ -130,11 +130,11 @@ const Contato = () => {
               </p>
             </div>
             <div>
-              <h2 className="text-xl font-bold mb-6 uppercase tracking-wide">Nome da Empresa (Opcional)</h2>
+              <h3 className="text-xl font-bold mb-6 uppercase tracking-wide">Dados para Contato e Cotação</h3> {/* Novo título */}
               <form onSubmit={handleSubmit} className="space-y-4">
                 <Input
                   name="company_name"
-                  placeholder="NOME DA SUA EMPRESA"
+                  placeholder="NOME DA SUA EMPRESA (OPCIONAL)"
                   value={formData.company_name}
                   onChange={handleChange}
                   className={`bg-white border-0 text-foreground placeholder:text-muted-foreground ${errors.company_name ? 'border-destructive' : ''}`}
@@ -192,7 +192,7 @@ const Contato = () => {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-sm font-semibold uppercase tracking-wide">CEP *</label>
+                  <label className="text-sm font-semibold uppercase tracking-wide">CEP</label>
                   <Input
                     name="address"
                     placeholder="00000-000"
@@ -282,6 +282,7 @@ const Contato = () => {
               </p>
             </div>
             
+            <h3 className="text-xl font-bold mb-6 uppercase tracking-wide">Inscreva-se para Receber Ofertas Exclusivas</h3> {/* Novo título */}
             <form className="space-y-4">
               <Input
                 type="text"
