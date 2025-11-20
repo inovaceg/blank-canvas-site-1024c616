@@ -14,16 +14,15 @@ export const contactFormSchema = z.object({
     .min(10, "Telefone deve ter pelo menos 10 dígitos")
     .max(20, "Telefone muito longo"),
   company_name: z.string().max(100, "Nome da empresa muito longo").optional().or(z.literal("")),
+  address: z.string().max(200, "Endereço completo muito longo").optional().or(z.literal("")), // Campo único para endereço completo
   city: z.string().max(100, "Nome da cidade muito longo").optional().or(z.literal("")),
   state: z.string().max(50, "Nome do estado muito longo").optional().or(z.literal("")),
-  address: z.string().max(200, "Endereço muito longo").optional().or(z.literal("")),
-  product_interest: z.string().max(200, "Descrição muito longa").optional().or(z.literal("")),
-  quantity: z.string().max(50, "Quantidade muito longa").optional().or(z.literal("")),
+  product_interest: z.string().max(200, "Descrição de interesse muito longa").optional().or(z.literal("")), // Campo para produtos de interesse
+  quantity: z.string().max(50, "Quantidade muito longa").optional().or(z.literal("")), // Campo para quantidade desejada
   message: z
     .string()
-    .max(1000, "Mensagem muito longa")
-    .optional()
-    .or(z.literal("")),
+    .min(10, "Mensagem deve ter pelo menos 10 caracteres") // Adicionado validação mínima para mensagem
+    .max(1000, "Mensagem muito longa"),
 });
 
 export type ContactFormData = z.infer<typeof contactFormSchema>;

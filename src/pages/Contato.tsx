@@ -14,11 +14,11 @@ const Contato = () => {
     email: "",
     phone: "",
     company_name: "",
+    address: "", // Campo único para endereço completo
     city: "",
     state: "",
-    address: "",
-    product_interest: "",
-    quantity: "",
+    product_interest: "", // Campo para produtos de interesse
+    quantity: "", // Campo para quantidade desejada
     message: ""
   });
   const [errors, setErrors] = useState<Partial<Record<keyof ContactFormData, string>>>({});
@@ -51,9 +51,9 @@ const Contato = () => {
         email: validatedData.email,
         phone: validatedData.phone,
         company_name: validatedData.company_name || null,
+        address: validatedData.address || null,
         city: validatedData.city || null,
         state: validatedData.state || null,
-        address: validatedData.address || null,
         product_interest: validatedData.product_interest || null,
         quantity: validatedData.quantity || null,
         message: validatedData.message || null,
@@ -75,9 +75,9 @@ const Contato = () => {
         email: "",
         phone: "",
         company_name: "",
+        address: "",
         city: "",
         state: "",
-        address: "",
         product_interest: "",
         quantity: "",
         message: ""
@@ -130,24 +130,29 @@ const Contato = () => {
               </p>
             </div>
             <div>
-              <h3 className="text-xl font-bold mb-6 uppercase tracking-wide">Dados para Contato e Cotação</h3> {/* Novo título */}
+              <h3 className="text-xl font-bold mb-6 uppercase tracking-wide">Dados para Contato e Cotação</h3>
               <form onSubmit={handleSubmit} className="space-y-4">
-                <Input
-                  name="company_name"
-                  placeholder="NOME DA SUA EMPRESA (OPCIONAL)"
-                  value={formData.company_name}
-                  onChange={handleChange}
-                  className={`bg-white border-0 text-foreground placeholder:text-muted-foreground ${errors.company_name ? 'border-destructive' : ''}`}
-                />
-                {errors.company_name && (
-                  <p className="text-sm text-destructive mt-1">{errors.company_name}</p>
-                )}
+                <div className="space-y-1">
+                  <label htmlFor="company_name" className="text-sm font-semibold uppercase tracking-wide">Nome da Empresa (Opcional)</label>
+                  <Input
+                    id="company_name"
+                    name="company_name"
+                    placeholder="Sua Empresa Ltda."
+                    value={formData.company_name}
+                    onChange={handleChange}
+                    className={`bg-white border-0 text-foreground placeholder:text-muted-foreground ${errors.company_name ? 'border-destructive' : ''}`}
+                  />
+                  {errors.company_name && (
+                    <p className="text-sm text-destructive mt-1">{errors.company_name}</p>
+                  )}
+                </div>
                 
                 <div className="space-y-1">
-                  <label className="text-sm font-semibold uppercase tracking-wide">Nome do Contato *</label>
+                  <label htmlFor="contact_name" className="text-sm font-semibold uppercase tracking-wide">Nome do Contato *</label>
                   <Input
+                    id="contact_name"
                     name="contact_name"
-                    placeholder="SEU NOME COMPLETO"
+                    placeholder="Seu nome completo"
                     value={formData.contact_name}
                     onChange={handleChange}
                     required
@@ -160,11 +165,12 @@ const Contato = () => {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-sm font-semibold uppercase tracking-wide">E-mail *</label>
+                    <label htmlFor="email" className="text-sm font-semibold uppercase tracking-wide">E-mail *</label>
                     <Input
+                      id="email"
                       name="email"
                       type="email"
-                      placeholder="SEU@EMAIL.COM"
+                      placeholder="seu@email.com"
                       value={formData.email}
                       onChange={handleChange}
                       required
@@ -175,11 +181,12 @@ const Contato = () => {
                     )}
                   </div>
                   <div className="space-y-1">
-                    <label className="text-sm font-semibold uppercase tracking-wide">Telefone / WhatsApp *</label>
+                    <label htmlFor="phone" className="text-sm font-semibold uppercase tracking-wide">Telefone / WhatsApp *</label>
                     <Input
+                      id="phone"
                       name="phone"
                       type="tel"
-                      placeholder="XX-XXXXXXXXX"
+                      placeholder="(XX) XXXXX-XXXX"
                       value={formData.phone}
                       onChange={handleChange}
                       required
@@ -192,69 +199,92 @@ const Contato = () => {
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-sm font-semibold uppercase tracking-wide">CEP</label>
+                  <label htmlFor="address" className="text-sm font-semibold uppercase tracking-wide">Endereço Completo (CEP, Rua, Número, Bairro, Complemento)</label>
                   <Input
+                    id="address"
                     name="address"
-                    placeholder="00000-000"
+                    placeholder="Ex: 00000-000, Rua Exemplo, 123, Centro, Apto 101"
                     value={formData.address}
                     onChange={handleChange}
-                    className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
+                    className={`bg-white border-0 text-foreground placeholder:text-muted-foreground ${errors.address ? 'border-destructive' : ''}`}
                   />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-sm font-semibold uppercase tracking-wide">Endereço (Rua, Avenida, etc.)</label>
-                  <Input
-                    name="product_interest"
-                    placeholder="RUA, AVENIDA, ETC."
-                    value={formData.product_interest}
-                    onChange={handleChange}
-                    className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
-                  />
-                </div>
-
-                <div className="space-y-1">
-                  <label className="text-sm font-semibold uppercase tracking-wide">Bairro</label>
-                  <Input
-                    name="quantity"
-                    placeholder="SEU BAIRRO"
-                    value={formData.quantity}
-                    onChange={handleChange}
-                    className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
-                  />
+                  {errors.address && (
+                    <p className="text-sm text-destructive mt-1">{errors.address}</p>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1">
-                    <label className="text-sm font-semibold uppercase tracking-wide">Cidade</label>
+                    <label htmlFor="city" className="text-sm font-semibold uppercase tracking-wide">Cidade</label>
                     <Input
+                      id="city"
                       name="city"
-                      placeholder="SUA CIDADE"
+                      placeholder="Sua Cidade"
                       value={formData.city}
                       onChange={handleChange}
-                      className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
+                      className={`bg-white border-0 text-foreground placeholder:text-muted-foreground ${errors.city ? 'border-destructive' : ''}`}
                     />
+                    {errors.city && (
+                      <p className="text-sm text-destructive mt-1">{errors.city}</p>
+                    )}
                   </div>
                   <div className="space-y-1">
-                    <label className="text-sm font-semibold uppercase tracking-wide">Estado (UF)</label>
+                    <label htmlFor="state" className="text-sm font-semibold uppercase tracking-wide">Estado (UF)</label>
                     <Input
+                      id="state"
                       name="state"
-                      placeholder="SP"
+                      placeholder="UF"
                       value={formData.state}
                       onChange={handleChange}
-                      className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
+                      maxLength={2}
+                      className={`bg-white border-0 text-foreground placeholder:text-muted-foreground ${errors.state ? 'border-destructive' : ''}`}
                     />
+                    {errors.state && (
+                      <p className="text-sm text-destructive mt-1">{errors.state}</p>
+                    )}
                   </div>
                 </div>
 
                 <div className="space-y-1">
-                  <label className="text-sm font-semibold uppercase tracking-wide">Mensagem *</label>
+                  <label htmlFor="product_interest" className="text-sm font-semibold uppercase tracking-wide">Produtos de Interesse</label>
+                  <Input
+                    id="product_interest"
+                    name="product_interest"
+                    placeholder="Ex: Bananada tradicional, Goma de amido"
+                    value={formData.product_interest}
+                    onChange={handleChange}
+                    className={`bg-white border-0 text-foreground placeholder:text-muted-foreground ${errors.product_interest ? 'border-destructive' : ''}`}
+                  />
+                  {errors.product_interest && (
+                    <p className="text-sm text-destructive mt-1">{errors.product_interest}</p>
+                  )}
+                </div>
+
+                <div className="space-y-1">
+                  <label htmlFor="quantity" className="text-sm font-semibold uppercase tracking-wide">Quantidade Desejada</label>
+                  <Input
+                    id="quantity"
+                    name="quantity"
+                    placeholder="Ex: 10 caixas, 50 unidades"
+                    value={formData.quantity}
+                    onChange={handleChange}
+                    className={`bg-white border-0 text-foreground placeholder:text-muted-foreground ${errors.quantity ? 'border-destructive' : ''}`}
+                  />
+                  {errors.quantity && (
+                    <p className="text-sm text-destructive mt-1">{errors.quantity}</p>
+                  )}
+                </div>
+
+                <div className="space-y-1">
+                  <label htmlFor="message" className="text-sm font-semibold uppercase tracking-wide">Mensagem *</label>
                   <Textarea
+                    id="message"
                     name="message"
-                    placeholder="DESCREVA SUA SOLICITAÇÃO OU DÚVIDA..."
+                    placeholder="Descreva sua solicitação ou dúvida..."
                     value={formData.message}
                     onChange={handleChange}
                     rows={4}
+                    required
                     className={`bg-white border-0 text-foreground placeholder:text-muted-foreground resize-none ${errors.message ? 'border-destructive' : ''}`}
                   />
                   {errors.message && (
@@ -282,28 +312,44 @@ const Contato = () => {
               </p>
             </div>
             
-            <h3 className="text-xl font-bold mb-6 uppercase tracking-wide">Inscreva-se para Receber Ofertas Exclusivas</h3> {/* Novo título */}
+            <h3 className="text-xl font-bold mb-6 uppercase tracking-wide">Inscreva-se para Receber Ofertas Exclusivas</h3>
             <form className="space-y-4">
-              <Input
-                type="text"
-                placeholder="SEU NOME COMPLETO *"
-                className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
-              />
-              <Input
-                type="email"
-                placeholder="SEU E-MAIL *"
-                className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
-              />
-              <Input
-                type="tel"
-                placeholder="SEU WHATSAPP (XX-XXXXXXXXX) *"
-                className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
-              />
-              <Input
-                type="text"
-                placeholder="SUA CIDADE *"
-                className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
-              />
+              <div className="space-y-1">
+                <label htmlFor="newsletter-name" className="text-sm font-semibold uppercase tracking-wide">Seu Nome Completo *</label>
+                <Input
+                  id="newsletter-name"
+                  type="text"
+                  placeholder="Seu nome completo"
+                  className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
+                />
+              </div>
+              <div className="space-y-1">
+                <label htmlFor="newsletter-email" className="text-sm font-semibold uppercase tracking-wide">Seu E-mail *</label>
+                <Input
+                  id="newsletter-email"
+                  type="email"
+                  placeholder="seu@email.com"
+                  className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
+                />
+              </div>
+              <div className="space-y-1">
+                <label htmlFor="newsletter-whatsapp" className="text-sm font-semibold uppercase tracking-wide">Seu WhatsApp (XX-XXXXXXXXX) *</label>
+                <Input
+                  id="newsletter-whatsapp"
+                  type="tel"
+                  placeholder="(XX) XXXXX-XXXX"
+                  className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
+                />
+              </div>
+              <div className="space-y-1">
+                <label htmlFor="newsletter-city" className="text-sm font-semibold uppercase tracking-wide">Sua Cidade *</label>
+                <Input
+                  id="newsletter-city"
+                  type="text"
+                  placeholder="Sua cidade"
+                  className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
+                />
+              </div>
               <Button 
                 type="submit" 
                 className="w-full bg-white text-primary hover:bg-white/90 font-semibold uppercase tracking-wide" 
