@@ -46,12 +46,14 @@ export default function BannerManagement() {
       
       if (error) throw error;
     },
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ["homepage-banners-admin"] });
       queryClient.invalidateQueries({ queryKey: ["homepage-banners"] }); // Invalida o cache da HeroSection
       toast.success("Banner atualizado com sucesso!");
+      console.log(`BannerManagement: URL pública salva para ${variables.key}:`, variables.url); // Log da URL salva
     },
-    onError: () => {
+    onError: (error) => {
+      console.error("Erro ao atualizar banner:", error);
       toast.error("Erro ao atualizar banner");
     },
   });
