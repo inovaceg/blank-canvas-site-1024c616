@@ -29,16 +29,16 @@ const Produtos = () => {
   return (
     <>
       <SEO
-        title="Catálogo de Produtos"
-        description="Explore nossa linha completa de bananadas e gomas de amido artesanais de alta qualidade para atacado."
-        keywords="catálogo de doces, bananada atacado, goma de amido preço, comprar doces artesanais"
+        title="Catálogo de Bananadas, Doces de Banana e Gomas Artesanais"
+        description="Explore nossa linha completa de bananadas, doces de banana, bananadas açucaradas, bananadas com açaí e gomas de amido artesanais de alta qualidade para atacado."
+        keywords="catálogo de doces, bananada atacado, doce de banana preço, goma de amido preço, comprar doces artesanais, bananada com açaí, bananada açucarada"
       />
       <div className="min-h-screen py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">Catálogo de Produtos</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4">Catálogo de Bananadas, Doces de Banana e Gomas Artesanais</h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              Explore nossa linha completa de bananadas e gomas de amido artesanais
+              Explore nossa linha completa de bananadas, doces de banana, bananadas açucaradas, bananadas com açaí e gomas de amido artesanais
             </p>
           </div>
 

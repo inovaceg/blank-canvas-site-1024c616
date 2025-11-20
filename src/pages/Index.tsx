@@ -26,27 +26,13 @@ const Index = () => {
     },
   });
 
-  // A query para bannerUrl não é mais necessária aqui, pois HeroSection a busca internamente.
-  // const { data: bannerUrl } = useQuery({
-  //   queryKey: ['homepage-banner'],
-  //   queryFn: async () => {
-  //     const { data } = await supabase
-  //       .from('settings')
-  //       .select('value')
-  //       .eq('key', 'homepage_banner_url_desktop')
-  //       .maybeSingle();
-      
-  //     return data?.value;
-  //   },
-  // });
-
   const organizationSchema = {
     "@context": "https://schema.org",
     "@type": "Organization",
     "name": "Doces São Fidélis",
     "url": "https://docessaofidelis.com.br",
     "logo": "https://docessaofidelis.com.br/logo-doces-sao-fidelis.png",
-    "description": "Fornecemos bananadas e gomas de amido artesanais de alta qualidade para lojistas e grandes redes em todo o Brasil.",
+    "description": "Fornecemos bananadas, doces de banana, bananadas açucaradas, bananadas com açaí e gomas de amido artesanais de alta qualidade para lojistas e grandes redes em todo o Brasil.",
     "address": {
       "@type": "PostalAddress",
       "addressCountry": "BR"

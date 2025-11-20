@@ -85,10 +85,10 @@ export function HeroSection() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-12 sm:py-16 md:py-20">
         <div className="max-w-4xl space-y-6 md:space-y-8 mx-auto">
           <h1 className={`font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white text-balance drop-shadow-lg animate-fade-in`}>
-            Tradição e Sabor em Cada Pedaço
+            Tradição e Sabor em Cada Pedaço: Bananadas e Gomas Artesanais
           </h1>
           <p className={`text-base sm:text-lg md:text-xl text-white/90 text-pretty drop-shadow-md animate-fade-in animation-delay-[200ms] max-w-2xl mx-auto`}>
-            Fornecemos bananadas e gomas de amido artesanais de alta qualidade para lojistas e grandes redes em todo o Brasil.
+            Fornecemos bananadas, doces de banana, bananadas açucaradas, bananadas com açaí e gomas de amido artesanais de alta qualidade para lojistas e grandes redes em todo o Brasil.
           </p>
           <div className={`flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center items-center pt-4 animate-fade-in animation-delay-[400ms]`}>
             <Button asChild size="lg" className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground w-full sm:w-auto">

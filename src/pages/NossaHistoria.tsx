@@ -7,7 +7,7 @@ const NossaHistoria = () => {
       <SEO
         title="Nossa História"
         description="Conheça a trajetória da Doces São Fidélis, desde a fundação até os dias atuais, mantendo a tradição e qualidade."
-        keywords="história doces, doces são fidélis, tradição, qualidade, bananada, goma de amido"
+        keywords="história doces, doces são fidélis, tradição, qualidade, bananada, doce de banana, goma de amido, bananada açucarada, bananada com açaí"
       />
       <div className="min-h-screen py-16">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">

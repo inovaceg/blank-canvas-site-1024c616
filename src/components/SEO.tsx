@@ -11,11 +11,11 @@ interface SEOProps {
 }
 
 const defaultSEO = {
-  title: "Doces São Fidélis - Bananadas e Gomas de Amido Artesanais",
+  title: "Doces São Fidélis - Bananadas, Doces de Banana e Gomas Artesanais",
   description:
-    "Fornecemos bananadas e gomas de amido artesanais de alta qualidade para lojistas e grandes redes em todo o Brasil. Tradição e sabor há mais de 20 anos.",
+    "Fornecemos bananadas, doces de banana, bananadas açucaradas, bananadas com açaí e gomas de amido artesanais de alta qualidade para lojistas e grandes redes em todo o Brasil. Tradição e sabor há mais de 20 anos.",
   keywords:
-    "bananada, goma de amido, doces artesanais, doces tradicionais, atacado de doces, fornecedor de doces, São Fidélis",
+    "bananada, doce de banana, bananada açucarada, bananada com açaí, goma de amido, doces artesanais, doces tradicionais, atacado de doces, fornecedor de doces, São Fidélis",
   image: "/logo-doces-sao-fidelis.png",
   url: "https://docessaofidelis.com.br",
 };

@@ -16,7 +16,7 @@ export function Footer() {
               }}
             />
             <p className="text-sm leading-relaxed text-white/80">
-              Desde 2000 produzindo bananadas e gomas de amido com tradição e qualidade que atravessam gerações.
+              Desde 2000 produzindo bananadas, doces de banana e gomas de amido com tradição e qualidade que atravessam gerações.
             </p>
           </div>
 
