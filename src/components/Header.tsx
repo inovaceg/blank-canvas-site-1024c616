@@ -18,7 +18,7 @@ export function Header() {
           <div className="flex h-10 items-center justify-center text-sm">
             <div className="flex items-center gap-2 font-medium">
               <Store className="size-4" />
-              <span>Doces São Fidélis – Bananadas e Gomas Artesanais: Tradição e Qualidade Desde 2000</span>
+              <span>Doces São Fidélis - Tradição e qualidade desde 2000</span>
             </div>
           </div>
         </div>
