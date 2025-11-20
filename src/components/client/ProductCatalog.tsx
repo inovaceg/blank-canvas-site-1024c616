@@ -11,14 +11,23 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatCurrency } from "@/lib/utils";
+import { Link } from "react-router-dom"; // Importar Link
 
 interface ProductCatalogProps {
   clientId?: string | null;
+  searchTerm?: string; // Adicionar prop para termo de busca
+  selectedCategory?: string; // Adicionar prop para categoria selecionada
+  categories?: { id: string; name: string }[]; // Adicionar prop para categorias
+  isLoadingCategories?: boolean; // Adicionar prop para estado de carregamento das categorias
 }
 
-export function ProductCatalog({ clientId }: ProductCatalogProps) {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+export function ProductCatalog({ 
+  clientId, 
+  searchTerm = "", 
+  selectedCategory = "all", 
+  categories = [], 
+  isLoadingCategories = false 
+}: ProductCatalogProps) {
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [quantity, setQuantity] = useState(1);
   const [productQuantities, setProductQuantities] = useState<Record<string, number>>({});
@@ -63,19 +72,6 @@ export function ProductCatalog({ clientId }: ProductCatalogProps) {
     },
   });
 
-  const { data: categories = [] } = useQuery({
-    queryKey: ["categories"],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from("categories")
-        .select("*")
-        .order("name");
-
-      if (error) throw error;
-      return data;
-    },
-  });
-
   const filteredProducts = products.filter((product) => {
     const matchesSearch = product.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          product.description?.toLowerCase().includes(searchTerm.toLowerCase());
@@ -97,30 +93,8 @@ export function ProductCatalog({ clientId }: ProductCatalogProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Buscar produtos..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-        <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-          <SelectTrigger className="w-full md:w-[200px]">
-            <SelectValue placeholder="Categoria" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">Todas as categorias</SelectItem>
-            {categories.map((cat) => (
-              <SelectItem key={cat.id} value={cat.name}>
-                {cat.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
+      {/* Os campos de busca e filtro de categoria foram movidos para a página Produtos.tsx */}
+      {/* Este componente agora apenas renderiza a lista de produtos filtrados */}
 
       {isLoadingProducts ? (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -204,9 +178,11 @@ export function ProductCatalog({ clientId }: ProductCatalogProps) {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setSelectedProduct(product)}
+                    asChild // Adicionado asChild para permitir Link
                   >
-                    Ver Detalhes
+                    <Link to={`/produtos/${product.id}`}>
+                      Ver Detalhes
+                    </Link>
                   </Button>
                 </div>
                 <div className="w-full flex items-center gap-2">
@@ -347,7 +323,7 @@ export function ProductCatalog({ clientId }: ProductCatalogProps) {
                       size="lg"
                     >
                       <Plus className="h-5 w-5 mr-2" />
-                      Realizar Pedido
+                      Adicionar ao Orçamento
                     </Button>
                   </div>
                 </div>
