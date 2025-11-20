@@ -7,7 +7,7 @@ export function QualitySection() {
   const benefits = [{
     icon: CheckCircle,
     title: "Ingredientes Selecionados",
-    description: "Utilizamos apenas ingredientes frescos e naturais, cuidadosamente selecionados para garantir o sabor autêntico e a qualidade superior em cada doce."
+    description: "Utilizamos apenas ingredientes frescos, cuidadosamente selecionados para garantir o sabor autêntico e a qualidade superior em cada doce."
   }, {
     icon: Sparkles,
     title: "Processo Artesanal",
