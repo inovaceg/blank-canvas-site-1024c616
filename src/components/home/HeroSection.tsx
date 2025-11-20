@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useInView } from "@/hooks/useInView";
-import { ParallaxSection } from "@/components/ParallaxSection";
+// import { ParallaxSection } from "@/components/ParallaxSection"; // Removido
 
 interface HeroSectionProps {
   bannerUrl?: string;
@@ -14,8 +14,13 @@ export function HeroSection({ bannerUrl }: HeroSectionProps) {
   const imageSrc = bannerUrl || defaultBanner;
 
   return (
-    <ParallaxSection imageUrl={imageSrc} speed={0.5} className="relative flex items-center justify-center text-center min-h-[500px] md:min-h-[600px] lg:min-h-[700px]">
-      <div ref={ref} className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-12 sm:py-16 md:py-20">
+    <div 
+      ref={ref} 
+      className="relative flex items-center justify-center text-center min-h-[500px] md:min-h-[600px] lg:min-h-[700px] bg-cover bg-center"
+      style={{ backgroundImage: `url(${imageSrc})` }}
+    >
+      <div className="absolute inset-0 bg-black/40" />
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-12 sm:py-16 md:py-20">
         <div className="max-w-4xl space-y-6 md:space-y-8 mx-auto">
           <h1 className={`font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-white text-balance drop-shadow-lg transition-all duration-1000 ${
             isInView ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
@@ -53,6 +58,6 @@ export function HeroSection({ bannerUrl }: HeroSectionProps) {
           </div>
         </div>
       </div>
-    </ParallaxSection>
+    </div>
   );
 }
