@@ -88,7 +88,7 @@ export function HeroSection() {
             Tradição e Sabor em Cada Pedaço: Bananadas e Gomas Artesanais
           </h1>
           <p className={`text-base sm:text-lg md:text-xl text-white/90 text-pretty drop-shadow-md animate-fade-in animation-delay-[200ms] max-w-2xl mx-auto`}>
-            Fornecemos bananadas, doces de banana, bananadas açucaradas, bananadas com açaí e gomas de amido artesanais de alta qualidade para lojistas e grandes redes em todo o Brasil.
+            Produzimos doces de qualidade artesanal, disponíveis nas principais bombonières e pontos de venda da sua região.
           </p>
           <div className={`flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center items-center pt-4 animate-fade-in animation-delay-[400ms]`}>
             <Button asChild size="lg" className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground w-full sm:w-auto">
