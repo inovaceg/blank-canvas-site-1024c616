@@ -3,7 +3,7 @@ import { useInView } from "@/hooks/useInView";
 
 const testimonials = [
   {
-    quote: "As bananadas da Doces São Fidélis são incríveis! O sabor é único e nos toda a tradição que amamos.",
+    quote: "As bananadas da Doces São Fidélis são incríveis! O sabor é único. Todos aqui em casa adoram!",
     author: "Maria Silva",
     role: "Cliente Satisfeita",
     initials: "MS",
