@@ -24,7 +24,7 @@ export function QualitySection() {
             A Qualidade é o Nosso Maior Compromisso
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Usamos apenas ingredientes naturais, processos artesanais e controle rigoroso em cada etapa da produção.
+            Usamos matérias-primas e ingredientes selecionados, processos artesanais e controle rigoroso de cada etapa de produção.
           </p>
         </div>
 
