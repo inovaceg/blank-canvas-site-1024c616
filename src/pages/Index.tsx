@@ -26,18 +26,19 @@ const Index = () => {
     },
   });
 
-  const { data: bannerUrl } = useQuery({
-    queryKey: ['homepage-banner'],
-    queryFn: async () => {
-      const { data } = await supabase
-        .from('settings')
-        .select('value')
-        .eq('key', 'homepage_banner_url_desktop')
-        .maybeSingle();
+  // A query para bannerUrl não é mais necessária aqui, pois HeroSection a busca internamente.
+  // const { data: bannerUrl } = useQuery({
+  //   queryKey: ['homepage-banner'],
+  //   queryFn: async () => {
+  //     const { data } = await supabase
+  //       .from('settings')
+  //       .select('value')
+  //       .eq('key', 'homepage_banner_url_desktop')
+  //       .maybeSingle();
       
-      return data?.value;
-    },
-  });
+  //     return data?.value;
+  //   },
+  // });
 
   const organizationSchema = {
     "@context": "https://schema.org",
@@ -57,7 +58,7 @@ const Index = () => {
     <>
       <SEO jsonLd={organizationSchema} />
       <div className="min-h-screen">
-        <HeroSection bannerUrl={bannerUrl} />
+        <HeroSection /> {/* Removida a prop bannerUrl */}
         <AboutSection />
         <QualitySection />
         <ProductsSection products={products} />

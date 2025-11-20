@@ -2,22 +2,66 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useInView } from "@/hooks/useInView";
-// import { ParallaxSection } from "@/components/ParallaxSection"; // Removido
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
-interface HeroSectionProps {
-  bannerUrl?: string;
-}
+// A interface HeroSectionProps não é mais necessária, pois o bannerUrl é buscado internamente.
+// interface HeroSectionProps {}
 
-export function HeroSection({ bannerUrl }: HeroSectionProps) {
+export function HeroSection() {
   const { ref, isInView } = useInView();
-  const defaultBanner = "/hero-banner.jpg";
-  const imageSrc = bannerUrl || defaultBanner;
+
+  const { data: bannerUrls, isLoading: isLoadingBanners } = useQuery({
+    queryKey: ['homepage-banners'],
+    queryFn: async () => {
+      const { data } = await supabase
+        .from('settings')
+        .select('key, value')
+        .in('key', ['homepage_banner_url_desktop', 'homepage_banner_url_tablet', 'homepage_banner_url_mobile']);
+      
+      const urls = data?.reduce((acc, item) => {
+        acc[item.key] = item.value;
+        return acc;
+      }, {} as Record<string, string | null>);
+
+      return {
+        desktop: urls?.homepage_banner_url_desktop || "/hero-banner.jpg",
+        tablet: urls?.homepage_banner_url_tablet || urls?.homepage_banner_url_desktop || "/hero-banner.jpg",
+        mobile: urls?.homepage_banner_url_mobile || urls?.homepage_banner_url_tablet || urls?.homepage_banner_url_desktop || "/hero-banner.jpg",
+      };
+    },
+  });
+
+  if (isLoadingBanners) {
+    return (
+      <div className="relative flex items-center justify-center text-center min-h-[500px] md:min-h-[600px] lg:min-h-[700px] bg-gray-200 dark:bg-gray-800 animate-pulse">
+        <div className="absolute inset-0 bg-black/40" />
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-12 sm:py-16 md:py-20">
+          <div className="max-w-4xl space-y-6 md:space-y-8 mx-auto">
+            <div className="h-12 w-3/4 mx-auto bg-gray-300 dark:bg-gray-700 rounded" />
+            <div className="h-6 w-1/2 mx-auto bg-gray-300 dark:bg-gray-700 rounded" />
+            <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 justify-center items-center pt-4">
+              <div className="h-10 w-48 bg-gray-300 dark:bg-gray-700 rounded-full" />
+              <div className="h-10 w-48 bg-gray-300 dark:bg-gray-700 rounded-full" />
+            </div>
+            <div className="flex justify-center">
+              <div className="h-10 w-64 bg-gray-300 dark:bg-gray-700 rounded-full" />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Usando classes Tailwind para background-image responsivo
+  const mobileBg = bannerUrls?.mobile ? `bg-[url('${bannerUrls.mobile}')]` : 'bg-[url("/hero-banner.jpg")]';
+  const tabletBg = bannerUrls?.tablet ? `md:bg-[url('${bannerUrls.tablet}')]` : '';
+  const desktopBg = bannerUrls?.desktop ? `lg:bg-[url('${bannerUrls.desktop}')]` : '';
 
   return (
     <div 
       ref={ref} 
-      className="relative flex items-center justify-center text-center min-h-[500px] md:min-h-[600px] lg:min-h-[700px] bg-cover bg-center"
-      style={{ backgroundImage: `url(${imageSrc})` }}
+      className={`relative flex items-center justify-center text-center min-h-[500px] md:min-h-[600px] lg:min-h-[700px] bg-cover bg-center ${mobileBg} ${tabletBg} ${desktopBg}`}
     >
       <div className="absolute inset-0 bg-black/40" />
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-12 sm:py-16 md:py-20">
