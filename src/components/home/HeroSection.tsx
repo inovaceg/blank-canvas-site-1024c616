@@ -5,9 +5,6 @@ import { useInView } from "@/hooks/useInView";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-// A interface HeroSectionProps não é mais necessária, pois o bannerUrl é buscado internamente.
-// interface HeroSectionProps {}
-
 export function HeroSection() {
   const { ref, isInView } = useInView();
 
@@ -32,7 +29,10 @@ export function HeroSection() {
     },
   });
 
-  if (isLoadingBanners) {
+  // Adicionado console.log para depuração
+  console.log("Banner URLs:", bannerUrls);
+
+  if (isLoadingBanners || !bannerUrls) {
     return (
       <div className="relative flex items-center justify-center text-center min-h-[500px] md:min-h-[600px] lg:min-h-[700px] bg-gray-200 dark:bg-gray-800 animate-pulse">
         <div className="absolute inset-0 bg-black/40" />
@@ -53,15 +53,15 @@ export function HeroSection() {
     );
   }
 
-  // Usando classes Tailwind para background-image responsivo
-  const mobileBg = bannerUrls?.mobile ? `bg-[url('${bannerUrls.mobile}')]` : 'bg-[url("/hero-banner.jpg")]';
-  const tabletBg = bannerUrls?.tablet ? `md:bg-[url('${bannerUrls.tablet}')]` : '';
-  const desktopBg = bannerUrls?.desktop ? `lg:bg-[url('${bannerUrls.desktop}')]` : '';
+  // Constrói as classes Tailwind dinamicamente, garantindo que sempre haja uma URL válida
+  const mobileBgClass = bannerUrls.mobile ? `bg-[url('${bannerUrls.mobile}')]` : 'bg-[url("/hero-banner.jpg")]';
+  const tabletBgClass = bannerUrls.tablet ? `md:bg-[url('${bannerUrls.tablet}')]` : '';
+  const desktopBgClass = bannerUrls.desktop ? `lg:bg-[url('${bannerUrls.desktop}')]` : '';
 
   return (
     <div 
       ref={ref} 
-      className={`relative flex items-center justify-center text-center min-h-[500px] md:min-h-[600px] lg:min-h-[700px] bg-cover bg-center ${mobileBg} ${tabletBg} ${desktopBg}`}
+      className={`relative flex items-center justify-center text-center min-h-[500px] md:min-h-[600px] lg:min-h-[700px] bg-cover bg-center ${mobileBgClass} ${tabletBgClass} ${desktopBgClass}`}
     >
       <div className="absolute inset-0 bg-black/40" />
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-12 sm:py-16 md:py-20">
