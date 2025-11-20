@@ -121,7 +121,7 @@ const Contato = () => {
   return (
     <div className="min-h-screen py-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
+        <div className="grid lg:grid-cols-1 gap-8 max-w-3xl mx-auto"> {/* Alterado para 1 coluna */}
           <div className="bg-primary text-white rounded-lg p-8 lg:p-12">
             <div className="mb-8">
               <h1 className="font-serif text-3xl lg:text-4xl font-bold mb-4">Entre em Contato</h1>
@@ -302,62 +302,6 @@ const Contato = () => {
                 </Button>
               </form>
             </div>
-          </div>
-
-          <div className="bg-primary text-white rounded-lg p-8 lg:p-12">
-            <div className="mb-8">
-              <h2 className="font-serif text-3xl lg:text-4xl font-bold mb-4">Receba Nossas Novidades</h2>
-              <p className="text-white/90">
-                Cadastre-se em nossa newsletter e fique por dentro de promoções, novos produtos e receitas exclusivas!
-              </p>
-            </div>
-            
-            <h3 className="text-xl font-bold mb-6 uppercase tracking-wide">Inscreva-se para Receber Ofertas Exclusivas</h3>
-            <form className="space-y-4">
-              <div className="space-y-1">
-                <label htmlFor="newsletter-name" className="text-sm font-semibold uppercase tracking-wide">Seu Nome Completo *</label>
-                <Input
-                  id="newsletter-name"
-                  type="text"
-                  placeholder="Seu nome completo"
-                  className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
-                />
-              </div>
-              <div className="space-y-1">
-                <label htmlFor="newsletter-email" className="text-sm font-semibold uppercase tracking-wide">Seu E-mail *</label>
-                <Input
-                  id="newsletter-email"
-                  type="email"
-                  placeholder="seu@email.com"
-                  className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
-                />
-              </div>
-              <div className="space-y-1">
-                <label htmlFor="newsletter-whatsapp" className="text-sm font-semibold uppercase tracking-wide">Seu WhatsApp (XX-XXXXXXXXX) *</label>
-                <Input
-                  id="newsletter-whatsapp"
-                  type="tel"
-                  placeholder="(XX) XXXXX-XXXX"
-                  className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
-                />
-              </div>
-              <div className="space-y-1">
-                <label htmlFor="newsletter-city" className="text-sm font-semibold uppercase tracking-wide">Sua Cidade *</label>
-                <Input
-                  id="newsletter-city"
-                  type="text"
-                  placeholder="Sua cidade"
-                  className="bg-white border-0 text-foreground placeholder:text-muted-foreground"
-                />
-              </div>
-              <Button 
-                type="submit" 
-                className="w-full bg-white text-primary hover:bg-white/90 font-semibold uppercase tracking-wide" 
-                size="lg"
-              >
-                Cadastrar
-              </Button>
-            </form>
           </div>
         </div>
       </div>
