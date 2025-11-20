@@ -1,5 +1,5 @@
 import { SEO } from "@/components/SEO";
-import { LazyImage } from "@/components/LazyImage"; // Importar LazyImage
+import { LazyImage } from "@/components/LazyImage";
 
 const NossaHistoria = () => {
   return (
@@ -40,8 +40,8 @@ const NossaHistoria = () => {
           <div className="grid md:grid-cols-2 gap-12 items-center mb-16">
             <div className="aspect-video bg-secondary/20 rounded-lg overflow-hidden order-2 md:order-1">
               <LazyImage
-                src="/images/1.jpg"
-                alt="Fábrica Doces São Fidélis"
+                src="/images/vista-aerea.jpg" // Caminho da nova imagem
+                alt="Vista aérea da Fábrica Doces São Fidélis" // Alt text atualizado
                 className="w-full h-full object-cover"
               />
             </div>
