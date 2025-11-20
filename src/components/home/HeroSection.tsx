@@ -4,9 +4,11 @@ import { ArrowRight } from "lucide-react";
 import { useInView } from "@/hooks/useInView";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { useState, useEffect } from "react"; // Importar useState e useEffect
 
 export function HeroSection() {
   const { ref, isInView } = useInView();
+  const [currentBannerUrl, setCurrentBannerUrl] = useState<string | null>(null);
 
   const { data: bannerUrls, isLoading: isLoadingBanners } = useQuery({
     queryKey: ['homepage-banners'],
@@ -29,8 +31,31 @@ export function HeroSection() {
     },
   });
 
+  // Efeito para determinar qual URL de banner usar com base na largura da tela
+  useEffect(() => {
+    if (!bannerUrls) return;
+
+    const updateBanner = () => {
+      const width = window.innerWidth;
+      if (width >= 1024) { // Desktop (lg breakpoint)
+        setCurrentBannerUrl(bannerUrls.desktop);
+      } else if (width >= 768) { // Tablet (md breakpoint)
+        setCurrentBannerUrl(bannerUrls.tablet);
+      } else { // Mobile
+        setCurrentBannerUrl(bannerUrls.mobile);
+      }
+    };
+
+    updateBanner(); // Define o banner inicial
+    window.addEventListener('resize', updateBanner); // Atualiza no redimensionamento
+
+    return () => window.removeEventListener('resize', updateBanner);
+  }, [bannerUrls]); // Depende de bannerUrls para re-executar se as URLs mudarem
+
   // Adicionado console.log para depuração
   console.log("Banner URLs:", bannerUrls);
+  console.log("Current Banner URL:", currentBannerUrl);
+
 
   if (isLoadingBanners || !bannerUrls) {
     return (
@@ -53,15 +78,11 @@ export function HeroSection() {
     );
   }
 
-  // Constrói as classes Tailwind dinamicamente, garantindo que sempre haja uma URL válida
-  const mobileBgClass = bannerUrls.mobile ? `bg-[url('${bannerUrls.mobile}')]` : 'bg-[url("/hero-banner.jpg")]';
-  const tabletBgClass = bannerUrls.tablet ? `md:bg-[url('${bannerUrls.tablet}')]` : '';
-  const desktopBgClass = bannerUrls.desktop ? `lg:bg-[url('${bannerUrls.desktop}')]` : '';
-
   return (
     <div 
       ref={ref} 
-      className={`relative flex items-center justify-center text-center min-h-[500px] md:min-h-[600px] lg:min-h-[700px] bg-cover bg-center ${mobileBgClass} ${tabletBgClass} ${desktopBgClass}`}
+      className={`relative flex items-center justify-center text-center min-h-[500px] md:min-h-[600px] lg:min-h-[700px] bg-cover bg-center`}
+      style={{ backgroundImage: currentBannerUrl ? `url('${currentBannerUrl}')` : 'none' }}
     >
       <div className="absolute inset-0 bg-black/40" />
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 py-12 sm:py-16 md:py-20">
