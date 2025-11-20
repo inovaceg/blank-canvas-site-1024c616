@@ -24,31 +24,42 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('cart');
-      return saved ? JSON.parse(saved) : [];
+      const initialItems = saved ? JSON.parse(saved) : [];
+      console.log('CartContext: Carrinho carregado do localStorage:', initialItems);
+      return initialItems;
     }
     return [];
   });
 
   useEffect(() => {
+    console.log('CartContext: Salvando carrinho no localStorage:', items);
     localStorage.setItem('cart', JSON.stringify(items));
   }, [items]);
 
   const addItem = (product: Omit<CartItem, 'quantity'>, quantity = 1) => {
     setItems(prev => {
       const existing = prev.find(item => item.id === product.id);
+      let newItems;
       if (existing) {
-        return prev.map(item =>
+        newItems = prev.map(item =>
           item.id === product.id
             ? { ...item, quantity: item.quantity + quantity }
             : item
         );
+      } else {
+        newItems = [...prev, { ...product, quantity }];
       }
-      return [...prev, { ...product, quantity }];
+      console.log('CartContext: Item adicionado/atualizado. Novo carrinho:', newItems);
+      return newItems;
     });
   };
 
   const removeItem = (productId: string) => {
-    setItems(prev => prev.filter(item => item.id !== productId));
+    setItems(prev => {
+      const newItems = prev.filter(item => item.id !== productId);
+      console.log('CartContext: Item removido. Novo carrinho:', newItems);
+      return newItems;
+    });
   };
 
   const updateQuantity = (productId: string, quantity: number) => {
@@ -56,14 +67,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
       removeItem(productId);
       return;
     }
-    setItems(prev =>
-      prev.map(item =>
+    setItems(prev => {
+      const newItems = prev.map(item =>
         item.id === productId ? { ...item, quantity } : item
-      )
-    );
+      );
+      console.log('CartContext: Quantidade atualizada. Novo carrinho:', newItems);
+      return newItems;
+    });
   };
 
   const clearCart = () => {
+    console.log('CartContext: Carrinho limpo.');
     setItems([]);
   };
 

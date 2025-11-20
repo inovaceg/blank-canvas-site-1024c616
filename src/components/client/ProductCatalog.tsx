@@ -80,6 +80,7 @@ export function ProductCatalog({
   });
 
   const handleAddToCart = (product: any, qty: number = 1) => {
+    console.log('ProductCatalog: Adicionando ao carrinho:', { product, quantity: qty });
     addItem({
       id: product.id!,
       name: product.name!,
