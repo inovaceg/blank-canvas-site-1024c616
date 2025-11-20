@@ -13,6 +13,7 @@ import { Footer } from "@/components/Footer";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { PageTransition } from "@/components/PageTransition";
+import { ScrollToTopOnNavigate } from "@/components/ScrollToTopOnNavigate"; // Importar o novo componente
 import Index from "./pages/Index";
 import Produtos from "./pages/Produtos";
 import NossaHistoria from "./pages/NossaHistoria";
@@ -23,7 +24,7 @@ import Auth from "./pages/Auth";
 import Admin from "./pages/Admin";
 import ClientArea from "./pages/ClientArea";
 import NotFound from "./pages/NotFound";
-import ProductDetail from "./pages/ProductDetail"; // Importar a nova página
+import ProductDetail from "./pages/ProductDetail";
 
 const queryClient = new QueryClient();
 
@@ -39,11 +40,12 @@ const App = () => (
               <BrowserRouter>
                 <Header />
                 <Breadcrumbs />
+                <ScrollToTopOnNavigate /> {/* Adicionado aqui para rolar para o topo em cada navegação */}
                 <PageTransition>
                   <Routes>
                     <Route path="/" element={<Index />} />
                     <Route path="/produtos" element={<Produtos />} />
-                    <Route path="/produtos/:productId" element={<ProductDetail />} /> {/* Nova rota */}
+                    <Route path="/produtos/:productId" element={<ProductDetail />} />
                     <Route path="/nossa-historia" element={<NossaHistoria />} />
                     <Route path="/qualidade" element={<Qualidade />} />
                     <Route path="/contato" element={<Contato />} />
